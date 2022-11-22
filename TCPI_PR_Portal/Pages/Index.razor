@@ -51,11 +51,12 @@
         HttpContent content = new StringContent(JsonConvert.SerializeObject(sapCredential), Encoding.UTF8, "application/json");
         using var sapLogin = await _httpClient.PostAsync("/b1s/v1/Login", content);
 
-        
+
         if (sapLogin.IsSuccessStatusCode)
         {
             var session = await sapLogin.Content.ReadFromJsonAsync<Session>();
-            Console.WriteLine(session.SessionId);
+            User response = await _httpClient.GetFromJsonAsync<User>("/b1s/v1/U_FT_WPUS");
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         success = true;
