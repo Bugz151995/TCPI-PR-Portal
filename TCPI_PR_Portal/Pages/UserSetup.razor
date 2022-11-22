@@ -1,0 +1,119 @@
+﻿@using Newtonsoft.Json;
+@using TCPI_PR_Portal.Shared;
+@using Microsoft.AspNetCore.Authorization;
+@using System.Text;
+
+@page "/UserSetup";
+@attribute [Authorize];
+@inject HttpClient _httpClient;
+
+<Title PageName="User Setup" Breadcrumb="_items" />
+
+<EditForm Model="@User" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <MudTabPanel Text="User Setup">
+            <MudGrid Spacing="3" Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                        <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="User Code" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_Password" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudSelect Margin="Margin.Dense" T="string" Label="Department" Variant="Variant.Outlined">
+                            <MudSelectItem Value="@("")" />
+                            <MudSelectItem Value="@("Requestor")" />
+                            <MudSelectItem Value="@("Approver")" />
+                        </MudSelect>
+                        <MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                        <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_UserName" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudSelect Margin="Margin.Dense" T="string" Label="Role" Variant="Variant.Outlined">
+                            <MudSelectItem Value="@("Admin")" />
+                            <MudSelectItem Value="@("Requestor")" />
+                            <MudSelectItem Value="@("Approver")" />
+                        </MudSelect>
+                        <MudSelect Margin="Margin.Dense" T="string" Label="Approval Level" Variant="Variant.Outlined">
+                            <MudSelectItem Value="@("Level 1")" />
+                            <MudSelectItem Value="@("Level 2")" />
+                            <MudSelectItem Value="@("Level 3")" />
+                            <MudSelectItem Value="@("Level 4")" />
+                        </MudSelect>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <div class="d-flex gap-1 align-center">
+                <MudIcon Icon="@Icons.Filled.NewLabel" Title="Breadcrumb" Color="Color.Primary" />
+                <MudText>Approver Details</MudText>
+            </div>
+            <MudGrid Spacing="3" Justify="Justify.Center">
+                <MudItem xs="6">
+                    <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                        <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode1" Label="Approver Code 1" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode2" Label="Approver Code 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode3" Label="Approver Code 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode4" Label="Approver Code 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                        <MudTextField Elevation="0" @bind-Value="User.U_Approver1" Label="Approver Name 1" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_Approver2" Label="Approver Name 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_Approver3" Label="Approver Name 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_Approver4" Label="Approver Name 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="6"></MudItem>
+            </MudGrid>
+            <MudGrid Spacing="3" Justify="Justify.FlexEnd">
+                <MudItem xs="4">
+                    <MudCardActions Class="d-flex justify-end gap-2">
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Close">Cancel</MudButton>
+                    </MudCardActions>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Tab Two">
+            <MudText>Content Two</MudText>
+        </MudTabPanel>
+    </MudTabs>
+
+
+</EditForm>
+
+@code {
+    User User = new User();
+
+    User _user = new User();
+    List<Departments>? _departments = new List<Departments>();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
+        new BreadcrumbItem("User Setup", href: "UserSetup", disabled: true)
+    };
+
+    protected override async void OnInitialized()
+    {
+        _departments = await _httpClient.GetFromJsonAsync<List<Departments>>("DepartmentsService_GetDepartmentList");
+    }
+
+    // form validation
+    bool success = false;
+    private async void OnValidSubmit(EditContext context)
+    {
+        var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsJsonAsync("U_FT_WPUS", content);
+
+        success = true;
+        StateHasChanged();
+    }
+}

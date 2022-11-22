@@ -1,0 +1,166 @@
+﻿@using System.Net.Http.Json;
+@using Microsoft.AspNetCore.Authorization;
+@using TCPI_PR_Portal.Shared;
+
+@page "/DocumentStatus";
+@attribute [Authorize];
+@inject HttpClient _httpClient;
+@inject NavigationManager _navigation;
+
+<Title PageName="Document Status" Breadcrumb="_items" />
+
+<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Element,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">&nbsp;</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>#</MudTh>
+        <MudTh style="white-space: nowrap!important;">Project ID</MudTh>
+        <MudTh style="white-space: nowrap!important;">Project Name</MudTh>
+        <MudTh style="white-space: nowrap!important;">Location</MudTh>
+        <MudTh style="white-space: nowrap!important;">PR Type</MudTh>
+        <MudTh style="white-space: nowrap!important;">Document Number</MudTh>
+        <MudTh style="white-space: nowrap!important;">Department</MudTh>
+        <MudTh style="white-space: nowrap!important;">Branch</MudTh>
+        <MudTh style="white-space: nowrap!important;">Status</MudTh>
+        <MudTh style="white-space: nowrap!important;">Document Date</MudTh>
+        <MudTh style="white-space: nowrap!important;">Required Date</MudTh>
+        <MudTh style="white-space: nowrap!important;">Urgency Priority</MudTh>
+        <MudTh style="white-space: nowrap!important;">Prepared By</MudTh>
+        <MudTh style="white-space: nowrap!important;">Reviewed By</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approved By (Level1)</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approved By (Level2)</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approved By (Level3)</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approved By (Level4)</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approved Date</MudTh>
+        <MudTh style="white-space: nowrap!important;">Remarks</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approver Remarks</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudIconButton Link="/DocumentStatus/PRApproval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
+        </MudTd>
+        <MudTd DataLabel="DocEntry"></MudTd>
+        <MudTd DataLabel="Project ID"></MudTd>
+        <MudTd DataLabel="Project Name"></MudTd>
+        <MudTd DataLabel="Location"></MudTd>
+        <MudTd DataLabel="PR Type"></MudTd>
+        <MudTd DataLabel="Document Number"></MudTd>
+        <MudTd DataLabel="Department"></MudTd>
+        <MudTd DataLabel="Branch"></MudTd>
+        <MudTd DataLabel="Status"></MudTd>
+        <MudTd DataLabel="Document Date"></MudTd>
+        <MudTd DataLabel="Required Date"></MudTd>
+        <MudTd DataLabel="Urgency Priority"></MudTd>
+        <MudTd DataLabel="Prepared By"></MudTd>
+        <MudTd DataLabel="Reviewed By"></MudTd>
+        <MudTd DataLabel="Approved By (Level1)"></MudTd>
+        <MudTd DataLabel="Approved By (Level2)"></MudTd>
+        <MudTd DataLabel="Approved By (Level3)"></MudTd>
+        <MudTd DataLabel="Approved By (Level4)"></MudTd>
+        <MudTd DataLabel="Approved Date"></MudTd>
+        <MudTd DataLabel="Remarks"></MudTd>
+        <MudTd DataLabel="Approver Remarks"></MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    // table settings
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Document Status", href: "DocumentStatus", disabled: true)
+    };
+
+    //// <summary>
+    /// from here all logic are tests refactor later
+    /// </summary>
+    private string searchString1 = "";
+    private Element selectedItem1 = null;
+
+    private List<PRLines> _lines = new List<PRLines>();
+
+    //test data
+    private List<Element> Elements = new List<Element>();
+
+
+    // get method json ang makukua,
+    protected override async Task OnInitializedAsync()
+    {
+        //Elements = await httpClient.GetFromJsonAsync<List<Element>>("dummyjson.com/products");
+        // HARD CODED DATA
+        //for (int i = 0; i < 5; i++)
+        //{
+        //    _lines.Add(new PRLines
+        //        {
+        //            DocEntry = 1,
+        //            U_ItemCode = 1,
+        //            U_Dscription = 1,
+        //            U_WhsCode = 1,
+        //            U_BinLoc = 1,
+        //            U_Scope = 1,
+        //            U_ScopeDesc = 1,
+        //            U_MaterialCode = 1,
+        //            U_MaterialDesc = 1,
+        //            U_Quantity = 1,
+        //            U_InfoPrice = 1,
+        //            U_UomCode = 1,
+        //            U_ItemSpecification = 1,
+        //            TaxCode = 1,
+        //            U_OnHandQuantity = 1,
+        //            U_InventoryType = 1,
+        //            U_InventoryPurpose = 1
+        //        });
+        //}
+
+        // test data hardcoded data
+        for (int i = 0; i < 5; i++)
+        {
+            Elements.Add(new Element
+                {
+                    Number = 1,
+                    Sign = "test",
+                    Name = "test",
+                    Position = 2,
+                    Molar = 3
+                });
+        }
+    }
+
+    private bool FilterFunc1(Element element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(Element element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    // test data
+    public class Element
+    {
+        public int Number { get; set; }
+        public string Sign { get; set; }
+        public string Name { get; set; }
+        public int Position { get; set; }
+        public int Molar { get; set; }
+    }
+
+
+}

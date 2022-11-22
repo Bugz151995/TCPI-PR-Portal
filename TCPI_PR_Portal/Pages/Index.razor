@@ -1,0 +1,64 @@
+﻿@using System.ComponentModel.DataAnnotations;
+@using Newtonsoft.Json;
+@using TCPI_PR_Portal.Shared
+@using System.Text;
+
+@page "/"
+@inject HttpClient _httpClient;
+
+<EditForm Model="@User" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <MudGrid Class="justify-center">
+        <MudItem xs="12" sm="5">
+            <MudCard Elevation="25" Class="pa-8">
+                <div class="d-flex justify-center mb-10">
+                    <MudImage ObjectFit="ObjectFit.Contain" Height="200" Width="400" Src="420px-Taiheiyo_Cement_Logo.png" Alt="Taiheiyo Cement Logo" Class="rounded-lg" />
+                </div>
+                <MudCardContent>
+                    <MudTextField Label="Username" HelperText=""
+                                  @bind-Value="User.U_UserName" For="@(() => User.U_UserName)" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" AdornmentColor="Color.Primary" Variant="Variant.Outlined" />
+                    <MudTextField Label="Password" HelperText="" Class="mt-3"
+                                  @bind-Value="User.U_Password" For="@(() => User.U_Password)" InputType="InputType.Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" AdornmentColor="Color.Primary" Variant="Variant.Outlined" />
+                    <MudPaper Elevation="0" Class="d-flex justify-end">
+                        <MudCheckBox T="bool" Label="Remember me" UnCheckedColor="Color.Primary" Color="Color.Primary" />
+                    </MudPaper>
+                </MudCardContent>
+                <MudCardActions Class="justify-center pa-3">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Login</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    User User = new User();
+
+    bool success;
+
+    private async void OnValidSubmit(EditContext context)
+    {
+
+        //hard coded config file for SAP B1 Connection
+        var sapCredential = new
+        {
+            CompanyDB = "TCPI_TESTDB",
+            UserName = "manager",
+            Password = "ftsi"
+        };
+
+        HttpContent content = new StringContent(JsonConvert.SerializeObject(sapCredential), Encoding.UTF8, "application/json");
+        using var sapLogin = await _httpClient.PostAsync("/b1s/v1/Login", content);
+
+        
+        if (sapLogin.IsSuccessStatusCode)
+        {
+            var session = await sapLogin.Content.ReadFromJsonAsync<Session>();
+            Console.WriteLine(session.SessionId);
+        }
+
+        success = true;
+        StateHasChanged();
+    }
+}

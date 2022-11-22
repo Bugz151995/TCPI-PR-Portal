@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using Newtonsoft.Json;
+@using TCPI_PR_Portal.Shared.RequisitionSlip;
+@using TCPI_PR_Portal.Shared;
+@using System.Text;
+
+@page "/RequisitionSlip";
+@attribute [Authorize];
+@inject HttpClient _httpClient;
+
+<Title PageName="Requisition Slip" Breadcrumb="_items" />
+
+<EditForm Model="@_header" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <PRFormHeader PRHeader="@_header" />
+    <PRFormLines PRLines="@_lines" />
+
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        <MudItem xs="6">
+            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                <MudTextField T="string" Label="Remarks" Variant="Variant.Outlined" Text="" Lines="3" />
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" Class="d-flex flex-column justify-end">
+            <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Post</MudButton>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+    private PRHeader _header = new PRHeader();
+    private List<PRLines> _lines = new List<PRLines>();
+
+    private List<Projects>? _projects = new List<Projects>();
+    private List<Departments>? _departments = new List<Departments>();
+    private List<Branch>? _branch = new List<Branch>();
+
+    private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { 
+        new BreadcrumbItem("Requisition Slip", href: "RequisitionSlip", disabled: true)
+    };
+
+    // form validation
+    bool success = false;
+    private void OnValidSubmit(EditContext context)
+    {
+        // POST Request here after the inputs are validated
+        // Consume Service Layer
+        var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
+        var response = _httpClient.PostAsJsonAsync("U_FT_OPRQ", content);
+        // TODO: fix the format of context EditContext type variable
+        // TODO: posting of lines in loop
+
+        success = true;
+        StateHasChanged();
+    }
+
+    // get method json ang makukua,
+    protected override async Task OnInitializedAsync()
+    {
+        _header.U_DocStatus = "Waiting For Approval"; // Default DocStatus
+        _projects = await _httpClient.GetFromJsonAsync<List<Projects>>("Projects?$select=Code,Name");
+        _departments = await _httpClient.GetFromJsonAsync<List<Departments>>("DepartmentsService_GetDepartmentList");
+        _branch = await _httpClient.GetFromJsonAsync<List<Branch>>("BranchesService_GetBranchList");
+    }
+
+    // TODO: posting to staging table through service layer - PENDING
+    // TODO: Direct http call to service layer - PENDING (PR APPROVAL)
+    // TODO: Inject the Interfaces to the client side - PENDING 
+    // TODO: Bind values to the table or fields when executing get method request - DONE
+    // TODO: User Authentication - POST to hanaserver:50000/b1s/v1/Login and get the sessionId Response.. - PENDING
+    // TODO: Create Approve Requisition Slip Page - DONE
+    // TODO: Post to staging table for the approved requisition slip - PENDING
+    // TODO: Responsive Design of the portal - PENDGIN
+    // TODO: SAP B1 Integration Services for HANA
+    // TODO: enable other port to be accessed externally from the RDP's IIS - currently opened in firewall is port 81
+    // TODO: fix the ssl mismatch error blocking the hhtp request
+}

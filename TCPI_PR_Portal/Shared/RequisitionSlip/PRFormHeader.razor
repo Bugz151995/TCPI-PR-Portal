@@ -1,0 +1,77 @@
+﻿@using TCPI_PR_Portal.Shared;
+
+<MudGrid Spacing="2" Justify="Justify.Center">
+    <MudItem xs="6">
+        <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+            <MudAutocomplete T="string" Label="Project ID" @bind-Value="PRHeader.U_ProjectID" SearchFunc="@Search" Margin="Margin.Dense" Dense="false" Variant="Variant.Outlined" />
+            <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+            <MudTextField @bind-Value="PRHeader.U_Location" Label="Location" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            <MudSelect Margin="Margin.Dense" T="string" Label="PR Type" Variant="Variant.Outlined">
+                @*for loop here if there is a supplier array data*@
+                <MudSelectItem Value="@("Regular")" />
+                <MudSelectItem Value="@("Special - IT")" />
+                <MudSelectItem Value="@("Special = Safety")" />
+            </MudSelect>
+            <MudSelect Margin="Margin.Dense" T="string" Label="Branch" Variant="Variant.Outlined">
+                @*for loop here if there is a supplier array data*@
+                <MudSelectItem Value="@("Branch 1")" />
+                <MudSelectItem Value="@("Branch 2")" />
+                <MudSelectItem Value="@("Branch 3")" />
+            </MudSelect>
+            <MudSelect Margin="Margin.Dense" T="string" Label="Department" Variant="Variant.Outlined">
+                @*for loop here if there is a supplier array data*@
+                <MudSelectItem Value="@("Department 1")" />
+                <MudSelectItem Value="@("Department 2")" />
+                <MudSelectItem Value="@("Department 3")" />
+            </MudSelect>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="6">
+        <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-4 gap-2">
+            <MudTextField @bind-Value="PRHeader.U_DocNum" Label="Doc. No" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" />
+            <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" />
+            <MudSelect Margin="Margin.Dense" T="string" Label="Urgency Priority" Variant="Variant.Outlined">
+                @*for loop here if there is a supplier array data*@
+                <MudSelectItem Value="@("Low")" />
+                <MudSelectItem Value="@("Medium")" />
+                <MudSelectItem Value="@("High")" />
+            </MudSelect>
+            <MudTextField @bind-Value="PRHeader.U_PreparedBy" Label="Prepared By" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            <MudTextField @bind-Value="PRHeader.U_ReviewedBy" Label="Reviewed By" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+            
+            @*<MudTextField @bind-Value="PRHeader.U_ApprovedBy1" Label="Approved By( Level 1)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+            <MudTextField @bind-Value="PRHeader.U_ApprovedBy2" Label="Approved By( Level 2)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+            <MudTextField @bind-Value="PRHeader.U_ApprovedBy3" Label="Approved By( Level 3)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+            <MudTextField @bind-Value="PRHeader.U_ApprovedBy4" Label="Approved By( Level 4)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+            <MudTextField @bind-Value="PRHeader.U_ApproverRemarks " Label="Approver Remarks" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>*@
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public PRHeader PRHeader { get; set; }
+
+    /// <summary>
+    ///  HARD CODED DATA
+    /// </summary>
+    private string value1;
+    private string[] states =
+    {
+        "1", "2", "3", "4", "5", "6"
+    };
+
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return states;
+        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+}

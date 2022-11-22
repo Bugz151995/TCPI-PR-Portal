@@ -1,0 +1,33 @@
+﻿<PageTitle>@PageName</PageTitle>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudText Typo="Typo.h5" Class="m-0 pt-3">@PageName</MudText>
+    </MudItem>
+    <MudItem xs="6">
+        <MudPaper Elevation="0" Class="d-flex justify-end">
+            <MudIconButton Color="Color.Primary" Size="Size.Medium" Icon="@Icons.Filled.KeyboardDoubleArrowLeft" aria-label="navigate to first"></MudIconButton>
+            <MudIconButton Color="Color.Primary" Size="Size.Medium" Icon="@Icons.Filled.NavigateBefore" aria-label="navigate before"></MudIconButton>
+            <MudIconButton Color="Color.Primary" Size="Size.Medium" Icon="@Icons.Filled.NavigateNext" aria-label="navigate next"></MudIconButton>
+            <MudIconButton Color="Color.Primary" Size="Size.Medium" Icon="@Icons.Filled.KeyboardDoubleArrowRight" aria-label="navigate to last"></MudIconButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudElement HtmlTag="hr" Class="mx-3" Style="@($"height: 1px!important; width: 100%; background-color:{Colors.Blue.Accent4};")" />
+
+    <MudPaper Elevation="0" Class="d-flex align-center ps-2">
+        <MudIcon Icon="@Icons.Filled.LabelImportant" Title="Breadcrumb" Color="Color.Primary" />
+        <MudBreadcrumbs Items="Breadcrumb">
+            <ItemTemplate Context="item">
+                <MudLink Href="@item.Href">@item.Text</MudLink>
+            </ItemTemplate>
+        </MudBreadcrumbs>
+    </MudPaper>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public string PageName { get; set; } = string.Empty;
+    [Parameter]
+    public List<BreadcrumbItem> Breadcrumb { get; set; }
+}

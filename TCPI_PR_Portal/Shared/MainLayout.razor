@@ -1,0 +1,60 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <AuthorizeView>
+        <Authorized>
+            <MudAppBar Elevation="0" Style="@($"background:{Colors.Blue.Darken4};")">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <MudSpacer />
+                <MudText>Purchase Requisition Portal</MudText>
+                <MudSpacer />
+                <MudAvatar Square="true" Color="Color.Primary">M</MudAvatar>
+            </MudAppBar>
+
+            <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Style="@($"background:{Colors.LightBlue.Lighten5};")">
+                <MudDrawerHeader Class="d-flex align-center justify-center mb-6">
+                    <MudImage Src="420px-Taiheiyo_Cement_Logo.png" Width="55" Height="45" Alt="Taiheiyo Cement Logo" Class="mt-3 me-3" />
+                </MudDrawerHeader>
+                <NavMenu />
+                <MudPaper Class="d-flex flex-column align-center pa-4" Style="margin-top: auto; background: transparent">
+                    <MudLink Href="http://www.taiheiyo-cement.com.ph/" Style="font-size: small; text-align: center">&copy; 2022 Taiheiyo Cement Philippines, Inc.</MudLink>
+                    <MudLink Href="https://fasttrackph.com/" Style="font-size: smaller; text-align: center">Developed by Fasttrack Solutions, Inc.</MudLink>
+                </MudPaper>
+            </MudDrawer>
+
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.Large" Class="my-10">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+            <MudPaper Class="d-flex justify-end pa-4" Style="@($"background:{Colors.Grey.Lighten4};")">
+                <MudLink Href="https://fasttrackph.com/" Style="font-size: small; text-align: center">Developed by Fasttrack Solutions, Inc.</MudLink>
+            </MudPaper>
+        </Authorized>
+
+        <NotAuthorized>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.Large" Class="my-10">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+            <MudPaper Elevation="0" Class="d-flex flex-column justify-center pa-4" Style="@($"background:{Colors.Grey.Lighten4};")">
+                <MudLink Href="http://www.taiheiyo-cement.com.ph/" Style="font-size: small; text-align: center">&copy; 2022 Taiheiyo Cement Philippines, Inc.</MudLink>
+                <MudLink Href="https://fasttrackph.com/" Style="font-size: small; text-align: center">Developed by Fasttrack Solutions, Inc.</MudLink>
+            </MudPaper>
+        </NotAuthorized>
+    </AuthorizeView>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}
