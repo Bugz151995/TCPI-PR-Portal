@@ -17,7 +17,7 @@ builder.Services.AddTransient<CookieHandler>()
     .AddScoped(sp => sp
         .GetRequiredService<IHttpClientFactory>()
         .CreateClient("ServiceLayer"))
-    .AddHttpClient("ServiceLayer", client => client.BaseAddress = new Uri("https://172.31.24.203:50000")).AddHttpMessageHandler<CookieHandler>();
+    .AddHttpClient("ServiceLayer", client => client.BaseAddress = new Uri("http://172.31.24.203:50001")).AddHttpMessageHandler<CookieHandler>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
