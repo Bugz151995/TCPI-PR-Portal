@@ -39,23 +39,21 @@
 
     private async void OnValidSubmit(EditContext context)
     {
-
-        //hard coded config file for SAP B1 Connection
-        var sapCredential = new
+        //hard coded config file for SAP B1 Connection       
+        var jsonCredential = JsonConvert.SerializeObject(new
         {
             CompanyDB = "TCPI_TESTDB",
             UserName = "manager",
             Password = "ftsi"
-        };
+        });
 
-        HttpContent content = new StringContent(JsonConvert.SerializeObject(sapCredential), Encoding.UTF8, "application/json");
+        HttpContent content = new StringContent(jsonCredential, Encoding.UTF8, "application/json");
         using var sapLogin = await _httpClient.PostAsync("/b1s/v1/Login", content);
-
 
         if (sapLogin.IsSuccessStatusCode)
         {
             var session = await sapLogin.Content.ReadFromJsonAsync<Session>();
-            User response = await _httpClient.GetFromJsonAsync<User>("/b1s/v1/U_FT_WPUS");
+            User response = await _httpClient.GetFromJsonAsync<User>($"/b1s/v1/U_FT_WPUS?$filter=U_UserName eq '{User.U_UserName}'");
             Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
