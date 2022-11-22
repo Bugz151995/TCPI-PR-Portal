@@ -33,9 +33,17 @@
 </EditForm>
 
 @code {
-    User User = new User();
+    LoginDto User = new LoginDto();
 
     bool success;
+
+    public class LoginDto
+    {
+        [Required]
+        public string U_UserName { get; set; } = string.Empty;    
+        [Required]
+        public string U_Password { get; set; } = string.Empty;
+    }
 
     private async void OnValidSubmit(EditContext context)
     {
@@ -52,12 +60,12 @@
 
         if (sapLogin.IsSuccessStatusCode)
         {
-            var session = await sapLogin.Content.ReadFromJsonAsync<Session>();
-            using var response = await _httpClient.GetFromJsonAsync<HttpResponseMessage>($"/b1s/v1/U_FT_WPUS?$filter=U_UserName eq '{User.U_UserName}'");
+            using var response = await _httpClient.GetAsync($"/b1s/v1/U_FT_WPUS?$select=U_UserName,U_Password&$filter=U_UserName eq '{User.U_UserName}'");
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine(response.Content.ReadAsStringAsync());
+                LoginDto result = await response.Content.ReadFromJsonAsync<LoginDto>();
+                Console.WriteLine(JsonConvert.SerializeObject(result));
             }
         }
 
