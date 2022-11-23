@@ -7,7 +7,7 @@
             <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" ValueChanged="value => selectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
                 @foreach (var d in Projects)
                 {
-                    <MudSelectItem Value="@d">@d.Code</MudSelectItem>
+                    <MudSelectItem Value="@d.Code">@d.Code</MudSelectItem>
                 }
             </MudSelect>
             <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
