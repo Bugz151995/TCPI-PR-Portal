@@ -124,9 +124,9 @@
     {
         try
         {
-            string password = User.U_Password;
-            CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
-            User.U_Password = encryptedPassword.Value;
+            //string password = User.U_Password;
+            //CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
+            //User.U_Password = encryptedPassword.Value;
             HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
             using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
 
