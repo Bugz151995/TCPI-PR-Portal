@@ -106,15 +106,15 @@
         public List<DepartmentsDto> value { get; set; } = new List<DepartmentsDto>();
     }
     
-    Department _selectedDepartment;
+    DepartmentsDto _selectedDepartment;
 
-    public class Department
+    public class DepartmentsDto
     {
         public int Code { get; set; }
         public string Name { get; set; }
         public override bool Equals(object o)
         {
-            var other = o as Department;
+            var other = o as DepartmentsDto;
             return other?.Code == Code;
         }
         public override int GetHashCode() => Code.GetHashCode();
@@ -122,12 +122,6 @@
         {
             return Name;
         }
-    }
-
-    public class DepartmentsDto
-    {
-        public int Code { get; set; }
-        public string Name { get; set; }
     }
 
     protected override async void OnInitialized()
