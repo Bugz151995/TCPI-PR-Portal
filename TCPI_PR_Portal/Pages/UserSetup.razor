@@ -122,7 +122,8 @@
 
     private async void OnValidSubmit(EditContext context)
     {
-        User.U_Password = await Crypto.Encrypt(User.U_Password);
+        CryptoResult encryptedPassword = await Crypto.EncryptAsync(User.U_Password);
+        User.U_Password = encryptedPassword.Value;
         HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
         using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
 
