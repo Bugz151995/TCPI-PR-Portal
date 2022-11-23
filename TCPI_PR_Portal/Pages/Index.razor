@@ -49,7 +49,7 @@
 
     bool success;
 
-    private async void OnValidSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
         //hard coded config file for SAP B1 Connection
         var jsonCredential = JsonConvert.SerializeObject(new
