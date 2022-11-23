@@ -4,7 +4,7 @@
 <MudGrid Spacing="2" Justify="Justify.Center">
     <MudItem xs="6">
         <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-            <MudSelect Margin="Margin.Dense" @bind-Value="SelectedProject" Label="Project ID" Variant="Variant.Outlined">
+            <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" ValueChanged="value => selectProject(PRHeader, value)" Label="Project ID" Variant="Variant.Outlined">
                 @foreach (var d in Projects)
                 {
                     <MudSelectItem Value="@d">@d.Code</MudSelectItem>
@@ -88,4 +88,9 @@
         Branches = BranchResponse.value;
     }
 
+    void selectProject(PRHeaderDto context, string selectedString)
+    {
+        context.Code = selectedString;
+        PRHeader.U_ProjName = selectedString;
+    }
 }
