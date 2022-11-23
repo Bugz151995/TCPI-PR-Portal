@@ -15,7 +15,7 @@ namespace TCPI_PR_Portal.Models
         public string Name { get; set; }
         public int? DocEntry { get; set; }
         [Required]
-        public int? U_ProjectID { get; set; } // revert back to int after testing
+        public string? U_ProjectID { get; set; } // revert back to int after testing
         public string? U_ProjName { get; set; }
         public string? U_Location { get; set; }
         public string? U_PRType { get; set; } // no binded field

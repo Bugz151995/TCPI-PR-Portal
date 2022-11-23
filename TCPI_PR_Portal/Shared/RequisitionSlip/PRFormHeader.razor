@@ -4,7 +4,7 @@
 <MudGrid Spacing="2" Justify="Justify.Center">
     <MudItem xs="6">
         <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-            <MudSelect Margin="Margin.Dense" T="int?" Value="PRHeader.U_ProjectID" ValueChanged="value => selectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
+            <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" ValueChanged="value => selectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
                 @foreach (var d in Projects)
                 {
                     <MudSelectItem Value="@d.Code">@d.Code</MudSelectItem>
@@ -90,7 +90,7 @@
         PRHeader.U_PreparedBy = "User Session";
     }
 
-    void selectProject(ProjectsDto context, int? selectedString)
+    void selectProject(ProjectsDto context, string selectedString)
     {
         PRHeader.U_ProjectID = selectedString;
         var search = Projects.Where(e => e.Code == selectedString).Select(e => e.Name);
