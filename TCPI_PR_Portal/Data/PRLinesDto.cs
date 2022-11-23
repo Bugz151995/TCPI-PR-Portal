@@ -10,8 +10,9 @@ namespace TCPI_PR_Portal.Models
 {
     public class PRLinesDto
     {
-        [Key]
+        [Key, Required]
         public string Code { get; set; }
+        [Required]
         public string Name { get; set; }
         public int? DocEntry { get; set; }
         public string? U_Dscription { get; set; } = string.Empty;

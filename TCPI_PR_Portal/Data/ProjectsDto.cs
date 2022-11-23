@@ -9,7 +9,7 @@ namespace TCPI_PR_Portal.Models
 {
     public class ProjectsDto
     {
-        public string Code { get; set; }
+        public int Code { get; set; }
         public string Name { get; set; }
 
         public override bool Equals(object o)

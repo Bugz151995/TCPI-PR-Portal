@@ -19,7 +19,7 @@
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudTextField T="string" Label="Remarks" Variant="Variant.Outlined" Text="" Lines="3" />
+                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Text="" Lines="3" />
             </MudPaper>
         </MudItem>
         <MudItem xs="6" Class="d-flex flex-column justify-end">
@@ -44,11 +44,10 @@
     private void OnValidSubmit(EditContext context)
     {
         HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
-        var response = HttpClient.PostAsync("U_FT_OPRQ", header);
+        var headerResponse = HttpClient.PostAsync("U_FT_OPRQ", header);
 
-        
-        // TODO: fix the format of context EditContext type variable
-        // TODO: posting of lines in loop
+        HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
+        var linesResponse = HttpClient.PostAsync("U_FT_PRQ1", lines);
 
         success = true;
         StateHasChanged();
