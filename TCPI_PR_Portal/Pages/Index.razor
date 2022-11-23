@@ -100,10 +100,14 @@
             if (User.U_Password == password)
             {
                 Console.WriteLine("User is Authenticated");
-                // create a value for customauthstateprovider
                 Navigation.NavigateTo("user-setup");
             };
         }
+
+        // a003ZkFjeWlQNnRQ4sGfeNkD0n+172DOrehwL3XJr/fkyBN4 => input this password in hana db for admin = 1q2w#E$R
+
+        //CryptoResult encrypted = await Crypto.EncryptAsync("1q2w#E$R");
+        //string decrypted = await Crypto.DecryptAsync(encrypted.Value);
 
         success = true;
         StateHasChanged();
