@@ -20,13 +20,14 @@
                         <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="User Code" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                         <MudTextField Elevation="0" @bind-Value="User.U_Password" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                        <MudSelect Margin="Margin.Dense" @bind-Value="SelectedDepartment" Label="Department" Variant="Variant.Outlined">
+
+                        @*<MudSelect Margin="Margin.Dense" @bind-Value="SelectedDepartment" Label="Department" Variant="Variant.Outlined">
                             @foreach (var d in Departments)
                             {
                                 <MudSelectItem Value="@d">@d.Name</MudSelectItem>
                             }
                         </MudSelect>
-                        <MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />*@
                     </MudPaper>
                 </MudItem>
 

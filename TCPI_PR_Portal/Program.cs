@@ -6,7 +6,7 @@ using MudBlazor.Services;
 using System.Net;
 using TCPI_PR_Portal;
 using TCPI_PR_Portal.Client;
-using Blazor.SubtleCrypto;
+using Blazor.SubtleCrypto; 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
