@@ -21,8 +21,10 @@
                         <MudTextField Elevation="0" @bind-Value="User.U_Password" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                         <MudSelect Margin="Margin.Dense" T="List<DepartmentsDto>" Label="Department" Variant="Variant.Outlined">
-                            
-                            <MudSelectItem Value="@("")" />
+                            @foreach (var d in Departments)
+                            {
+                                <MudSelectItem Value="@(d.Code)">@d.Name</MudSelectItem>
+                            }
                         </MudSelect>
                         <MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                     </MudPaper>
@@ -104,6 +106,12 @@
         public List<DepartmentsDto> value { get; set; } = new List<DepartmentsDto>();
     }
 
+    public class DepartmentsDto
+    {
+        public int Code { get; set; }
+        public string Name { get; set; }
+    }
+
     protected override async void OnInitialized()
     {
         var response = await HttpClient.GetAsync("Departments?$select=Code,Name");
@@ -116,7 +124,6 @@
 
         DeptResponse = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
         Departments = DeptResponse.value;
-        Console.WriteLine(JsonConvert.SerializeObject(Departments));
     }
 
     // form validation
@@ -130,17 +137,4 @@
         success = true;
         StateHasChanged();
     }
-
-    // Note: this is important so the MudSelect can compare pizzas
-    //public override bool Equals(object o)
-    //{
-    //    var other = o as Pizza;
-    //    return other?.Name == Name;
-    //}
-
-    //// Note: this is important too!
-    //public override int GetHashCode() => Name?.GetHashCode() ?? 0;
-
-    //// Implement this for the Pizza to display correctly in MudSelect
-    //public override string ToString() => Name;
 }
