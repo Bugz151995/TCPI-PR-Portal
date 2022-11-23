@@ -1,7 +1,9 @@
-﻿@using Newtonsoft.Json;
+﻿@using CSharpVitamins;
+@using Newtonsoft.Json;
 @using TCPI_PR_Portal.Shared;
 @using Microsoft.AspNetCore.Authorization;
 @using System.Text;
+@inject ICryptoService Crypto
 @inject HttpClient HttpClient;
 @attribute [Authorize];
 
@@ -10,6 +12,7 @@
 <Title PageName="User Setup" Breadcrumb="_items" />
 
 <EditForm Model="@User" OnValidSubmit="OnValidSubmit">
+    <input type="hidden" @bind-value="User.Name" />
     <DataAnnotationsValidator />
 
     <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
@@ -17,7 +20,7 @@
             <MudGrid Spacing="3" Justify="Justify.Center">
                 <MudItem xs="6">
                     <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                        <MudTextField Elevation="0" @bind-Value="User.Code" Label="User Code" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.Code" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                         <MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
 
@@ -90,8 +93,12 @@
             </MudGrid>
         </MudTabPanel>
 
-        <MudTabPanel Text="Tab Two">
-            <MudText>Content Two</MudText>
+        <MudTabPanel Text="Modules Assignment">
+            <MudText>Requires Confirmation</MudText>
+        </MudTabPanel>
+
+        <MudTabPanel Text="Project Assignment">
+            <MudText>Requires Confirmation</MudText>
         </MudTabPanel>
     </MudTabs>
 </EditForm>
@@ -114,6 +121,7 @@
 
     private async void OnValidSubmit(EditContext context)
     {
+        User.U_Password = await Crypto.Encrypt(User.U_Password);
         HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
         using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
 
@@ -140,6 +148,15 @@
 
         //DeptResponse = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
         //Departments = DeptResponse.value;
+
+        createUniqueCode();
+    }
+
+    void createUniqueCode()
+    {
+        ShortGuid code = Guid.NewGuid();
+        User.Code = code;
+        User.Name = code;
     }
 
     void displayApproverDetails(UserDto context, string selectedString)

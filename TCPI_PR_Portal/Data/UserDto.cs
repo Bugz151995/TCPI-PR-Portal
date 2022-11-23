@@ -11,7 +11,9 @@ namespace TCPI_PR_Portal.Models
     public class UserDto
     {
         [Required]
-        public string Code { get; set; }        
+        public string Code { get; set; }
+        [Required]
+        public string Name { get; set; }
         [Required]
         public string U_UserName { get; set; }
         [Required]
@@ -32,7 +34,7 @@ namespace TCPI_PR_Portal.Models
         public int? U_ApproverCode4 { get; set; }
 
         // Uncomment if needed this is included in the mapping not in the UI
-        //public string Name { get; set; }
+        
         //public int U_UserId { get; set; }
         //public string U_ApprovalLevel { get; set; }
         //public int U_Department { get; set; }
