@@ -1,4 +1,5 @@
 ﻿@using TCPI_PR_Portal.Shared;
+@inject HttpClient HttpClient;
 
 <MudGrid Spacing="2" Justify="Justify.Center">
     <MudItem xs="6">
@@ -12,17 +13,17 @@
                 <MudSelectItem Value="@("Special - IT")" />
                 <MudSelectItem Value="@("Special = Safety")" />
             </MudSelect>
-            <MudSelect Margin="Margin.Dense" T="string" Label="Branch" Variant="Variant.Outlined">
-                @*for loop here if there is a supplier array data*@
-                <MudSelectItem Value="@("Branch 1")" />
-                <MudSelectItem Value="@("Branch 2")" />
-                <MudSelectItem Value="@("Branch 3")" />
+            <MudSelect Margin="Margin.Dense" @bind-Value="SelectedBranch" Label="Branch" Variant="Variant.Outlined">
+                @foreach (var b in Branches)
+                {
+                    <MudSelectItem Value="@b">@b.Name</MudSelectItem>
+                }
             </MudSelect>
-            <MudSelect Margin="Margin.Dense" T="string" Label="Department" Variant="Variant.Outlined">
-                @*for loop here if there is a supplier array data*@
-                <MudSelectItem Value="@("Department 1")" />
-                <MudSelectItem Value="@("Department 2")" />
-                <MudSelectItem Value="@("Department 3")" />
+            <MudSelect Margin="Margin.Dense" @bind-Value="SelectedDepartment" Label="Department" Variant="Variant.Outlined">
+                @foreach (var d in Departments)
+                {
+                    <MudSelectItem Value="@d">@d.Name</MudSelectItem>
+                }
             </MudSelect>
         </MudPaper>
     </MudItem>
@@ -53,25 +54,44 @@
 
 @code {
     [Parameter]
-    public PRHeader PRHeader { get; set; }
+    public PRHeaderDto PRHeader { get; set; }
 
-    /// <summary>
-    ///  HARD CODED DATA
-    /// </summary>
-    private string value1;
-    private string[] states =
-    {
-        "1", "2", "3", "4", "5", "6"
-    };
+    ProjectsDto SelectedProject;
+    DepartmentsDto SelectedDepartment;
+    BranchesDto SelectedBranch;
 
-    private async Task<IEnumerable<string>> Search(string value)
+    ProjectsResponse? ProjectResponse = new ProjectsResponse();
+    DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
+    BranchesResponse? BranchResponse = new BranchesResponse();
+    private IEnumerable<ProjectsDto>? Projects = new List<ProjectsDto>();
+    private List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
+    private List<BranchesDto>? Branches = new List<BranchesDto>();
+
+    private async Task<IEnumerable<ProjectsDto>> Search(string value)
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(5);
 
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
-            return states;
-        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return Projects;
+        return Projects.Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
+
+    // get method json ang makukua,
+    protected override async Task OnInitializedAsync()
+    {
+        var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
+        ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
+        Projects = ProjectResponse.value;
+
+        var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
+        DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
+        Departments = DepartmentResponse.value;
+
+        var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
+        BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
+        Branches = BranchResponse.value;
+    }
+
 }

@@ -7,7 +7,7 @@ namespace TCPI_PR_Portal.Client
     {
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var identity = new ClaimsIdentity("test");
+            var identity = new ClaimsIdentity("verified");
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
 

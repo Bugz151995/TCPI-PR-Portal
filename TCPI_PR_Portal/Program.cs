@@ -6,16 +6,13 @@ using MudBlazor.Services;
 using System.Net;
 using TCPI_PR_Portal;
 using TCPI_PR_Portal.Client;
-using Blazor.SubtleCrypto; 
+using Blazor.SubtleCrypto;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
-builder.Services.AddSubtleCrypto(opt =>
-    opt.Key = "ELE9xOyAyJHCsIPLMbbZHQ7pVy7WUlvZ60y5WkKDGMSw5xh5IM54kUPlycKmHF9VGtYUilglL8iePLwr"
-);
+builder.Services.AddSubtleCrypto(opt => opt.Key = "ELE9xOyAyJHCsIPLMbbZHQ7pVy7WUlvZ60y5WkKDGMSw5xh5IM54kUPlycKmHF9VGtYUilglL8iePLwr");
 
 builder.Services.AddTransient<CookieHandler>()
     .AddScoped(sp => sp

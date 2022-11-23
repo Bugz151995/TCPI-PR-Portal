@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TCPI_PR_Portal.Models
 {
-    public class PRLines
+    public class PRLinesDto
     {
         [Key]
         public string Code { get; set; }
@@ -31,6 +31,6 @@ namespace TCPI_PR_Portal.Models
         public string? U_InventoryType { get; set; } = string.Empty;
         public string? U_InventoryPurpose { get; set; } = string.Empty;
 
-        public PRHeader? PHeader { get; set; }
+        public PRHeaderDto? PHeader { get; set; }
     }
 }

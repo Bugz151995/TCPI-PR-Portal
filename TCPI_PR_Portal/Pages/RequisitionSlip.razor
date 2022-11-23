@@ -10,11 +10,11 @@
 
 <Title PageName="Requisition Slip" Breadcrumb="_items" />
 
-<EditForm Model="@_header" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@PRHeader" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
 
-    <PRFormHeader PRHeader="@_header" />
-    <PRFormLines PRLines="@_lines" />
+    <PRFormHeader PRHeader="@PRHeader" />
+    <PRFormLines PRLines="@PRLines" />
 
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
@@ -32,12 +32,8 @@
 </EditForm>
 
 @code {
-    private PRHeader _header = new PRHeader();
-    private List<PRLines> _lines = new List<PRLines>();
-
-    private List<Projects>? _projects = new List<Projects>();
-    private List<DepartmentsDto>? _departments = new List<DepartmentsDto>();
-    private List<Branch>? _branch = new List<Branch>();
+    private PRHeaderDto PRHeader = new PRHeaderDto();
+    private List<PRLinesDto> PRLines = new List<PRLinesDto>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { 
         new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)
@@ -47,10 +43,10 @@
     bool success = false;
     private void OnValidSubmit(EditContext context)
     {
-        // POST Request here after the inputs are validated
-        // Consume Service Layer
-        var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
-        var response = HttpClient.PostAsJsonAsync("U_FT_OPRQ", content);
+        HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
+        var response = HttpClient.PostAsync("U_FT_OPRQ", header);
+
+        
         // TODO: fix the format of context EditContext type variable
         // TODO: posting of lines in loop
 
@@ -61,21 +57,6 @@
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
-        _header.U_DocStatus = "Waiting For Approval"; // Default DocStatus
-        _projects = await HttpClient.GetFromJsonAsync<List<Projects>>("Projects?$select=Code,Name");
-        _departments = await HttpClient.GetFromJsonAsync<List<DepartmentsDto>>("Departments?$select=Code,Name");
-        _branch = await HttpClient.GetFromJsonAsync<List<Branch>>("Branches?$select=Code,Name");
+        PRHeader.U_DocStatus = "Waiting For Approval";
     }
-
-    // TODO: posting to staging table through service layer - PENDING
-    // TODO: Direct http call to service layer - PENDING (PR APPROVAL)
-    // TODO: Inject the Interfaces to the client side - PENDING 
-    // TODO: Bind values to the table or fields when executing get method request - DONE
-    // TODO: User Authentication - POST to hanaserver:50000/b1s/v1/Login and get the sessionId Response.. - PENDING
-    // TODO: Create Approve Requisition Slip Page - DONE
-    // TODO: Post to staging table for the approved requisition slip - PENDING
-    // TODO: Responsive Design of the portal - PENDGIN
-    // TODO: SAP B1 Integration Services for HANA
-    // TODO: enable other port to be accessed externally from the RDP's IIS - currently opened in firewall is port 81
-    // TODO: fix the ssl mismatch error blocking the hhtp request
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TCPI_PR_Portal.Models
 {
-    public class PRHeader
+    public class PRHeaderDto
     {
         [Key]
         public string Code { get; set; }
@@ -34,6 +34,6 @@ namespace TCPI_PR_Portal.Models
         public string? U_Remarks { get; set; }
         public string? U_ApproverRemarks { get; set; }
 
-        public virtual PRLines? PRLines { get; set; }
+        public virtual PRLinesDto? PRLines { get; set; }
     }
 }

@@ -32,8 +32,8 @@
 </EditForm>
 
 @code {
-    private PRHeader _header = new PRHeader();
-    private List<PRLines> _lines = new List<PRLines>();
+    private PRHeaderDto _header = new PRHeaderDto();
+    private List<PRLinesDto> _lines = new List<PRLinesDto>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
         new BreadcrumbItem("Document Status", href: "document-status"),
@@ -61,7 +61,7 @@
         // HARD CODED DATA
         for (int i = 0; i < 5; i++)
         {
-            _lines.Add(new PRLines
+            _lines.Add(new PRLinesDto
             {
                 U_ItemCode = "",
                 U_Dscription = "",

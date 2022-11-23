@@ -58,11 +58,11 @@
 
 @code {
     [Parameter]
-    public List<PRLines> PRLines { get; set; }
+    public List<PRLinesDto> PRLines { get; set; }
 
     private void addLine()
     {
-        PRLines.Add(new PRLines
+        PRLines.Add(new PRLinesDto
         {
             U_ItemCode = "",
             U_Dscription = "",
