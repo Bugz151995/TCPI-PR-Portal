@@ -48,7 +48,7 @@
 
     bool success;
 
-    public class Response
+    public class LoginResponse
     {
         public string odata { get; set; } = string.Empty;
         public List<LoginDto> value { get; set; } = new List<LoginDto>();
@@ -90,7 +90,7 @@
             return;
         }
 
-        Response? response = await matchedRecord.Content.ReadFromJsonAsync<Response>();
+        LoginResponse? response = await matchedRecord.Content.ReadFromJsonAsync<LoginResponse>();
 
         if(response != null)
         {

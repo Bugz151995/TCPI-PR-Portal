@@ -36,7 +36,7 @@
     private List<PRLines> _lines = new List<PRLines>();
 
     private List<Projects>? _projects = new List<Projects>();
-    private List<Departments>? _departments = new List<Departments>();
+    private List<DepartmentsDto>? _departments = new List<DepartmentsDto>();
     private List<Branch>? _branch = new List<Branch>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { 
@@ -63,7 +63,7 @@
     {
         _header.U_DocStatus = "Waiting For Approval"; // Default DocStatus
         _projects = await HttpClient.GetFromJsonAsync<List<Projects>>("Projects?$select=Code,Name");
-        _departments = await HttpClient.GetFromJsonAsync<List<Departments>>("Departments?$select=Code,Name");
+        _departments = await HttpClient.GetFromJsonAsync<List<DepartmentsDto>>("Departments?$select=Code,Name");
         _branch = await HttpClient.GetFromJsonAsync<List<Branch>>("Branches?$select=Code,Name");
     }
 

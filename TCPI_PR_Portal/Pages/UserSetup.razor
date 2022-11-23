@@ -91,21 +91,36 @@
 
 @code {
     User User = new User();
-
     User _user = new User();
-    List<Departments>? _departments = new List<Departments>();
+    DepartmentsResponse? departments = new DepartmentsResponse();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
         new BreadcrumbItem("User Setup", href: "user-setup", disabled: true)
     };
 
+    public class DepartmentsResponse
+    {
+        public string odata { get; set; } = string.Empty;
+        public List<DepartmentsDto> value { get; set; } = new List<DepartmentsDto>();
+    }
+
     protected override async void OnInitialized()
     {
-        _departments = await HttpClient.GetFromJsonAsync<List<Departments>>("Departments?$select=Code,Name");
+        var response = await HttpClient.GetAsync("Departments?$select=Code,Name");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(response.ReasonPhrase);
+            return;
+        }
+
+        departments = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
+        Console.WriteLine(JsonConvert.SerializeObject(departments));
     }
 
     // form validation
     bool success = false;
+
     private async void OnValidSubmit(EditContext context)
     {
         var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
@@ -114,4 +129,17 @@
         success = true;
         StateHasChanged();
     }
+
+    // Note: this is important so the MudSelect can compare pizzas
+    //public override bool Equals(object o)
+    //{
+    //    var other = o as Pizza;
+    //    return other?.Name == Name;
+    //}
+
+    //// Note: this is important too!
+    //public override int GetHashCode() => Name?.GetHashCode() ?? 0;
+
+    //// Implement this for the Pizza to display correctly in MudSelect
+    //public override string ToString() => Name;
 }
