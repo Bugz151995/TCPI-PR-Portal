@@ -122,20 +122,28 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
-        CryptoResult encryptedPassword = await Crypto.EncryptAsync(User.U_Password);
-        Console.WriteLine(encryptedPassword.Value);
-        User.U_Password = encryptedPassword.Value;
-        HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
-        //using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
+        try
+        {
+            string password = User.U_Password;
+            CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
+            User.U_Password = encryptedPassword.Value;
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
+            using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
 
-        //if (!response.IsSuccessStatusCode)
-        //{
-        //    Console.WriteLine(response.ReasonPhrase);
-        //    return;
-        //}
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(response.ReasonPhrase);
+                return;
+            }
 
-        success = true;
-        StateHasChanged();
+            success = true;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
     }
 
     protected override async void OnInitialized()
