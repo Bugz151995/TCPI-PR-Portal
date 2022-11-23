@@ -6,7 +6,7 @@
 
 @page "/requisition-slip";
 @attribute [Authorize];
-@inject HttpClient _httpClient;
+@inject HttpClient HttpClient;
 
 <Title PageName="Requisition Slip" Breadcrumb="_items" />
 
@@ -50,7 +50,7 @@
         // POST Request here after the inputs are validated
         // Consume Service Layer
         var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
-        var response = _httpClient.PostAsJsonAsync("U_FT_OPRQ", content);
+        var response = HttpClient.PostAsJsonAsync("U_FT_OPRQ", content);
         // TODO: fix the format of context EditContext type variable
         // TODO: posting of lines in loop
 
@@ -62,9 +62,9 @@
     protected override async Task OnInitializedAsync()
     {
         _header.U_DocStatus = "Waiting For Approval"; // Default DocStatus
-        _projects = await _httpClient.GetFromJsonAsync<List<Projects>>("Projects?$select=Code,Name");
-        _departments = await _httpClient.GetFromJsonAsync<List<Departments>>("DepartmentsService_GetDepartmentList");
-        _branch = await _httpClient.GetFromJsonAsync<List<Branch>>("BranchesService_GetBranchList");
+        _projects = await HttpClient.GetFromJsonAsync<List<Projects>>("Projects?$select=Code,Name");
+        _departments = await HttpClient.GetFromJsonAsync<List<Departments>>("Departments?$select=Code,Name");
+        _branch = await HttpClient.GetFromJsonAsync<List<Branch>>("Branches?$select=Code,Name");
     }
 
     // TODO: posting to staging table through service layer - PENDING

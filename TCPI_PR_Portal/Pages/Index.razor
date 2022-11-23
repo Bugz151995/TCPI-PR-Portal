@@ -97,11 +97,13 @@
         if(response != null)
         {
             var password = await Crypto.DecryptAsync(response.value[0].U_Password);
+            Console.WriteLine($"The Input Password: {User.U_Password}");
+            Console.WriteLine($"The Password from DB: {password}");
             if (User.U_Password == password)
             {
                 Console.WriteLine("User is Authenticated");
                 Navigation.NavigateTo("user-setup");
-            };
+            }
         }
 
         // a003ZkFjeWlQNnRQ4sGfeNkD0n+172DOrehwL3XJr/fkyBN4 => input this password in hana db for admin = 1q2w#E$R

@@ -2,10 +2,10 @@
 @using TCPI_PR_Portal.Shared;
 @using Microsoft.AspNetCore.Authorization;
 @using System.Text;
+@inject HttpClient HttpClient;
+@attribute [Authorize];
 
 @page "/user-setup";
-@attribute [Authorize];
-@inject HttpClient _httpClient;
 
 <Title PageName="User Setup" Breadcrumb="_items" />
 
@@ -101,7 +101,7 @@
 
     protected override async void OnInitialized()
     {
-        _departments = await _httpClient.GetFromJsonAsync<List<Departments>>("DepartmentsService_GetDepartmentList");
+        _departments = await HttpClient.GetFromJsonAsync<List<Departments>>("Departments?$select=Code,Name");
     }
 
     // form validation
@@ -109,7 +109,7 @@
     private async void OnValidSubmit(EditContext context)
     {
         var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsJsonAsync("U_FT_WPUS", content);
+        var response = await HttpClient.PostAsJsonAsync("U_FT_WPUS", content);
 
         success = true;
         StateHasChanged();
