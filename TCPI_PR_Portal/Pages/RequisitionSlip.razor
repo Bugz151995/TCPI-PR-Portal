@@ -41,13 +41,14 @@
 
     // form validation
     bool success = false;
-    private void OnValidSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
+        Console.WriteLine("Submitted");
         HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
-        var headerResponse = HttpClient.PostAsync("U_FT_OPRQ", header);
+        var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
 
         HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
-        var linesResponse = HttpClient.PostAsync("U_FT_PRQ1", lines);
+        var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
 
         success = true;
         StateHasChanged();
