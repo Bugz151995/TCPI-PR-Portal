@@ -83,9 +83,9 @@
         {
             try
             {
-                string password = await Crypto.DecryptAsync(response.value[0].U_Password);
+                // string password = await Crypto.DecryptAsync(response.value[0].U_Password);
 
-                if (User.U_Password != password)
+                if (User.U_Password != response.value[0].U_Password)
                 {
                     Console.WriteLine("The Password is incorrect");
                     return;
