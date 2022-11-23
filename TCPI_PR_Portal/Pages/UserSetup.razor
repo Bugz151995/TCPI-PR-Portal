@@ -20,7 +20,7 @@
                         <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="User Code" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                         <MudTextField Elevation="0" @bind-Value="User.U_Password" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                        <MudSelect Margin="Margin.Dense" T="List<DepartmentsDto>" Label="Department" Variant="Variant.Outlined">
+                        <MudSelect Margin="Margin.Dense" @bind-Value="Code" Label="Department" Variant="Variant.Outlined">
                             @foreach (var d in Departments)
                             {
                                 <MudSelectItem Value="@(d.Code)">@d.Name</MudSelectItem>
@@ -105,6 +105,8 @@
         public string odata { get; set; } = string.Empty;
         public List<DepartmentsDto> value { get; set; } = new List<DepartmentsDto>();
     }
+
+    public string Code { get; set; }
 
     public class DepartmentsDto
     {
