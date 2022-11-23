@@ -4,7 +4,7 @@
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
 
-@page "/DocumentStatus/PRApproval";
+@page "/document-status/approval";
 @attribute [Authorize];
 @inject HttpClient _httpClient;
 
@@ -36,8 +36,8 @@
     private List<PRLines> _lines = new List<PRLines>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
-        new BreadcrumbItem("Document Status", href: "DocumentStatus"),
-        new BreadcrumbItem("Requisition Slip Approval", href: "PRApproval", disabled: true),
+        new BreadcrumbItem("Document Status", href: "document-status"),
+        new BreadcrumbItem("Requisition Slip Approval", href: "approval", disabled: true),
     };
 
     // form validation

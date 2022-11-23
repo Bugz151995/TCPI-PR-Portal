@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @using System.Text;
 
-@page "/UserSetup";
+@page "/user-setup";
 @attribute [Authorize];
 @inject HttpClient _httpClient;
 
@@ -96,7 +96,7 @@
     List<Departments>? _departments = new List<Departments>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
-        new BreadcrumbItem("User Setup", href: "UserSetup", disabled: true)
+        new BreadcrumbItem("User Setup", href: "user-setup", disabled: true)
     };
 
     protected override async void OnInitialized()

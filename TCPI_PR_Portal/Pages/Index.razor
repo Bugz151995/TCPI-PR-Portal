@@ -1,10 +1,14 @@
 ﻿@using System.ComponentModel.DataAnnotations;
 @using Newtonsoft.Json;
-@using TCPI_PR_Portal.Shared
+@using TCPI_PR_Portal.Shared;
 @using System.Text;
+@using System.Security.Cryptography;
+@using Blazor.SubtleCrypto
+@inject ICryptoService Crypto
+@inject HttpClient HttpClient;
+@inject NavigationManager Navigation;
 
 @page "/"
-@inject HttpClient _httpClient;
 
 <EditForm Model="@User" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -13,19 +17,26 @@
         <MudItem xs="12" sm="5">
             <MudCard Elevation="25" Class="pa-8">
                 <div class="d-flex justify-center mb-10">
-                    <MudImage ObjectFit="ObjectFit.Contain" Height="200" Width="400" Src="420px-Taiheiyo_Cement_Logo.png" Alt="Taiheiyo Cement Logo" Class="rounded-lg" />
+                    <MudImage ObjectFit="ObjectFit.Contain" Height="200" Width="400"
+                              Src="420px-Taiheiyo_Cement_Logo.png" Alt="Taiheiyo Cement Logo" Class="rounded-lg" />
                 </div>
                 <MudCardContent>
-                    <MudTextField Label="Username" HelperText=""
-                                  @bind-Value="User.U_UserName" For="@(() => User.U_UserName)" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" AdornmentColor="Color.Primary" Variant="Variant.Outlined" />
-                    <MudTextField Label="Password" HelperText="" Class="mt-3"
-                                  @bind-Value="User.U_Password" For="@(() => User.U_Password)" InputType="InputType.Password" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" AdornmentColor="Color.Primary" Variant="Variant.Outlined" />
+                    <MudTextField Label="Username" HelperText="" @bind-Value="User.U_UserName"
+                                  For="@(() => User.U_UserName)" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Person" AdornmentColor="Color.Primary"
+                                  Variant="Variant.Outlined" />
+                    <MudTextField Label="Password" HelperText="" Class="mt-3" @bind-Value="User.U_Password"
+                                  For="@(() => User.U_Password)" InputType="InputType.Password" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Lock" AdornmentColor="Color.Primary"
+                                  Variant="Variant.Outlined" />
                     <MudPaper Elevation="0" Class="d-flex justify-end">
-                        <MudCheckBox T="bool" Label="Remember me" UnCheckedColor="Color.Primary" Color="Color.Primary" />
+                        <MudCheckBox T="bool" Label="Remember me" UnCheckedColor="Color.Primary"
+                                     Color="Color.Primary" />
                     </MudPaper>
                 </MudCardContent>
                 <MudCardActions Class="justify-center pa-3">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Login</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                               Size="Size.Large">Login</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -36,18 +47,26 @@
     LoginDto User = new LoginDto();
 
     bool success;
+    string password;
+    string decrypted;
+
+    public class Response
+    {
+        public string odata { get; set; } = string.Empty;
+        public List<LoginDto> value { get; set; } = new List<LoginDto>();
+    }
 
     public class LoginDto
     {
         [Required]
-        public string U_UserName { get; set; } = string.Empty;    
+        public string U_UserName { get; set; } = string.Empty;
         [Required]
         public string U_Password { get; set; } = string.Empty;
     }
 
     private async void OnValidSubmit(EditContext context)
     {
-        //hard coded config file for SAP B1 Connection       
+        //hard coded config file for SAP B1 Connection
         var jsonCredential = JsonConvert.SerializeObject(new
         {
             CompanyDB = "TCPI_TESTDB",
@@ -56,17 +75,34 @@
         });
 
         HttpContent content = new StringContent(jsonCredential, Encoding.UTF8, "application/json");
-        using var sapLogin = await _httpClient.PostAsync("/b1s/v1/Login", content);
 
-        if (sapLogin.IsSuccessStatusCode)
+        using var sapLogin = await HttpClient.PostAsync("/b1s/v1/Login", content);
+
+        if (!sapLogin.IsSuccessStatusCode)
         {
-            using var response = await _httpClient.GetAsync($"/b1s/v1/U_FT_WPUS?$select=U_UserName,U_Password&$filter=U_UserName eq '{User.U_UserName}'");
+            Console.WriteLine(sapLogin.ReasonPhrase);
+            return;
+        }
 
-            if (response.IsSuccessStatusCode)
+        using var matchedRecord = await HttpClient.GetAsync($"/b1s/v1/U_FT_WPUS?$select=U_UserName,U_Password&$filter=U_UserName eq '{User.U_UserName}'");
+
+        if (!matchedRecord.IsSuccessStatusCode)
+        {
+            Console.WriteLine(sapLogin.ReasonPhrase);
+            return;
+        }
+
+        Response? response = await matchedRecord.Content.ReadFromJsonAsync<Response>();
+
+        if(response != null)
+        {
+            var password = await Crypto.DecryptAsync(response.value[0].U_Password);
+            if (User.U_Password == password)
             {
-                LoginDto result = await response.Content.ReadFromJsonAsync<LoginDto>();
-                Console.WriteLine(JsonConvert.SerializeObject(result));
-            }
+                Console.WriteLine("User is Authenticated");
+                // create a value for customauthstateprovider
+                Navigation.NavigateTo("user-setup");
+            };
         }
 
         success = true;

@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @using TCPI_PR_Portal.Shared;
 
-@page "/DocumentStatus";
+@page "/document-status";
 @attribute [Authorize];
 @inject HttpClient _httpClient;
 @inject NavigationManager _navigation;
@@ -41,7 +41,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd>
-            <MudIconButton Link="/DocumentStatus/PRApproval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
+            <MudIconButton Link="/document-status/approval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
         </MudTd>
         <MudTd DataLabel="DocEntry"></MudTd>
         <MudTd DataLabel="Project ID"></MudTd>
@@ -79,7 +79,7 @@
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem>
     {
-        new BreadcrumbItem("Document Status", href: "DocumentStatus", disabled: true)
+        new BreadcrumbItem("Document Status", href: "document-status", disabled: true)
     };
 
     //// <summary>

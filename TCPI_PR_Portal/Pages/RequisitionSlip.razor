@@ -4,7 +4,7 @@
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
 
-@page "/RequisitionSlip";
+@page "/requisition-slip";
 @attribute [Authorize];
 @inject HttpClient _httpClient;
 
@@ -40,7 +40,7 @@
     private List<Branch>? _branch = new List<Branch>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { 
-        new BreadcrumbItem("Requisition Slip", href: "RequisitionSlip", disabled: true)
+        new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)
     };
 
     // form validation
