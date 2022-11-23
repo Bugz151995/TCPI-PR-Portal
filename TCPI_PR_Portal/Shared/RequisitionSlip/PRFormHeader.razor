@@ -91,6 +91,7 @@
     void selectProject(ProjectsDto context, string selectedString)
     {
         PRHeader.U_ProjectID = selectedString;
-        PRHeader.U_ProjName = selectedString;
+        var search = Projects.Where(e => e.Code == selectedString).Select(e => e.Name);
+        PRHeader.U_ProjName = search.First();
     }
 }
