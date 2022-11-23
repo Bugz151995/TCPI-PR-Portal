@@ -4,7 +4,12 @@
 <MudGrid Spacing="2" Justify="Justify.Center">
     <MudItem xs="6">
         <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-            <MudAutocomplete T="string" Label="Project ID" @bind-Value="PRHeader.U_ProjectID" SearchFunc="@Search" Margin="Margin.Dense" Dense="false" Variant="Variant.Outlined" />
+            <MudSelect Margin="Margin.Dense" @bind-Value="SelectedProject" Label="Project ID" Variant="Variant.Outlined">
+                @foreach (var d in Projects)
+                {
+                    <MudSelectItem Value="@d">@d.Code</MudSelectItem>
+                }
+            </MudSelect>
             <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
             <MudTextField @bind-Value="PRHeader.U_Location" Label="Location" Variant="Variant.Outlined" Margin="Margin.Dense" />
             <MudSelect Margin="Margin.Dense" T="string" Label="PR Type" Variant="Variant.Outlined">
@@ -63,20 +68,9 @@
     ProjectsResponse? ProjectResponse = new ProjectsResponse();
     DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
     BranchesResponse? BranchResponse = new BranchesResponse();
-    private IEnumerable<ProjectsDto>? Projects = new List<ProjectsDto>();
+    private List<ProjectsDto>? Projects = new List<ProjectsDto>();
     private List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
     private List<BranchesDto>? Branches = new List<BranchesDto>();
-
-    private async Task<IEnumerable<ProjectsDto>> Search(string value)
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return Projects;
-        return Projects.Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-    }
 
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
