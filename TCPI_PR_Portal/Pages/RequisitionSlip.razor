@@ -17,7 +17,7 @@
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" ValueChanged="value => selectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" ValueChanged="value => SelectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
                     @foreach (var d in Projects)
                     {
                         <MudSelectItem Value="@d.Code">@d.Code</MudSelectItem>
@@ -73,7 +73,7 @@
     <MudTable Items="@PRLines" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped">
         <HeaderContent>
             <MudTh>
-                <MudIconButton OnClick="addLine" Icon="@Icons.Filled.AddBox" aria-label="add line" Color="Color.Primary" />
+                <MudIconButton OnClick="AddLine" Icon="@Icons.Filled.AddBox" aria-label="add line" Color="Color.Primary" />
             </MudTh>
             <MudTh>#</MudTh>
             <MudTh style="white-space: nowrap!important;">Item Code</MudTh>
@@ -94,7 +94,7 @@
             <MudTh style="white-space: nowrap!important;">Inventory Purpose</MudTh>
         </HeaderContent>
         <RowTemplate Context="Items">
-            <MudTd><MudIconButton OnClick="() => removeLine(PRLines.IndexOf(Items))" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"></MudIconButton></MudTd>
+            <MudTd><MudIconButton OnClick="() => RemoveLine(PRLines.IndexOf(Items))" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"></MudIconButton></MudTd>
             <MudTd>
                 <input type="hidden" @bind-value="@Items.Code" />
                 <input type="hidden" @bind-value="@Items.Name" />
@@ -240,7 +240,7 @@
         PRHeader.U_PreparedBy = "User Session";
     }
 
-    async Task<IEnumerable<string>> SearchItem(string value)
+    async Task<IEnumerable<string>> SearchItem()
     {
         // In real life use an asynchronous function for fetching data from an api.
         await Task.Delay(5);
@@ -251,14 +251,14 @@
         return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    void selectProject(ProjectsDto context, string selectedString)
+    void SelectProject(ProjectsDto context, string selectedString)
     {
         PRHeader.U_ProjectID = selectedString;
         var search = Projects.Where(e => e.Code == selectedString).Select(e => e.Name);
         PRHeader.U_ProjName = search.First();
     }
 
-    void addLine()
+    void AddLine()
     {
         ShortGuid code = Guid.NewGuid();
         PRLines.Add(new PRLinesDto
@@ -285,7 +285,7 @@
         });
     }
 
-    void removeLine(int index)
+    void RemoveLine(int index)
     {
         PRLines.RemoveAt(index);
     }
