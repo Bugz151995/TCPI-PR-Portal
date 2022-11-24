@@ -252,6 +252,10 @@
             ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
             ItemMaster = ItemResponse.value;
 
+            ShortGuid code = Guid.NewGuid();
+
+            PRHeader.Code = code;
+            PRHeader.Name = code;
             PRHeader.U_DocEntry = DocEntry + 1;
             PRHeader.U_PreparedBy = "User Session";
             PRHeader.U_DocStatus = "Waiting For Approval";
