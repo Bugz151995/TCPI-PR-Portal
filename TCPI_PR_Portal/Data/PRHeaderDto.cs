@@ -14,12 +14,12 @@ namespace TCPI_PR_Portal.Models
         [Required]
         public string Name { get; set; }
         public int? U_DocEntry { get; set; }
-        [Required]
+        [Required, Display(Name="Project Code")]
         public string? U_ProjectID { get; set; } // revert back to int after testing
         public string? U_ProjName { get; set; }
         public string? U_Location { get; set; }
         public string? U_PRType { get; set; } // no binded field
-        [Required]
+        [Required, Display(Name="Doc Number")]
         public string? U_DocNum { get; set; }
         public string? U_Department { get; set; } // Preferred Supplier to confirm if this is the field for it
         public string? U_Branch { get; set; } // no binded field // list
@@ -27,7 +27,7 @@ namespace TCPI_PR_Portal.Models
         public DateTime? U_TaxDate { get; set; }
         public DateTime? U_ReqDate { get; set; }
         public string? U_Urgency { get; set; }
-        [Required]
+        [Required, Display(Name="Prepared By")]
         public string? U_PreparedBy { get; set; }
         public string? U_ReviewedBy { get; set; }
         public string? U_ApprovedBy1 { get; set; }
