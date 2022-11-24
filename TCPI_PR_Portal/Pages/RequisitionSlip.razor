@@ -155,9 +155,21 @@
                 <MudTextField @bind-Value="@Items.U_OnHandQuantity" For="@(() => Items.U_OnHandQuantity)" />
             </MudTd>
             <MudTd DataLabel="Inventory Type">
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryType" For="@(() => Items.U_InventoryType)" Label="Item Name" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@("Short-Term")" />
+                    <MudSelectItem Value="@("Mid-Term")" />
+                    <MudSelectItem Value="@("Household")" />
+                    <MudSelectItem Value="@("Order")" />
+                    <MudSelectItem Value="@("Long-Term")" />
+                </MudSelect>
                 <MudTextField @bind-Value="@Items.U_InventoryType" For="@(() => Items.U_InventoryType)" />
             </MudTd>
             <MudTd DataLabel="Inventory Purpose">
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryPurpose" For="@(() => Items.U_InventoryPurpose)" Label="Item Name" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@("Repair")" />
+                    <MudSelectItem Value="@("Project")" />
+                    <MudSelectItem Value="@("Assets")" />
+                </MudSelect>
                 <MudTextField @bind-Value="@Items.U_InventoryPurpose" For="@(() => Items.U_InventoryPurpose)" />
             </MudTd>
         </RowTemplate>
@@ -293,22 +305,22 @@
             Code = code,
             Name = code,
             U_DocEntry = PRHeader.U_DocEntry.ToString(),
-            U_ItemCode = "",
-            U_Dscription = "",
-            U_WhsCode = "",
-            U_BinLoc = "",
-            U_Scope = "",
-            U_ScopeDesc = "",
-            U_MaterialCode = "",
-            U_MaterialDesc = "",
-            U_Quantity = 0,
-            U_InfoPrice = "",
-            U_UomCode = "",
-            U_ItemSpecification = "",
-            U_TaxCode = "",
-            U_OnHandQuantity = "",
-            U_InventoryType = "",
-            U_InventoryPurpose = ""
+            U_ItemCode = null,
+            U_Dscription = null,
+            U_WhsCode = null,
+            U_BinLoc = null,
+            U_Scope = null,
+            U_ScopeDesc = null,
+            U_MaterialCode = null,
+            U_MaterialDesc = null,
+            U_Quantity =null,
+            U_InfoPrice = null,
+            U_UomCode = null,
+            U_ItemSpecification = null,
+            U_TaxCode = null,
+            U_OnHandQuantity = null,
+            U_InventoryType = null,
+            U_InventoryPurpose = null
         });
     }
 
