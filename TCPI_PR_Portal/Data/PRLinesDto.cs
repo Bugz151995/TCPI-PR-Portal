@@ -27,7 +27,7 @@ namespace TCPI_PR_Portal.Models
         public string? U_InfoPrice { get; set; } = string.Empty;
         public string? U_UomCode { get; set; } = string.Empty;
         public string? U_ItemSpecification { get; set; } = string.Empty;
-        public string TaxCode { get; set; } = string.Empty;
+        public string? U_TaxCode { get; set; } = string.Empty;
         public string? U_OnHandQuantity { get; set; } = string.Empty;
         public string? U_InventoryType { get; set; } = string.Empty;
         public string? U_InventoryPurpose { get; set; } = string.Empty;

@@ -37,7 +37,5 @@ namespace TCPI_PR_Portal.Models
         public string? U_ApprovedDate { get; set; }
         public string? U_Remarks { get; set; }
         public string? U_ApproverRemarks { get; set; }
-
-        public List<PRLinesDto> Items { get; set; }
     }
 }
