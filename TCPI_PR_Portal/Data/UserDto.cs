@@ -34,7 +34,7 @@ namespace TCPI_PR_Portal.Models
         public int? U_ApproverCode2 { get; set; }
         public int? U_ApproverCode3 { get; set; }
         public int? U_ApproverCode4 { get; set; }
-        public int? U_ApproverCodeSpecial { get; set; }
+        public int? U_ApproverSpecialCode { get; set; }
 
         // Uncomment if needed this is included in the mapping not in the UI
         
