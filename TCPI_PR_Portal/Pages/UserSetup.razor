@@ -4,7 +4,8 @@
 @using TCPI_PR_Portal.Shared;
 @using Microsoft.AspNetCore.Authorization;
 @using System.Text;
-@inject ICryptoService Crypto
+@inject ICryptoService Crypto;
+@inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
 @attribute [Authorize];
 
@@ -21,9 +22,9 @@
             <MudGrid Spacing="3" Justify="Justify.Center">
                 <MudItem xs="6">
                     <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                        <MudTextField Elevation="0" @bind-Value="User.Code" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                        <MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                        <MudTextField Elevation="0" @bind-Value="User.U_Employee" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" @bind-Value="User.Code" For="@(() => User.Code)" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" For="@(() => User.U_Password)" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_Employee" For="@(() => User.U_Employee)" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
 
                         @*<MudSelect Margin="Margin.Dense" @bind-Value="SelectedDepartment" Label="Department" Variant="Variant.Outlined">
                         @foreach (var d in Departments)
@@ -37,9 +38,9 @@
 
                 <MudItem xs="6">
                     <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                        <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                        <MudTextField Elevation="0" @bind-Value="User.U_UserName" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                        <MudSelect T="string" Value="User.U_Role" ValueChanged="value => displayApproverDetails(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
+                        <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" For="@(() => User.U_EmailAddress)" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        <MudTextField Elevation="0" @bind-Value="User.U_UserName" For="@(() => User.U_UserName)" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                        <MudSelect T="string" Value="User.U_Role" For="@(() => User.U_Role)" ValueChanged="value => displayApproverDetails(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
                             <MudSelectItem Value="@("Admin")" />
                             <MudSelectItem Value="@("Requestor")" />
                             <MudSelectItem Value="@("Approver")" />
@@ -133,16 +134,19 @@
 
             if (!response.IsSuccessStatusCode)
             {
+                Snackbar.Add("A new User was successfully created!", Severity.Success);
                 Console.WriteLine(response.ReasonPhrase);
                 return;
             }
+
+            Snackbar.Add("A new User was successfully created!", Severity.Success);
 
             success = true;
             StateHasChanged();
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            Snackbar.Add(ex.Message, Severity.Error);
             throw;
         }
     }

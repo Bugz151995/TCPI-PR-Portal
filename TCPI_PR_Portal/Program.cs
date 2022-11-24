@@ -7,6 +7,7 @@ using System.Net;
 using TCPI_PR_Portal;
 using TCPI_PR_Portal.Client;
 using Blazor.SubtleCrypto;
+using MudBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,6 +21,18 @@ builder.Services.AddTransient<CookieHandler>()
         .CreateClient("ServiceLayer"))
     .AddHttpClient("ServiceLayer", client => client.BaseAddress = new Uri("http://172.31.24.203:50001/b1s/v1/")).AddHttpMessageHandler<CookieHandler>();
 
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 10000;
+    config.SnackbarConfiguration.HideTransitionDuration = 500;
+    config.SnackbarConfiguration.ShowTransitionDuration = 500;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
+});
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMudServices();

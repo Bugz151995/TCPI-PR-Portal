@@ -14,14 +14,15 @@ namespace TCPI_PR_Portal.Models
         public string Code { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
+        [Required, Display(Name="Username")]
         public string U_UserName { get; set; }
-        [Required]
+        [Required, Display(Name = "Password")]
         public string U_Password { get; set; }
+        [Required, Display(Name = "Employee Name")]
         public string U_Employee { get; set; }
-        [EmailAddress, Required]
+        [EmailAddress, Required, Display(Name = "Email Address")]
         public string U_EmailAddress { get; set; }
-        [Required]
+        [Required, Display(Name = "Role")]
         public string U_Role { get; set; }
 
         public string? U_Approver1 { get; set; }
@@ -38,8 +39,8 @@ namespace TCPI_PR_Portal.Models
         // Uncomment if needed this is included in the mapping not in the UI
         
         //public int U_UserId { get; set; }
-        public string U_ApprovalLevel { get; set; }
-        public int U_Department { get; set; }
-        public int U_CostCenter { get; set; }
+        //public string U_ApprovalLevel { get; set; }
+        //public int U_Department { get; set; }
+        //public int U_CostCenter { get; set; }
     }
 }

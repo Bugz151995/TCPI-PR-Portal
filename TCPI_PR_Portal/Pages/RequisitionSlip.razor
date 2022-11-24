@@ -4,10 +4,11 @@
 @using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
+@inject ISnackbar Snackbar;
+@inject HttpClient HttpClient;
+@attribute [Authorize];
 
 @page "/requisition-slip";
-@attribute [Authorize];
-@inject HttpClient HttpClient;
 
 <Title PageName="Requisition Slip" Breadcrumb="_items" />
 
@@ -17,27 +18,27 @@
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" ValueChanged="value => SelectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" For="@(() => PRHeader.U_ProjectID)" ValueChanged="value => SelectProject(SelectedProject, value)" Label="Project ID" Variant="Variant.Outlined">
                     @foreach (var d in Projects)
                     {
                         <MudSelectItem Value="@d.Code">@d.Code</MudSelectItem>
                     }
                 </MudSelect>
-                <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                <MudTextField @bind-Value="PRHeader.U_Location" Label="Location" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                <MudSelect Margin="Margin.Dense" T="string" @bind-Value="PRHeader.U_PRType" Label="PR Type" Variant="Variant.Outlined">
+                <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" For="@(() => PRHeader.U_ProjName)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Location" Label="Location" For="@(() => PRHeader.U_Location)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudSelect Margin="Margin.Dense" T="string" @bind-Value="PRHeader.U_PRType" For="@(() => PRHeader.U_PRType)" Label="PR Type" Variant="Variant.Outlined">
                     @*for loop here if there is a supplier array data*@
                     <MudSelectItem Value="@("Regular")" />
                     <MudSelectItem Value="@("Special - IT")" />
                     <MudSelectItem Value="@("Special - Safety")" />
                 </MudSelect>
-                <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Branch" Label="Branch" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Branch" For="@(() => PRHeader.U_Branch)" Label="Branch" Variant="Variant.Outlined">
                     @foreach (var b in Branches)
                     {
                         <MudSelectItem Value="@b.Name">@b.Name</MudSelectItem>
                     }
                 </MudSelect>
-                <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Department" Label="Department" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Department" For="@(() => PRHeader.U_Department)" Label="Department" Variant="Variant.Outlined">
                     @foreach (var d in Departments)
                     {
                         <MudSelectItem Value="@d.Name">@d.Name</MudSelectItem>
@@ -47,18 +48,18 @@
         </MudItem>
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-4 gap-2">
-                <MudTextField @bind-Value="PRHeader.U_DocNum" Label="Doc. No" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" />
-                <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" />
-                <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Urgency" Label="Urgency Priority" Variant="Variant.Outlined">
+                <MudTextField @bind-Value="PRHeader.U_DocNum" Label="Doc. No" For="@(() => PRHeader.U_DocNum)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" For="@(() => PRHeader.U_DocStatus)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" For="@(() => PRHeader.U_TaxDate)"/>
+                <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" For="@(() => PRHeader.U_ReqDate)"/>
+                <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Urgency" For="@(() => PRHeader.U_Urgency)" Label="Urgency Priority" Variant="Variant.Outlined">
                     @*for loop here if there is a supplier array data*@
                     <MudSelectItem Value="@("Low")" />
                     <MudSelectItem Value="@("Medium")" />
                     <MudSelectItem Value="@("High")" />
                 </MudSelect>
-                <MudTextField @bind-Value="PRHeader.U_PreparedBy" Label="Prepared By" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                <MudTextField @bind-Value="PRHeader.U_ReviewedBy" Label="Reviewed By" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudTextField @bind-Value="PRHeader.U_PreparedBy" For="@(() => PRHeader.U_PreparedBy)" Label="Prepared By" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudTextField @bind-Value="PRHeader.U_ReviewedBy" For="@(() => PRHeader.U_ReviewedBy)" Label="Reviewed By" Variant="Variant.Outlined" Margin="Margin.Dense" />
 
 
                 @*<MudTextField @bind-Value="PRHeader.U_ApprovedBy1" Label="Approved By( Level 1)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
@@ -98,76 +99,75 @@
             <MudTd>
                 <input type="hidden" @bind-value="@Items.Code" />
                 <input type="hidden" @bind-value="@Items.Name" />
-                <MudText>@(++index)</MudText>
-                </MudTd>
-                <MudTd DataLabel="Item Code">
-                    <MudTextField @bind-Value="@Items.U_ItemCode" />
-                    <MudAutocomplete T="string" Label="Item Code" @bind-Value="Items.U_ItemCode" SearchFunc="@SearchItem" />
-                </MudTd>
-                <MudTd DataLabel="Item Description">
-                    <MudTextField @bind-Value="@Items.U_Dscription" />
-                </MudTd>
-                <MudTd DataLabel="Warehouse">
-                    <MudTextField @bind-Value="@Items.U_WhsCode" />
-                </MudTd>
-                <MudTd DataLabel="Bin Location">
-                    <MudTextField @bind-Value="@Items.U_BinLoc" />
-                </MudTd>
-                <MudTd DataLabel="Scope of Work">
-                    <MudTextField @bind-Value="@Items.U_Scope" />
-                </MudTd>
-                <MudTd DataLabel="Scope Description">
-                    <MudTextField @bind-Value="@Items.U_ScopeDesc" />
-                </MudTd>
-                <MudTd DataLabel="Material Code">
-                    <MudTextField @bind-Value="@Items.U_MaterialCode" />
-                </MudTd>
-                <MudTd DataLabel="Material Description">
-                    <MudTextField @bind-Value="@Items.U_MaterialDesc" />
-                </MudTd>
-                <MudTd DataLabel="Quantity">
-                    <MudTextField @bind-Value="@Items.U_Quantity" />
-                </MudTd>
-                <MudTd DataLabel="Info Price">
-                    <MudTextField @bind-Value="@Items.U_InfoPrice" />
-                </MudTd>
-                <MudTd DataLabel="Units Of Measurement">
-                    <MudTextField @bind-Value="@Items.U_UomCode" />
-                </MudTd>
-                <MudTd DataLabel="Item Specification">
-                    <MudTextField @bind-Value="@Items.U_ItemSpecification" />
-                </MudTd>
-                <MudTd DataLabel="Tax Code">
-                    <MudTextField @bind-Value="@Items.TaxCode" />
-                </MudTd>
-                <MudTd DataLabel="On hand Quantity">
-                    <MudTextField @bind-Value="@Items.U_OnHandQuantity" />
-                </MudTd>
-                <MudTd DataLabel="Inventory Type">
-                    <MudTextField @bind-Value="@Items.U_InventoryType" />
-                </MudTd>
-                <MudTd DataLabel="Inventory Purpose">
-                    <MudTextField @bind-Value="@Items.U_InventoryPurpose" />
-                </MudTd>
-            </RowTemplate>
-        </MudTable>
+                <MudText>@PRHeader.U_DocEntry</MudText>
+            </MudTd>
+            <MudTd DataLabel="Item Code">
+                <MudTextField @bind-Value="@Items.U_ItemCode" For="@(() => Items.U_ItemCode)"/>
+            </MudTd>
+            <MudTd DataLabel="Item Description">
+                <MudTextField @bind-Value="@Items.U_Dscription" For="@(() => Items.U_Dscription)"/>
+            </MudTd>
+            <MudTd DataLabel="Warehouse">
+                <MudTextField @bind-Value="@Items.U_WhsCode" For="@(() => Items.U_WhsCode)"/>
+            </MudTd>
+            <MudTd DataLabel="Bin Location">
+                <MudTextField @bind-Value="@Items.U_BinLoc" For="@(() => Items.U_BinLoc)"/>
+            </MudTd>
+            <MudTd DataLabel="Scope of Work">
+                <MudTextField @bind-Value="@Items.U_Scope" For="@(() => Items.U_Scope)"/>
+            </MudTd>
+            <MudTd DataLabel="Scope Description">
+                <MudTextField @bind-Value="@Items.U_ScopeDesc" For="@(() => Items.U_ScopeDesc)"/>
+            </MudTd>
+            <MudTd DataLabel="Material Code">
+                <MudTextField @bind-Value="@Items.U_MaterialCode" For="@(() => Items.U_MaterialCode)"/>
+            </MudTd>
+            <MudTd DataLabel="Material Description">
+                <MudTextField @bind-Value="@Items.U_MaterialDesc" For="@(() => Items.U_MaterialDesc)"/>
+            </MudTd>
+            <MudTd DataLabel="Quantity">
+                <MudTextField @bind-Value="@Items.U_Quantity" For="@(() => Items.U_Quantity)"/>
+            </MudTd>
+            <MudTd DataLabel="Info Price">
+                <MudTextField @bind-Value="@Items.U_InfoPrice" For="@(() => Items.U_InfoPrice)"/>
+            </MudTd>
+            <MudTd DataLabel="Units Of Measurement">
+                <MudTextField @bind-Value="@Items.U_UomCode" For="@(() => Items.U_UomCode)"/>
+            </MudTd>
+            <MudTd DataLabel="Item Specification">
+                <MudTextField @bind-Value="@Items.U_ItemSpecification" For="@(() => Items.U_ItemSpecification)"/>
+            </MudTd>
+            <MudTd DataLabel="Tax Code">
+                <MudTextField @bind-Value="@Items.TaxCode" For="@(() => Items.TaxCode)"/>
+            </MudTd>
+            <MudTd DataLabel="On hand Quantity">
+                <MudTextField @bind-Value="@Items.U_OnHandQuantity" For="@(() => Items.U_OnHandQuantity)"/>
+            </MudTd>
+            <MudTd DataLabel="Inventory Type">
+                <MudTextField @bind-Value="@Items.U_InventoryType" For="@(() => Items.U_InventoryType)"/>
+            </MudTd>
+            <MudTd DataLabel="Inventory Purpose">
+                <MudTextField @bind-Value="@Items.U_InventoryPurpose" For="@(() => Items.U_InventoryPurpose)"/>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
 
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem xs="6">
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Text="" Lines="3" />
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="6" Class="d-flex flex-column justify-end">
-                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Post</MudButton>
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
-    </EditForm>
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        <MudItem xs="6">
+            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" For="@(() => PRHeader.U_Remarks)" Variant="Variant.Outlined" Text="" Lines="3" />
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" Class="d-flex flex-column justify-end">
+            <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Post</MudButton>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
-    @code {
+@code {
     public int HeaderDocEntry;
     public int index = 0;
     // table settings
@@ -215,40 +215,36 @@
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
-        PRHeader.U_DocStatus = "Waiting For Approval";
-        int lastRecord = 0;
+        try
+        {
+            int lastRecord = 0;
+            var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
+            LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
 
-        var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
-        LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
+            if (LastDocEntryResponse.value.Count != 0)
+                lastRecord = LastDocEntryResponse.value[0].U_DocEntry;
 
-        if (LastDocEntryResponse.value.Count != 0)
-            lastRecord = LastDocEntryResponse.value[0].U_DocEntry;
+            var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
+            ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
+            Projects = ProjectResponse.value;
 
-        var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
-        ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
-        Projects = ProjectResponse.value;
+            var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
+            DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
+            Departments = DepartmentResponse.value;
 
-        var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
-        DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
-        Departments = DepartmentResponse.value;
+            var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
+            BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
+            Branches = BranchResponse.value;
 
-        var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
-        BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
-        Branches = BranchResponse.value;
-
-        PRHeader.U_DocEntry = lastRecord + 1;
-        PRHeader.U_PreparedBy = "User Session";
-    }
-
-    async Task<IEnumerable<string>> SearchItem()
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return states;
-        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            PRHeader.U_DocEntry = lastRecord + 1;
+            PRHeader.U_PreparedBy = "User Session";
+            PRHeader.U_DocStatus = "Waiting For Approval";
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            throw;
+        }
     }
 
     void SelectProject(ProjectsDto context, string selectedString)
@@ -262,27 +258,26 @@
     {
         ShortGuid code = Guid.NewGuid();
         PRLines.Add(new PRLinesDto
-        {
-            Code = code,
-            Name = code,
-            U_DocEntry = PRHeader.U_DocEntry,
-            U_ItemCode = "",
-            U_Dscription = "",
-            U_WhsCode = "",
-            U_BinLoc = "",
-            U_Scope = "",
-            U_ScopeDesc = "",
-            U_MaterialCode = "",
-            U_MaterialDesc = "",
-            U_Quantity = "",
-            U_InfoPrice = "",
-            U_UomCode = "",
-            U_ItemSpecification = "",
-            TaxCode = "",
-            U_OnHandQuantity = "",
-            U_InventoryType = "",
-            U_InventoryPurpose = ""
-        });
+            {
+                Code = code,
+                Name = code,
+                U_ItemCode = "",
+                U_Dscription = "",
+                U_WhsCode = "",
+                U_BinLoc = "",
+                U_Scope = "",
+                U_ScopeDesc = "",
+                U_MaterialCode = "",
+                U_MaterialDesc = "",
+                U_Quantity = "",
+                U_InfoPrice = "",
+                U_UomCode = "",
+                U_ItemSpecification = "",
+                TaxCode = "",
+                U_OnHandQuantity = "",
+                U_InventoryType = "",
+                U_InventoryPurpose = ""
+            });
     }
 
     void RemoveLine(int index)
