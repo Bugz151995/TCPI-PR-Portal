@@ -39,7 +39,6 @@
                     <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
                         <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         <MudTextField Elevation="0" @bind-Value="User.U_UserName" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-
                         <MudSelect T="string" Value="User.U_Role" ValueChanged="value => displayApproverDetails(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
                             <MudSelectItem Value="@("Admin")" />
                             <MudSelectItem Value="@("Requestor")" />
@@ -47,10 +46,10 @@
                         </MudSelect>
 
                         @*<MudSelect Margin="Margin.Dense" T="string" Label="Approval Level" Variant="Variant.Outlined">
-                        <MudSelectItem Value="@("Level 1")" />
-                        <MudSelectItem Value="@("Level 2")" />
-                        <MudSelectItem Value="@("Level 3")" />
-                        <MudSelectItem Value="@("Level 4")" />
+                            <MudSelectItem Value="@("Level 1")" />
+                            <MudSelectItem Value="@("Level 2")" />
+                            <MudSelectItem Value="@("Level 3")" />
+                            <MudSelectItem Value="@("Level 4")" />
                         </MudSelect>*@
                     </MudPaper>
                 </MudItem>
@@ -68,6 +67,7 @@
                             <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode2" Label="Approver Code 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode3" Label="Approver Code 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                             <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode4" Label="Approver Code 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverCodeSpecial" Label="Approver Code Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudPaper>
                     </MudItem>
 
@@ -77,6 +77,7 @@
                             <MudTextField Elevation="0" @bind-Value="User.U_Approver2" Label="Approver Name 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             <MudTextField Elevation="0" @bind-Value="User.U_Approver3" Label="Approver Name 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
                             <MudTextField Elevation="0" @bind-Value="User.U_Approver4" Label="Approver Name 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverSpecial" Label="Approver Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
                         </MudPaper>
                     </MudItem>
 

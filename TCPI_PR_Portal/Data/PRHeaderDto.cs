@@ -13,7 +13,7 @@ namespace TCPI_PR_Portal.Models
         public string Code { get; set; }
         [Required]
         public string Name { get; set; }
-        public int? DocEntry { get; set; }
+        public int? U_DocEntry { get; set; }
         [Required]
         public string? U_ProjectID { get; set; } // revert back to int after testing
         public string? U_ProjName { get; set; }
@@ -38,6 +38,6 @@ namespace TCPI_PR_Portal.Models
         public string? U_Remarks { get; set; }
         public string? U_ApproverRemarks { get; set; }
 
-        public virtual PRLinesDto? PRLines { get; set; }
+        public List<PRLinesDto> Items { get; set; }
     }
 }

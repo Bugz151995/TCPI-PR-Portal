@@ -1,52 +1,169 @@
-﻿@using Microsoft.AspNetCore.Authorization;
+﻿@using CSharpVitamins;
+@using Microsoft.AspNetCore.Authorization;
 @using Newtonsoft.Json;
-@using TCPI_PR_Portal.Shared.RequisitionSlip;
+@using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
 
 @page "/document-status/approval";
 @attribute [Authorize];
-@inject HttpClient _httpClient;
+@inject HttpClient HttpClient;
 
 <Title PageName="Requisition Slip Approval" Breadcrumb="_items" />
 
-<EditForm Model="@_header" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@PRHeader" OnSubmit="OnSubmit">
     <DataAnnotationsValidator />
-
-    <PRFormHeader PRHeader="@_header" />
-    <PRFormLines PRLines="@_lines" />
 
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudTextField T="string" Label="Remarks" Variant="Variant.Outlined" Text="" Lines="3" />
+                <MudTextField @bind-Value="PRHeader.U_ProjectID" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Location" Label="Location" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_PRType" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Branch" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Department" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
             </MudPaper>
         </MudItem>
-        <MudItem xs="6" Class="d-flex flex-column justify-end">
-            <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Filled.CheckBox" Color="Color.Primary">Approve</MudButton>
-                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+        <MudItem xs="6">
+            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-4 gap-2">
+                <MudTextField @bind-Value="PRHeader.U_DocNum" Label="Doc. No" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" Disabled="true"/>
+                <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Urgency" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_PreparedBy" Label="Prepared By" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_ReviewedBy" Label="Reviewed By" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+
+
+                @*<MudTextField @bind-Value="PRHeader.U_ApprovedBy1" Label="Approved By( Level 1)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+                <MudTextField @bind-Value="PRHeader.U_ApprovedBy2" Label="Approved By( Level 2)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+                <MudTextField @bind-Value="PRHeader.U_ApprovedBy3" Label="Approved By( Level 3)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+                <MudTextField @bind-Value="PRHeader.U_ApprovedBy4" Label="Approved By( Level 4)" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>
+                <MudTextField @bind-Value="PRHeader.U_ApproverRemarks " Label="Approver Remarks" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true"/>*@
             </MudPaper>
         </MudItem>
     </MudGrid>
-</EditForm>
 
-@code {
-    private PRHeaderDto _header = new PRHeaderDto();
-    private List<PRLinesDto> _lines = new List<PRLinesDto>();
+    <MudTable Items="@PRLines" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped">
+        <HeaderContent>
+            <MudTh>#</MudTh>
+            <MudTh style="white-space: nowrap!important;">Item Code</MudTh>
+            <MudTh style="white-space: nowrap!important;">Item Description</MudTh>
+            <MudTh style="white-space: nowrap!important;">Warehouse</MudTh>
+            <MudTh style="white-space: nowrap!important;">Bin Location</MudTh>
+            <MudTh style="white-space: nowrap!important;">Scope of Work</MudTh>
+            <MudTh style="white-space: nowrap!important;">Scope Description</MudTh>
+            <MudTh style="white-space: nowrap!important;">Material Code</MudTh>
+            <MudTh style="white-space: nowrap!important;">Material Description</MudTh>
+            <MudTh style="white-space: nowrap!important;">Quantity</MudTh>
+            <MudTh style="white-space: nowrap!important;">Info Price</MudTh>
+            <MudTh style="white-space: nowrap!important;">Units Of Measurement</MudTh>
+            <MudTh style="white-space: nowrap!important;">Item Specification</MudTh>
+            <MudTh style="white-space: nowrap!important;">Tax Code</MudTh>
+            <MudTh style="white-space: nowrap!important;">On hand Quantity</MudTh>
+            <MudTh style="white-space: nowrap!important;">Inventory Type</MudTh>
+            <MudTh style="white-space: nowrap!important;">Inventory Purpose</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="Items">
+            <MudTd>
+                <input type="hidden" @bind-value="@Items.Code" />
+                <input type="hidden" @bind-value="@Items.Name" />
+                <MudText>@(++index)</MudText>
+                </MudTd>
+                <MudTd DataLabel="Item Code">
+                    <MudTextField @bind-Value="@Items.U_ItemCode" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Item Description">
+                    <MudTextField @bind-Value="@Items.U_Dscription" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Warehouse">
+                    <MudTextField @bind-Value="@Items.U_WhsCode" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Bin Location">
+                    <MudTextField @bind-Value="@Items.U_BinLoc" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Scope of Work">
+                    <MudTextField @bind-Value="@Items.U_Scope" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Scope Description">
+                    <MudTextField @bind-Value="@Items.U_ScopeDesc" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Material Code">
+                    <MudTextField @bind-Value="@Items.U_MaterialCode" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Material Description">
+                    <MudTextField @bind-Value="@Items.U_MaterialDesc" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Quantity">
+                    <MudTextField @bind-Value="@Items.U_Quantity" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Info Price">
+                    <MudTextField @bind-Value="@Items.U_InfoPrice" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Units Of Measurement">
+                    <MudTextField @bind-Value="@Items.U_UomCode" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Item Specification">
+                    <MudTextField @bind-Value="@Items.U_ItemSpecification" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Tax Code">
+                    <MudTextField @bind-Value="@Items.TaxCode" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="On hand Quantity">
+                    <MudTextField @bind-Value="@Items.U_OnHandQuantity" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Inventory Type">
+                    <MudTextField @bind-Value="@Items.U_InventoryType" Disabled="true"/>
+                </MudTd>
+                <MudTd DataLabel="Inventory Purpose">
+                    <MudTextField @bind-Value="@Items.U_InventoryPurpose" Disabled="true"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem xs="6">
+                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Text="" Lines="3" Disabled="true" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="6" Class="d-flex flex-column justify-end">
+                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+
+    @code {
+    public int HeaderDocEntry;
+    public int index = 0;
+    // table settings
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+
+    private PRHeaderDto PRHeader = new PRHeaderDto();
+    private List<PRLinesDto> PRLines = new List<PRLinesDto>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
-        new BreadcrumbItem("Document Status", href: "document-status"),
-        new BreadcrumbItem("Requisition Slip Approval", href: "approval", disabled: true),
+        new BreadcrumbItem("Document Status", href: "document-status", disabled: true),
+        new BreadcrumbItem("Requisition Slip Approval", href: "approval")
     };
 
     // form validation
     bool success = false;
-    private void OnValidSubmit(EditContext context)
+    private async Task OnSubmit(EditContext context)
     {
-        // POST Request here after the inputs are validated....
-        var content = new StringContent(JsonConvert.SerializeObject(context), Encoding.UTF8, "application/json");
-        var response = _httpClient.PutAsJsonAsync("U_FT_OPRQ", content);
+        Console.WriteLine("Approved");
+        //HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
+        //var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
+
+        //HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
+        //var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
 
         success = true;
         StateHasChanged();
@@ -55,41 +172,5 @@
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
-        //Elements = await httpClient.GetFromJsonAsync<List<Element>>("dummyjson.com/products");
-
-
-        // HARD CODED DATA
-        for (int i = 0; i < 5; i++)
-        {
-            _lines.Add(new PRLinesDto
-            {
-                U_ItemCode = "",
-                U_Dscription = "",
-                U_WhsCode = "",
-                U_BinLoc = "",
-                U_Scope = "",
-                U_ScopeDesc = "",
-                U_MaterialCode = "",
-                U_MaterialDesc = "",
-                U_Quantity = "",
-                U_InfoPrice = "",
-                U_UomCode = "",
-                U_ItemSpecification = "",
-                TaxCode = "",
-                U_OnHandQuantity = "",
-                U_InventoryType = "",
-                U_InventoryPurpose = ""
-            });
-        }
-
     }
-
-    // TODO: posting to staging table through service layer
-    // Note: Question.. Is it possible to access the UDT in service layer or the access is limited only to standard table
-    // TODO: Code the Services and Interfaces for the http requests..
-    // TODO: Inject the Interfaces to the client side
-    // TODO: Bind values to the table or fields when executing get method request
-    // TODO: User Authentication - POST to hanaserver:50000/b1s/v1/Login and get the sessionId Response..
-    // TODO: Create Approve Requisition Slip Page
-    // TODO: Post to staging table for the approved requisition slip
 }
