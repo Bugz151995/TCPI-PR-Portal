@@ -17,91 +17,107 @@
     <input type="hidden" @bind-value="User.Name" />
     <DataAnnotationsValidator />
 
-    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-        <MudTabPanel Text="User Setup">
-            <MudGrid Spacing="3" Justify="Justify.Center">
-                <MudItem xs="6">
-                    <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                        <MudTextField Elevation="0" @bind-Value="User.Code" For="@(() => User.Code)" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                        <MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" For="@(() => User.U_Password)" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                        <MudTextField Elevation="0" @bind-Value="User.U_Employee" For="@(() => User.U_Employee)" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6" Color="@Color.Inherit">
+        <MudTabPanel>
+            <TabContent>
+                <MudIcon Icon="@Icons.Filled.PersonAddAlt1" Title="Favorite" Size="Size.Small" Class="me-3"/>
+                <MudText Typo="Typo.subtitle2">
+                    Personal Information
+                </MudText>
+            </TabContent>
+            <ChildContent>
+                <MudGrid Spacing="3" Justify="Justify.Center">
+                    <MudItem xs="6">
+                        <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                            <MudTextField Elevation="0" @bind-Value="User.Code" For="@(() => User.Code)" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                            <MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" For="@(() => User.U_Password)" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Elevation="0" @bind-Value="User.U_Employee" For="@(() => User.U_Employee)" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
 
-                        @*<MudSelect Margin="Margin.Dense" @bind-Value="SelectedDepartment" Label="Department" Variant="Variant.Outlined">
-                        @foreach (var d in Departments)
-                        {
-                        <MudSelectItem Value="@d">@d.Name</MudSelectItem>
-                        }
-                        </MudSelect>
-                        <MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />*@
-                    </MudPaper>
-                </MudItem>
+                            @*<MudSelect Margin="Margin.Dense" @bind-Value="SelectedDepartment" Label="Department" Variant="Variant.Outlined">
+                            @foreach (var d in Departments)
+                            {
+                            <MudSelectItem Value="@d">@d.Name</MudSelectItem>
+                            }
+                            </MudSelect>
+                            <MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />*@
+                        </MudPaper>
+                    </MudItem>
 
-                <MudItem xs="6">
-                    <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                        <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" For="@(() => User.U_EmailAddress)" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                        <MudTextField Elevation="0" @bind-Value="User.U_UserName" For="@(() => User.U_UserName)" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                        <MudSelect T="string" Value="User.U_Role" For="@(() => User.U_Role)" ValueChanged="value => displayApproverDetails(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
-                            <MudSelectItem Value="@("Admin")" />
-                            <MudSelectItem Value="@("Requestor")" />
-                            <MudSelectItem Value="@("Approver")" />
-                        </MudSelect>
+                    <MudItem xs="6">
+                        <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                            <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" For="@(() => User.U_EmailAddress)" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            <MudTextField Elevation="0" @bind-Value="User.U_UserName" For="@(() => User.U_UserName)" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                            <MudSelect T="string" Value="User.U_Role" For="@(() => User.U_Role)" ValueChanged="value => displayApproverDetails(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
+                                <MudSelectItem Value="@("Admin")" />
+                                <MudSelectItem Value="@("Requestor")" />
+                                <MudSelectItem Value="@("Approver")" />
+                            </MudSelect>
 
-                        @*<MudSelect Margin="Margin.Dense" T="string" Label="Approval Level" Variant="Variant.Outlined">
+                            @*<MudSelect Margin="Margin.Dense" T="string" Label="Approval Level" Variant="Variant.Outlined">
                             <MudSelectItem Value="@("Level 1")" />
                             <MudSelectItem Value="@("Level 2")" />
                             <MudSelectItem Value="@("Level 3")" />
                             <MudSelectItem Value="@("Level 4")" />
-                        </MudSelect>*@
-                    </MudPaper>
-                </MudItem>
-            </MudGrid>
-
-            <div style="display: @display">
-                <div class="d-flex gap-1 align-center">
-                    <MudIcon Icon="@Icons.Filled.NewLabel" Title="Breadcrumb" Color="Color.Primary" />
-                    <MudText>Approver Details</MudText>
-                </div>
-                <MudGrid Spacing="3" Justify="Justify.Center">
-                    <MudItem xs="6">
-                        <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode1" Label="Approver Code 1" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode2" Label="Approver Code 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode3" Label="Approver Code 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode4" Label="Approver Code 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverSpecialCode" Label="Approver Code Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudSelect>*@
                         </MudPaper>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                            <MudTextField Elevation="0" @bind-Value="User.U_Approver1" Label="Approver Name 1" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_Approver2" Label="Approver Name 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_Approver3" Label="Approver Name 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_Approver4" Label="Approver Name 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                            <MudTextField Elevation="0" @bind-Value="User.U_ApproverSpecial" Label="Approver Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                        </MudPaper>
-                    </MudItem>
-
-                    <MudItem xs="6"></MudItem>
                 </MudGrid>
-            </div>
 
-            <MudGrid Spacing="3" Justify="Justify.FlexEnd">
-                <MudItem xs="4">
-                    <MudCardActions Class="d-flex justify-end gap-2">
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save</MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Close">Cancel</MudButton>
-                    </MudCardActions>
-                </MudItem>
-            </MudGrid>
+                <div style="display: @display">
+                    <div class="d-flex gap-1 align-center">
+                        <MudIcon Icon="@Icons.Filled.NewLabel" Title="Breadcrumb" Color="Color.Primary" />
+                        <MudText>Approver Details</MudText>
+                    </div>
+                    <MudGrid Spacing="3" Justify="Justify.Center">
+                        <MudItem xs="6">
+                            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode1" Label="Approver Code 1" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode2" Label="Approver Code 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode3" Label="Approver Code 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode4" Label="Approver Code 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverSpecialCode" Label="Approver Code Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudPaper>
+                        </MudItem>
+
+                        <MudItem xs="6">
+                            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                                <MudTextField Elevation="0" @bind-Value="User.U_Approver1" Label="Approver Name 1" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_Approver2" Label="Approver Name 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_Approver3" Label="Approver Name 3" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_Approver4" Label="Approver Name 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverSpecial" Label="Approver Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                            </MudPaper>
+                        </MudItem>
+
+                        <MudItem xs="6"></MudItem>
+                    </MudGrid>
+                </div>
+
+                <MudGrid Spacing="3" Justify="Justify.FlexEnd">
+                    <MudItem xs="4">
+                        <MudCardActions Class="d-flex justify-end gap-2">
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Close">Cancel</MudButton>
+                        </MudCardActions>
+                    </MudItem>
+                </MudGrid>
+            </ChildContent>
         </MudTabPanel>
 
-        <MudTabPanel Text="Modules Assignment">
-            <MudText>Requires Confirmation</MudText>
+        <MudTabPanel>
+            <TabContent>
+                <MudIcon Icon="@Icons.Filled.ViewModule" Title="Favorite" Size="Size.Small" Class="me-3" />
+                <MudText Typo="Typo.subtitle2">Modules Assignment</MudText>
+            </TabContent>
+            <ChildContent>Under Development</ChildContent>
         </MudTabPanel>
 
-        <MudTabPanel Text="Project Assignment">
-            <MudText>Requires Confirmation</MudText>
+        <MudTabPanel>
+            <TabContent>
+                <MudIcon Icon="@Icons.Filled.BusinessCenter" Title="Favorite" Size="Size.Small" Class="me-3" />
+                <MudText Typo="Typo.subtitle2">Project Assignment</MudText>
+            </TabContent>
+            <ChildContent>Under Development</ChildContent>
         </MudTabPanel>
     </MudTabs>
 </EditForm>

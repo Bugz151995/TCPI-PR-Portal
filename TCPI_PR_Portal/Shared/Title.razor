@@ -1,6 +1,6 @@
 ﻿<PageTitle>@PageName</PageTitle>
 
-<MudGrid>
+<MudGrid Class="mb-5">
     <MudItem xs="6">
         <MudText Typo="Typo.h5" Class="m-0 pt-3">@PageName</MudText>
     </MudItem>
@@ -15,7 +15,7 @@
 
     <MudElement HtmlTag="hr" Class="mx-3" Style="@($"height: 1px!important; width: 100%; background-color:{Colors.Blue.Accent4};")" />
 
-    <MudPaper Elevation="0" Class="d-flex align-center ps-2">
+    <MudPaper Elevation="0" Class="d-flex align-center ps-2 gap-1">
         <MudIcon Icon="@Icons.Filled.LabelImportant" Title="Breadcrumb" Color="Color.Primary" />
         <MudBreadcrumbs Items="Breadcrumb">
             <ItemTemplate Context="item">

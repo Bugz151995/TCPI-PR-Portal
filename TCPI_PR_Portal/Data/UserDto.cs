@@ -24,17 +24,16 @@ namespace TCPI_PR_Portal.Models
         public string U_EmailAddress { get; set; }
         [Required, Display(Name = "Role")]
         public string U_Role { get; set; }
-
         public string? U_Approver1 { get; set; }
         public string? U_Approver2 { get; set; }
         public string? U_Approver3 { get; set; }
         public string? U_Approver4 { get; set; }
         public string? U_ApproverSpecial { get; set; }
-        public int? U_ApproverCode1 { get; set; }
-        public int? U_ApproverCode2 { get; set; }
-        public int? U_ApproverCode3 { get; set; }
-        public int? U_ApproverCode4 { get; set; }
-        public int? U_ApproverSpecialCode { get; set; }
+        public string? U_ApproverCode1 { get; set; }
+        public string? U_ApproverCode2 { get; set; }
+        public string? U_ApproverCode3 { get; set; }
+        public string? U_ApproverCode4 { get; set; }
+        public string? U_ApproverSpecialCode { get; set; }
 
         // Uncomment if needed this is included in the mapping not in the UI
         
