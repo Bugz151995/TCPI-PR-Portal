@@ -214,15 +214,23 @@
     bool success = false;
     private async Task OnSubmit(EditContext context)
     {
-        Console.WriteLine("Submitted");
-        HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
-        var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
+        try
+        {
+            HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
+            var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
 
-        HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
-        var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
+            HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
+            var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
 
-        success = true;
-        StateHasChanged();
+            Snackbar.Add("The Purchase Request was successfully posted!", Severity.Success);
+            success = true;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            throw;
+        }
     }
 
     // get method json ang makukua,
@@ -281,7 +289,7 @@
         {
             Code = code,
             Name = code,
-            U_DocEntry = PRHeader.U_DocEntry,
+            U_DocEntry = PRHeader.U_DocEntry.ToString(),
             U_ItemCode = "",
             U_Dscription = "",
             U_WhsCode = "",
@@ -291,11 +299,11 @@
             U_MaterialCode = "",
             U_MaterialDesc = "",
             U_Quantity = 0,
-            U_InfoPrice = 0,
+            U_InfoPrice = "",
             U_UomCode = "",
             U_ItemSpecification = "",
             U_TaxCode = "",
-            U_OnHandQuantity = 0,
+            U_OnHandQuantity = "",
             U_InventoryType = "",
             U_InventoryPurpose = ""
         });

@@ -14,7 +14,7 @@ namespace TCPI_PR_Portal.Models
         public string Code { get; set; }
         [Required]
         public string Name { get; set; }
-        public int? U_DocEntry { get; set; }
+        public string? U_DocEntry { get; set; }
         public string? U_Dscription { get; set; } = string.Empty;
         public string? U_WhsCode { get; set; } = string.Empty;
         public string? U_ItemCode { get; set; } = string.Empty;
@@ -24,11 +24,11 @@ namespace TCPI_PR_Portal.Models
         public string? U_MaterialCode { get; set; } = string.Empty;
         public string? U_MaterialDesc { get; set; } = string.Empty;
         public int? U_Quantity { get; set; }
-        public int? U_InfoPrice { get; set; }
+        public string? U_InfoPrice { get; set; }
         public string? U_UomCode { get; set; } = string.Empty;
         public string? U_ItemSpecification { get; set; } = string.Empty;
         public string? U_TaxCode { get; set; } = string.Empty;
-        public int? U_OnHandQuantity { get; set; }
+        public string? U_OnHandQuantity { get; set; }
         public string? U_InventoryType { get; set; } = string.Empty;
         public string? U_InventoryPurpose { get; set; } = string.Empty;
     }
