@@ -20,20 +20,15 @@ namespace TCPI_PR_Portal.Client
             string employeeName = await _localStorage.GetItemAsync<string>("EmployeeName");
             string role = await _localStorage.GetItemAsync<string>("Role");
 
-            Console.WriteLine("Authentication State is being executed!");
-            Console.WriteLine($"value of employeeName: {employeeName}");
-            Console.WriteLine($"value of role: {role}");
-
             if (employeeName != null && role != null)
             {
-                Console.WriteLine("the local storage has value");
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, employeeName),
-                    new Claim(ClaimTypes.Role, role)
-                };
 
-                return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims))));
+                var claims = new List<Claim>();
+
+                claims.Add(new Claim(ClaimTypes.Name, employeeName));
+                claims.Add(new Claim(ClaimTypes.Role, role));
+
+                return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "test"))));
             }
 
             return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
