@@ -82,6 +82,10 @@
             {
                 await LocalStorage.SetItemAsync("Code", account.value[0].Code);
                 await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
+
+                //update auth state provider
+                //how to do that????
+                Navigation.NavigateTo("user-setup");
             }
 
             success = true;
