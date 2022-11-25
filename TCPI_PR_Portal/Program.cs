@@ -9,6 +9,7 @@ using TCPI_PR_Portal.Client;
 using Blazor.SubtleCrypto;
 using MudBlazor;
 using Solutaris.InfoWARE.ProtectedBrowserStorage.Extensions;
+using TCPI_PR_Portal.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,6 +22,8 @@ builder.Services.AddTransient<CookieHandler>()
         .GetRequiredService<IHttpClientFactory>()
         .CreateClient("ServiceLayer"))
     .AddHttpClient("ServiceLayer", client => client.BaseAddress = new Uri("http://172.31.24.203:50001/b1s/v1/")).AddHttpMessageHandler<CookieHandler>();
+
+builder.Services.AddSingleton<IAuthService, AuthService>();
 
 builder.Services.AddMudServices(config =>
 {
