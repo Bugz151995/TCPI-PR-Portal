@@ -8,6 +8,7 @@ using TCPI_PR_Portal;
 using TCPI_PR_Portal.Client;
 using Blazor.SubtleCrypto;
 using MudBlazor;
+using Solutaris.InfoWARE.ProtectedBrowserStorage.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -33,8 +34,10 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
 });
+
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMudServices();
+builder.Services.AddIWProtectedBrowserStorageAsSingleton(); //optionally pass an encryption key (as string)
 
 await builder.Build().RunAsync();

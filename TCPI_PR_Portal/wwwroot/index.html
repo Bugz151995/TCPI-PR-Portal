@@ -8,17 +8,28 @@
     <base href="/" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="tcpi.css" rel="stylesheet" />
     <link href="420px-Taiheiyo_Cement_Logo.ico" rel="icon" />
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="container">
+            <div class="splash-container">
+                <img src="420px-Taiheiyo_Cement_Logo.png" class="splash-logo" alt="Alternate Text" />
+            </div>
+            <div class="bar"></div>
+        </div>
+
+        <div class="by">Initializing Application</div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 </body>

@@ -4,10 +4,12 @@
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
 @using System.Security.Cryptography;
-@using Blazor.SubtleCrypto
-@inject ICryptoService Crypto
+@using Blazor.SubtleCrypto;
+@inject ICryptoService Crypto;
+@inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
 @inject NavigationManager Navigation;
+@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 
 @page "/"
 
@@ -49,7 +51,7 @@
 
     bool success;
 
-    private async Task OnValidSubmit(EditContext context)
+    protected override async void OnInitialized()
     {
         //hard coded config file for SAP B1 Connection
         var jsonCredential = JsonConvert.SerializeObject(new
@@ -63,17 +65,21 @@
 
         using var sapLogin = await HttpClient.PostAsync("Login", content);
 
-        if (!sapLogin.IsSuccessStatusCode)
-        {
-            Console.WriteLine(sapLogin.ReasonPhrase);
-            return;
-        }
 
+        if (!sapLogin.IsSuccessStatusCode)
+            Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);
+
+
+        await LocalStorage.SetItemAsync("SessionId", "testSession");
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
         using var matchedRecord = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_UserName,U_Password&$filter=U_UserName eq '{User.U_UserName}'");
 
         if (!matchedRecord.IsSuccessStatusCode)
         {
-            Console.WriteLine(sapLogin.ReasonPhrase);
+            Snackbar.Add(matchedRecord.ReasonPhrase, Severity.Error);
             return;
         }
 
@@ -84,21 +90,19 @@
             try
             {
                 // string password = await Crypto.DecryptAsync(response.value[0].U_Password);
-
+                
                 if (User.U_Password != response.value[0].U_Password)
                 {
-                    Console.WriteLine("The Password is incorrect");
+                    Snackbar.Add("The Password is incorrect!", Severity.Error);
                     return;
                 }
 
-                Console.WriteLine("User is Authenticated");
-                
+                //save user to session
                 Navigation.NavigateTo("user-setup");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex}");
-                throw;
+                Snackbar.Add(ex.Message, Severity.Error);
             }
         }
 

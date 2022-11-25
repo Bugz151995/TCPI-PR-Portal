@@ -17,7 +17,7 @@
 
     <MudPaper Elevation="0" Class="d-flex align-center ps-2 gap-1">
         <MudIcon Icon="@Icons.Filled.LabelImportant" Title="Breadcrumb" Color="Color.Primary" />
-        <MudBreadcrumbs Items="Breadcrumb">
+        <MudBreadcrumbs Items="Breadcrumb" Class="ps-1">
             <ItemTemplate Context="item">
                 <MudLink Href="@item.Href">@item.Text</MudLink>
             </ItemTemplate>
