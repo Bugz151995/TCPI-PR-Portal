@@ -58,8 +58,7 @@
 
     protected override async void OnInitialized()
     {
-        LocalStorage.RemoveAllItems();
-
+        AuthService.Logout();
         //hard coded config file for SAP B1 Connection
         var jsonCredential = JsonConvert.SerializeObject(new
         {
