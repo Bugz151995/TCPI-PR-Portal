@@ -20,9 +20,7 @@ namespace TCPI_PR_Portal.Client
             string employeeName = await _localStorage.GetItemAsync<string>("EmployeeName");
             string role = await _localStorage.GetItemAsync<string>("Role");
 
-            var identity = new ClaimsIdentity();
 
-            Console.WriteLine(employeeName);
             if (employeeName != null && role != null)
             {
                 var claims = new List<Claim>
@@ -31,10 +29,11 @@ namespace TCPI_PR_Portal.Client
                     new Claim(ClaimTypes.Role, role)
                 };
 
-                identity = new ClaimsIdentity(claims);
+                return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims))));
             }
-            
-            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
+
+            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+
         }
 
         public void MarkUserAsAuthenticated(string employeeName, string role)
