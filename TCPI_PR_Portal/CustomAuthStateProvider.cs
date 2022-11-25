@@ -22,7 +22,7 @@ namespace TCPI_PR_Portal.Client
 
             var identity = new ClaimsIdentity();
 
-            if (employeeName != null)
+            if (employeeName != null && role != null)
             {
                 var claims = new List<Claim>
                 {
