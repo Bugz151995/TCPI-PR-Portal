@@ -48,7 +48,7 @@
 
 @code {
     LoginDto User = new LoginDto();
-
+    LoginResponse? account;
     bool success;
 
     protected override async void OnInitialized()
@@ -69,46 +69,64 @@
         if (!sapLogin.IsSuccessStatusCode)
             Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);
 
-
-        await LocalStorage.SetItemAsync("SessionId", "testSession");
     }
 
     private async Task OnValidSubmit(EditContext context)
     {
-        Console.WriteLine(await LocalStorage.GetItemAsync<string>("SessionId"));
-
-        using var matchedRecord = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_UserName,U_Password&$filter=U_UserName eq '{User.U_UserName}'");
-
-        if (!matchedRecord.IsSuccessStatusCode)
+        try
         {
-            Snackbar.Add(matchedRecord.ReasonPhrase, Severity.Error);
-            return;
+            var isUsernameValid = await ValidateUsername();
+            var isAccountValid = await ValidateAccount();
+
+            if (isUsernameValid && isAccountValid)
+            {
+                await LocalStorage.SetItemAsync("Code", account.value[0].Code);
+                await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
+            }
+
+            success = true;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            throw;
+        }
+    }
+
+    async Task<bool> ValidateUsername()
+    {
+        using var matchedUsername = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Employee&$filter=U_UserName eq '{User.U_UserName}'");
+
+        if (!matchedUsername.IsSuccessStatusCode)
+        {
+            Snackbar.Add(matchedUsername.ReasonPhrase, Severity.Error);
+            return false;
         }
 
-        LoginResponse? response = await matchedRecord.Content.ReadFromJsonAsync<LoginResponse>();
+        LoginResponse? username = await matchedUsername.Content.ReadFromJsonAsync<LoginResponse>();
 
-        if(response != null)
+        if (username.value.Count <= 0)
+            Snackbar.Add("Sorry Username is not found!", Severity.Error);
+
+        return true;
+    }
+
+    async Task<bool> ValidateAccount()
+    {
+        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee&$filter=U_UserName eq '{User.U_UserName}' and U_Password eq '{User.U_Password}'");
+
+        if (!matchedUserAccount.IsSuccessStatusCode)
         {
-            try
-            {
-                // string password = await Crypto.DecryptAsync(response.value[0].U_Password);
-                
-                if (User.U_Password != response.value[0].U_Password)
-                {
-                    Snackbar.Add("The Password is incorrect!", Severity.Error);
-                    return;
-                }
-
-                //save user to session
-                Navigation.NavigateTo("user-setup");
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add(ex.Message, Severity.Error);
-            }
+            Snackbar.Add(matchedUserAccount.ReasonPhrase, Severity.Error);
+            return false;
         }
 
-        success = true;
-        StateHasChanged();
+        account = await matchedUserAccount.Content.ReadFromJsonAsync<LoginResponse>();
+
+        if (account.value.Count <= 0)
+            Snackbar.Add("Sorry Password is incorrect!", Severity.Error);
+
+        return true;
     }
 }

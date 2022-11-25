@@ -10,9 +10,15 @@ namespace TCPI_PR_Portal.Data
         public string U_Password { get; set; } = string.Empty;
     }
 
+    public class SessionDto
+    {
+        public string Code { get; set; }
+        public string U_Employee { get; set; }
+    }
+
     public class LoginResponse
     {
         public string odata { get; set; } = string.Empty;
-        public List<LoginDto> value { get; set; } = new List<LoginDto>();
+        public List<SessionDto> value { get; set; } = new List<SessionDto>();
     }
 }
