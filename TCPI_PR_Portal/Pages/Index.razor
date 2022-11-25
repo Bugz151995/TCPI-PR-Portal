@@ -75,6 +75,8 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
+        Console.WriteLine(await LocalStorage.GetItemAsync<string>("SessionId"));
+
         using var matchedRecord = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_UserName,U_Password&$filter=U_UserName eq '{User.U_UserName}'");
 
         if (!matchedRecord.IsSuccessStatusCode)
