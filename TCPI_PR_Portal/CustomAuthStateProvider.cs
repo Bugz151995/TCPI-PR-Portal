@@ -22,7 +22,6 @@ namespace TCPI_PR_Portal.Client
 
             if (employeeName != null && role != null)
             {
-
                 var claims = new List<Claim>();
 
                 claims.Add(new Claim(ClaimTypes.Name, employeeName));
@@ -36,22 +35,17 @@ namespace TCPI_PR_Portal.Client
 
         public void MarkUserAsAuthenticated(string employeeName, string role)
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, employeeName),
-                new Claim(ClaimTypes.Role, role)
-            };
-            var identity = new ClaimsIdentity(claims);
-            var authenticatedUser = new ClaimsPrincipal(identity);
-            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-            NotifyAuthenticationStateChanged(authState);
+            var claims = new List<Claim>();
+
+            claims.Add(new Claim(ClaimTypes.Name, employeeName));
+            claims.Add(new Claim(ClaimTypes.Role, role));
+
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "test")))));
         }
 
         public void MarkUserAsLoggedOut()
         {
-            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
-            var authState = Task.FromResult(new AuthenticationState(anonymousUser));
-            NotifyAuthenticationStateChanged(authState);
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()))));
         }
     }
 }
