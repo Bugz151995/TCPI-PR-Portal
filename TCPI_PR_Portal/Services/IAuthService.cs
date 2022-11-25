@@ -4,7 +4,7 @@ namespace TCPI_PR_Portal.Services
 {
     public interface IAuthService
     {
-        Task Login(string employeeName, string role);
-        Task Logout();
+        void Login(string employeeName, string role);
+        void Logout();
     }
 }

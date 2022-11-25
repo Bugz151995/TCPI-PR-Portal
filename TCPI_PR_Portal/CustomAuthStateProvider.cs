@@ -31,7 +31,7 @@ namespace TCPI_PR_Portal.Client
                     new Claim(ClaimTypes.Role, role)
                 };
 
-                identity = new ClaimsIdentity(claims, "UserAuthentication");
+                identity = new ClaimsIdentity(claims);
             }
             
             return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));

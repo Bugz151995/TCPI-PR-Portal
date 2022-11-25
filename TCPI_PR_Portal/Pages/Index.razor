@@ -101,7 +101,7 @@
                 await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
                 await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
 
-                await AuthService.MarkUserAsAuthenticated(account.value[0].U_Employee, account.value[0].U_Role);
+                AuthService.Login(account.value[0].U_Employee, account.value[0].U_Role);
                 Navigation.NavigateTo("user-setup");
             }
 

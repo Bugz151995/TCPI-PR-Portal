@@ -19,12 +19,12 @@ namespace TCPI_PR_Portal.Services
             _localStorage = localStorage;
         }
 
-        public async Task Login(string employeeName, string role)
+        public void Login(string employeeName, string role)
         {
             ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(employeeName, role);
         }
 
-        public async Task Logout()
+        public void Logout()
         {
             _localStorage.RemoveAllItems();
             ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();

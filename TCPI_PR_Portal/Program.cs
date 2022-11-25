@@ -23,7 +23,7 @@ builder.Services.AddTransient<CookieHandler>()
         .CreateClient("ServiceLayer"))
     .AddHttpClient("ServiceLayer", client => client.BaseAddress = new Uri("http://172.31.24.203:50001/b1s/v1/")).AddHttpMessageHandler<CookieHandler>();
 
-builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddMudServices(config =>
 {
