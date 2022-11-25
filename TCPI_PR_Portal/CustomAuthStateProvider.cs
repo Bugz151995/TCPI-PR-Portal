@@ -1,26 +1,40 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Solutaris.InfoWARE.ProtectedBrowserStorage.Services;
 using System.Security.Claims;
+
 
 namespace TCPI_PR_Portal.Client
 {
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
-        private readonly IIWLocalStorageService _localStorage;
+        protected readonly IIWLocalStorageService _localStorage;
+
+        public CustomAuthStateProvider(IIWLocalStorageService LocalStorage)
+        {
+            _localStorage = LocalStorage;
+        }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             string employeeName = await _localStorage.GetItemAsync<string>("EmployeeName");
             string role = await _localStorage.GetItemAsync<string>("Role");
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, employeeName),
-                new Claim(ClaimTypes.Role, role)
-            };
+            var identity = new ClaimsIdentity();
 
-            var anonymous = new ClaimsIdentity(claims, "UserAuthentication");
-            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));
+            if (employeeName != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, employeeName),
+                    new Claim(ClaimTypes.Role, role)
+                };
+
+                identity = new ClaimsIdentity(claims, "UserAuthentication");
+            }
+            
+
+            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
         }
     }
 }
