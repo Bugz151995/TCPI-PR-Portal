@@ -1,5 +1,6 @@
 ﻿@using System.ComponentModel.DataAnnotations;
 @using Newtonsoft.Json;
+@using System.Security.Claims;
 @using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
@@ -9,6 +10,7 @@
 @inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
 @inject NavigationManager Navigation;
+@inject AuthenticationStateProvider AuthenticationStateProvider;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 
 @page "/"
@@ -96,6 +98,8 @@
 
                 //update auth state provider
                 //how to do that????
+                new Claim(ClaimTypes.Name, account.value[0].Code);
+                new Claim(ClaimTypes.Role, account.value[0].U_Role);
                 Navigation.NavigateTo("user-setup");
             }
 
@@ -129,7 +133,7 @@
 
     async Task<bool> ValidateAccount()
     {
-        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2, U_Approver3, U_Approver4, U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}' and U_Password eq '{User.U_Password}'");
+        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Role, Code, U_Employee, U_ApproverCode1, U_ApproverCode2, U_ApproverCode3, U_ApproverCode4, U_ApproverSpecialCode, U_Approver1, U_Approver2, U_Approver3, U_Approver4, U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}' and U_Password eq '{User.U_Password}'");
 
         if (!matchedUserAccount.IsSuccessStatusCode)
         {
@@ -141,8 +145,6 @@
 
         if (account.value.Count <= 0)
             Snackbar.Add("Sorry Password is incorrect!", Severity.Error);
-
-
          
         return true;
     }
