@@ -4,9 +4,9 @@ namespace TCPI_PR_Portal.Data
 {
     public class LoginDto
     {
-        [Required]
+        [Required, Display(Name = "Username")]
         public string U_UserName { get; set; } = string.Empty;
-        [Required]
+        [Required, Display(Name = "Password")]
         public string U_Password { get; set; } = string.Empty;
     }
 
