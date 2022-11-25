@@ -20,6 +20,9 @@ namespace TCPI_PR_Portal.Client
             string employeeName = await _localStorage.GetItemAsync<string>("EmployeeName");
             string role = await _localStorage.GetItemAsync<string>("Role");
 
+            Console.WriteLine("Authentication State is being executed!");
+            Console.WriteLine($"value of employeeName: {employeeName}");
+            Console.WriteLine($"value of role: {role}");
 
             if (employeeName != null && role != null)
             {
