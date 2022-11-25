@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase;
+@using System.Security.Claims;
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -21,6 +22,8 @@
                 </MudDrawerHeader>
                 <NavMenu />
                 <MudPaper Class="d-flex flex-column align-center pa-4" Style="margin-top: auto; background: transparent">
+                    The user: @context.User.FindFirst(ClaimTypes.Name).Value is authorized
+
                     <MudLink Href="http://www.taiheiyo-cement.com.ph/" Style="font-size: small; text-align: center">&copy; 2022 Taiheiyo Cement Philippines, Inc.</MudLink>
                     <MudLink Href="https://fasttrackph.com/" Style="font-size: smaller; text-align: center">Developed by Fasttrack Solutions, Inc.</MudLink>
                 </MudPaper>

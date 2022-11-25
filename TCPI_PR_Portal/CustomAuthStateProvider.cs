@@ -7,12 +7,8 @@ namespace TCPI_PR_Portal.Client
     {
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var identity = new ClaimsIdentity();
-            var user = new ClaimsPrincipal(identity);
-            var state = new AuthenticationState(user);
-
-            NotifyAuthenticationStateChanged(Task.FromResult(state));
-            return state;
+            var anonymous = new ClaimsIdentity();
+            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));
         }
     }
 }
