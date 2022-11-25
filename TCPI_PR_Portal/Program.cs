@@ -35,7 +35,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
 });
 
-//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddMudServices();
 builder.Services.AddIWProtectedBrowserStorageAsSingleton(); //optionally pass an encryption key (as string)
