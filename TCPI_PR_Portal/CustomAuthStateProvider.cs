@@ -26,6 +26,7 @@ namespace TCPI_PR_Portal.Client
 
             if (employeeName != null && role != null)
             {
+                Console.WriteLine("the local storage has value");
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, employeeName),
@@ -36,7 +37,6 @@ namespace TCPI_PR_Portal.Client
             }
 
             return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
-
         }
 
         public void MarkUserAsAuthenticated(string employeeName, string role)
