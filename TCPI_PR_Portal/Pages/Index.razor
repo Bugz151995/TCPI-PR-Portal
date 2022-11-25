@@ -58,6 +58,7 @@
 
     protected override async void OnInitialized()
     {
+        Console.WriteLine("Index initialized");
         //hard coded config file for SAP B1 Connection
         var jsonCredential = JsonConvert.SerializeObject(new
         {
