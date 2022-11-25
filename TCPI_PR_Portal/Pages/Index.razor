@@ -81,10 +81,9 @@
     {
         try
         {
-            var isUsernameValid = await ValidateUsername();
             var isAccountValid = await ValidateAccount();
 
-            if (isUsernameValid && isAccountValid)
+            if (isAccountValid)
             {
                 await LocalStorage.SetItemAsync("Code", account.value[0].Code);
                 await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
@@ -114,27 +113,9 @@
         }
     }
 
-    async Task<bool> ValidateUsername()
-    {
-        using var matchedUsername = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Employee&$filter=U_UserName eq '{User.U_UserName}'");
-
-        if (!matchedUsername.IsSuccessStatusCode)
-        {
-            Snackbar.Add(matchedUsername.ReasonPhrase, Severity.Error);
-            return false;
-        }
-
-        LoginResponse? username = await matchedUsername.Content.ReadFromJsonAsync<LoginResponse>();
-
-        if (username.value.Count <= 0)
-            Snackbar.Add("Sorry Username is not found!", Severity.Error);
-
-        return true;
-    }
-
     async Task<bool> ValidateAccount()
     {
-        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Role, Code, U_Employee, U_ApproverCode1, U_ApproverCode2, U_ApproverCode3, U_ApproverCode4, U_ApproverSpecialCode, U_Approver1, U_Approver2, U_Approver3, U_Approver4, U_ApproverSpecial&$filter=(U_UserName eq '{User.U_UserName}') and (U_Password eq '{User.U_Password}')");
+        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Role,U_Password,Code,U_Employee,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}'");
 
         if (!matchedUserAccount.IsSuccessStatusCode)
         {
@@ -145,7 +126,10 @@
         account = await matchedUserAccount.Content.ReadFromJsonAsync<LoginResponse>();
 
         if (account.value.Count <= 0)
-            Snackbar.Add("Sorry Password is incorrect!", Severity.Error);
+            Snackbar.Add("User not found!", Severity.Error);
+
+        if (account.value[0].U_Password != User.U_Password)
+            Snackbar.Add("Password is incorrect!", Severity.Error);
 
         return true;
     }

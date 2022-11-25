@@ -276,11 +276,10 @@
 
             ShortGuid code = Guid.NewGuid();
 
-            string preparedBy = await LocalStorage.GetItemAsync<string>("EmployeeName");
             PRHeader.Code = code;
             PRHeader.Name = code;
             PRHeader.U_DocEntry = DocEntry + 1;
-            PRHeader.U_PreparedBy = preparedBy;
+            PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("EmployeeName");
             PRHeader.U_DocStatus = "Waiting For Approval";
         }
         catch (Exception ex)
