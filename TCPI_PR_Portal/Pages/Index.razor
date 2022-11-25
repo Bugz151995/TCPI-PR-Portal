@@ -58,7 +58,6 @@
 
     protected override async void OnInitialized()
     {
-        AuthService.Logout();
         //hard coded config file for SAP B1 Connection
         var jsonCredential = JsonConvert.SerializeObject(new
         {
@@ -70,7 +69,6 @@
         HttpContent content = new StringContent(jsonCredential, Encoding.UTF8, "application/json");
 
         using var sapLogin = await HttpClient.PostAsync("Login", content);
-
 
         if (!sapLogin.IsSuccessStatusCode)
             Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);
@@ -128,7 +126,10 @@
             Snackbar.Add("User not found!", Severity.Error);
 
         if (account.value[0].U_Password != User.U_Password)
+        {
             Snackbar.Add("Password is incorrect!", Severity.Error);
+            return false;
+        }
 
         return true;
     }
