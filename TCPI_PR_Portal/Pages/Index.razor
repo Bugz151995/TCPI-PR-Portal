@@ -85,6 +85,7 @@
             {
                 await LocalStorage.SetItemAsync("Code", account.value[0].Code);
                 await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
+                await LocalStorage.SetItemAsync("Role", account.value[0].U_Role);
 
                 await LocalStorage.SetItemAsync("U_ApproverCode1", account.value[0].U_ApproverCode1);
                 await LocalStorage.SetItemAsync("U_ApproverCode2", account.value[0].U_ApproverCode2);
@@ -96,17 +97,6 @@
                 await LocalStorage.SetItemAsync("U_Approver3", account.value[0].U_Approver3);
                 await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
                 await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
-
-                //update auth state provider
-                //how to do that????
-
-                var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, account.value[0].Code, ClaimValueTypes.String),
-                    new Claim(ClaimTypes.Role, account.value[0].U_Role, ClaimValueTypes.String)
-                };
-                var userIdentity = new ClaimsIdentity(claims, "User");
-                var userPrincipal = new ClaimsPrincipal(userIdentity);
-                new AuthenticationState(new ClaimsPrincipal(userPrincipal));
 
                 Navigation.NavigateTo("user-setup");
             }
