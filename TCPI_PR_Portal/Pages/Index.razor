@@ -7,11 +7,12 @@
 @using System.Text;
 @using System.Security.Cryptography;
 @using Blazor.SubtleCrypto;
+@using TCPI_PR_Portal.Services;
 @inject ICryptoService Crypto;
 @inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
 @inject NavigationManager Navigation;
-@inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject IAuthService AuthService;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 
 @attribute [AllowAnonymous];
@@ -100,6 +101,7 @@
                 await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
                 await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
 
+                await AuthService.MarkUserAsAuthenticated(account.value[0].U_Employee, account.value[0].U_Role);
                 Navigation.NavigateTo("user-setup");
             }
 
