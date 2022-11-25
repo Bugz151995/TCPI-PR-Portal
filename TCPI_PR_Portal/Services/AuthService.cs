@@ -3,30 +3,31 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Solutaris.InfoWARE.ProtectedBrowserStorage.Services;
 using System.Security.Claims;
 using System.Security.Principal;
+using TCPI_PR_Portal.Client;
 
 namespace TCPI_PR_Portal.Services
 {
     public class AuthService : IAuthService
     {
-        public Task<AuthenticationState> MarkUserAsAuthenticated(string employeeName, string role)
-        {
-            var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, employeeName),
-                    new Claim(ClaimTypes.Role, role)
-                };
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private readonly IIWLocalStorageService _localStorage;
 
-            var identity = new ClaimsIdentity(claims, "UserAuthentication");
-            var authenticatedUser = new ClaimsPrincipal(identity);
-            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
-            return authState;
+        public AuthService(AuthenticationStateProvider authenticationStateProvider,
+                           IIWLocalStorageService localStorage)
+        {
+            _authenticationStateProvider = authenticationStateProvider;
+            _localStorage = localStorage;
         }
 
-        public Task<AuthenticationState> MarkUserAsLoggedOut()
+        public async Task Login(string employeeName, string role)
         {
-            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
-            var authState = Task.FromResult(new AuthenticationState(anonymousUser));
-            return authState;
+            ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(employeeName, role);
+        }
+
+        public async Task Logout()
+        {
+            _localStorage.RemoveAllItems();
+            ((CustomAuthStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         }
     }
 }
