@@ -6,6 +6,7 @@
 @using System.Text;
 @inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
+@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 @attribute [Authorize];
 
 @page "/requisition-slip";
@@ -275,10 +276,11 @@
 
             ShortGuid code = Guid.NewGuid();
 
+            string preparedBy = await LocalStorage.GetItemAsync<string>("Employee Name");
             PRHeader.Code = code;
             PRHeader.Name = code;
             PRHeader.U_DocEntry = DocEntry + 1;
-            PRHeader.U_PreparedBy = "User Session";
+            PRHeader.U_PreparedBy = preparedBy;
             PRHeader.U_DocStatus = "Waiting For Approval";
         }
         catch (Exception ex)

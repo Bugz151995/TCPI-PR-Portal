@@ -83,6 +83,17 @@
                 await LocalStorage.SetItemAsync("Code", account.value[0].Code);
                 await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
 
+                await LocalStorage.SetItemAsync("U_ApproverCode1", account.value[0].U_ApproverCode1);
+                await LocalStorage.SetItemAsync("U_ApproverCode2", account.value[0].U_ApproverCode2);
+                await LocalStorage.SetItemAsync("U_ApproverCode3", account.value[0].U_ApproverCode3);
+                await LocalStorage.SetItemAsync("U_ApproverCode4", account.value[0].U_ApproverCode4);
+                await LocalStorage.SetItemAsync("U_ApproverSpecialCode", account.value[0].U_ApproverSpecialCode);
+                await LocalStorage.SetItemAsync("U_Approver1", account.value[0].U_Approver1);
+                await LocalStorage.SetItemAsync("U_Approver2", account.value[0].U_Approver2);
+                await LocalStorage.SetItemAsync("U_Approver3", account.value[0].U_Approver3);
+                await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
+                await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
+
                 //update auth state provider
                 //how to do that????
                 Navigation.NavigateTo("user-setup");
@@ -118,7 +129,7 @@
 
     async Task<bool> ValidateAccount()
     {
-        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee&$filter=U_UserName eq '{User.U_UserName}' and U_Password eq '{User.U_Password}'");
+        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2, U_Approver3, U_Approver4, U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}' and U_Password eq '{User.U_Password}'");
 
         if (!matchedUserAccount.IsSuccessStatusCode)
         {
@@ -131,6 +142,8 @@
         if (account.value.Count <= 0)
             Snackbar.Add("Sorry Password is incorrect!", Severity.Error);
 
+
+         
         return true;
     }
 }
