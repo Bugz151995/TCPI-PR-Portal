@@ -276,7 +276,7 @@
 
             ShortGuid code = Guid.NewGuid();
 
-            string preparedBy = await LocalStorage.GetItemAsync<string>("Employee Name");
+            string preparedBy = await LocalStorage.GetItemAsync<string>("EmployeeName");
             PRHeader.Code = code;
             PRHeader.Name = code;
             PRHeader.U_DocEntry = DocEntry + 1;

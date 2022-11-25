@@ -89,7 +89,6 @@
                 await LocalStorage.SetItemAsync("Code", account.value[0].Code);
                 await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
                 await LocalStorage.SetItemAsync("Role", account.value[0].U_Role);
-
                 await LocalStorage.SetItemAsync("U_ApproverCode1", account.value[0].U_ApproverCode1);
                 await LocalStorage.SetItemAsync("U_ApproverCode2", account.value[0].U_ApproverCode2);
                 await LocalStorage.SetItemAsync("U_ApproverCode3", account.value[0].U_ApproverCode3);
@@ -135,7 +134,7 @@
 
     async Task<bool> ValidateAccount()
     {
-        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Role, Code, U_Employee, U_ApproverCode1, U_ApproverCode2, U_ApproverCode3, U_ApproverCode4, U_ApproverSpecialCode, U_Approver1, U_Approver2, U_Approver3, U_Approver4, U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}' and U_Password eq '{User.U_Password}'");
+        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Role, Code, U_Employee, U_ApproverCode1, U_ApproverCode2, U_ApproverCode3, U_ApproverCode4, U_ApproverSpecialCode, U_Approver1, U_Approver2, U_Approver3, U_Approver4, U_ApproverSpecial&$filter=(U_UserName eq '{User.U_UserName}') and (U_Password eq '{User.U_Password}')");
 
         if (!matchedUserAccount.IsSuccessStatusCode)
         {
