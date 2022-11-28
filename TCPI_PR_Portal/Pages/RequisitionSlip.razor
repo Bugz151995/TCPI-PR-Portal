@@ -103,7 +103,7 @@
                 <input type="hidden" @bind-value="@Items.U_DocEntry" />
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
-            <MudTd DataLabel="Item Code">
+            <MudTd Style="min-width:200px" DataLabel="Item Code">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
                     {
@@ -111,7 +111,7 @@
                     }
                 </MudSelect>
             </MudTd>
-            <MudTd DataLabel="Item Description">
+            <MudTd Style="min-width:200px" DataLabel="Item Description">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
                     {
@@ -119,7 +119,7 @@
                     }
                 </MudSelect>
             </MudTd>
-            <MudTd DataLabel="Warehouse">
+            <MudTd Style="min-width:200px" DataLabel="Warehouse">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_WhsCode" For="@(() => Items.U_WhsCode)" Variant="Variant.Outlined">
                     @foreach (var i in Warehouse)
                     {
@@ -154,7 +154,7 @@
             <MudTd DataLabel="Item Specification">
                 <MudTextField @bind-Value="@Items.U_ItemSpecification" For="@(() => Items.U_ItemSpecification)" />
             </MudTd>
-            <MudTd DataLabel="Tax Code">
+            <MudTd Style="min-width:200px" DataLabel="Tax Code">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_TaxCode" For="@(() => Items.U_TaxCode)" Variant="Variant.Outlined">
                     @foreach (var i in VatGroup)
                     {
@@ -165,7 +165,7 @@
             <MudTd DataLabel="On hand Quantity">
                 <MudTextField @bind-Value="@Items.U_OnHandQuantity" For="@(() => Items.U_OnHandQuantity)" />
             </MudTd>
-            <MudTd DataLabel="Inventory Type">
+            <MudTd Style="min-width:200px" DataLabel="Inventory Type">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryType" For="@(() => Items.U_InventoryType)"  Variant="Variant.Outlined">
                     <MudSelectItem Value="@("Short-Term")" />
                     <MudSelectItem Value="@("Mid-Term")" />
@@ -174,7 +174,7 @@
                     <MudSelectItem Value="@("Long-Term")" />
                 </MudSelect>
             </MudTd>
-            <MudTd DataLabel="Inventory Purpose">
+            <MudTd Style="min-width:200px" DataLabel="Inventory Purpose">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryPurpose" For="@(() => Items.U_InventoryPurpose)" Variant="Variant.Outlined">
                     <MudSelectItem Value="@("Repair")" />
                     <MudSelectItem Value="@("Project")" />
