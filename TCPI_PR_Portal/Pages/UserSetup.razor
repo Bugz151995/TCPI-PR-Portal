@@ -193,13 +193,9 @@
         DeptResponse = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
         Departments = DeptResponse.value;
 
-        using (var userResponse = new HttpRequestMessage(HttpMethod.Get, $"Users?$select=UserCode,UserName,eMail,Branch,Department"))
-        {
-            userResponse.Content.Headers.Add("Prefer", "odata.maxpagesize=0");
-            await HttpClient.SendAsync(userResponse);
-            SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
-            SapUser = SapUserResponse.value;
-        }
+        using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department");
+        SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
+        SapUser = SapUserResponse.value;
 
         foreach (var item in SapUser)
         {
