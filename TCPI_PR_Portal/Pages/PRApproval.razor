@@ -158,12 +158,11 @@
     bool success = false;
     private async Task OnSubmit(EditContext context)
     {
-        Console.WriteLine("Approved");
-        //HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
-        //var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
+        HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
+        var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
 
-        //HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
-        //var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
+        HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
+        var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
 
         success = true;
         StateHasChanged();

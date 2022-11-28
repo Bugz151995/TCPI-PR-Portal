@@ -120,7 +120,12 @@
                 </MudSelect>
             </MudTd>
             <MudTd DataLabel="Warehouse">
-                <MudTextField @bind-Value="@Items.U_WhsCode" For="@(() => Items.U_WhsCode)" />
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_WhsCode" For="@(() => Items.U_WhsCode)" Variant="Variant.Outlined">
+                    @foreach (var i in Warehouse)
+                    {
+                        <MudSelectItem Value="@i.WhsCode">@i.WhsCode - @i.WhsName</MudSelectItem>
+                    }
+                </MudSelect>
             </MudTd>
             <MudTd DataLabel="Bin Location">
                 <MudTextField @bind-Value="@Items.U_BinLoc" For="@(() => Items.U_BinLoc)" />
@@ -150,6 +155,12 @@
                 <MudTextField @bind-Value="@Items.U_ItemSpecification" For="@(() => Items.U_ItemSpecification)" />
             </MudTd>
             <MudTd DataLabel="Tax Code">
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_TaxCode" For="@(() => Items.U_TaxCode)" Variant="Variant.Outlined">
+                    @foreach (var i in VatGroup)
+                    {
+                        <MudSelectItem Value="@i.Code">@i.Code - @i.Name</MudSelectItem>
+                    }
+                </MudSelect>
                 <MudTextField @bind-Value="@Items.U_TaxCode" For="@(() => Items.U_TaxCode)" />
             </MudTd>
             <MudTd DataLabel="On hand Quantity">
@@ -200,22 +211,28 @@
     private PRHeaderDto PRHeader = new PRHeaderDto();
     private List<PRLinesDto> PRLines = new List<PRLinesDto>();
 
-    ProjectsDto SelectedProject;
-    DepartmentsDto SelectedDepartment;
-    BranchesDto SelectedBranch;
-    ItemsDto SelectedItem;
+    ProjectsDto SelectedProject = new ProjectsDto();
+    DepartmentsDto SelectedDepartment = new DepartmentsDto();
+    BranchesDto SelectedBranch = new BranchesDto();
+    ItemsDto SelectedItem = new ItemsDto();
+    WarehouseDto SelectedWhs = new WarehouseDto();
+    VatGroupsDto SelectedVatGroup = new VatGroupsDto();
 
     DocEntryResponse? LastDocEntryResponse = new DocEntryResponse();
     ProjectsResponse? ProjectResponse = new ProjectsResponse();
     DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
     BranchesResponse? BranchResponse = new BranchesResponse();
     ItemsResponse? ItemResponse = new ItemsResponse();
+    WarehouseResponse? WhsResponse = new WarehouseResponse();
+    VatGroupsResponse? VatGroupResponse = new VatGroupsResponse();
 
     private List<DocEntryDto>? LastDocEntry = new List<DocEntryDto>();
     private List<ProjectsDto>? Projects = new List<ProjectsDto>();
     private List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
     private List<BranchesDto>? Branches = new List<BranchesDto>();
     private List<ItemsDto>? ItemMaster = new List<ItemsDto>();
+    private List<WarehouseDto>? Warehouse = new List<WarehouseDto>();
+    private List<VatGroupsDto>? VatGroup = new List<VatGroupsDto>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
         new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)
@@ -274,8 +291,15 @@
             ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
             ItemMaster = ItemResponse.value;
 
-            ShortGuid code = Guid.NewGuid();
+            var whsResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
+            WhsResponse = await whsResponse.Content.ReadFromJsonAsync<WarehouseResponse>();
+            Warehouse = WhsResponse.value;
 
+            var vatGroupResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
+            VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
+            VatGroup = VatGroupResponse.value;
+
+            ShortGuid code = Guid.NewGuid();
             PRHeader.Code = code;
             PRHeader.Name = code;
             PRHeader.U_DocEntry = DocEntry + 1;
