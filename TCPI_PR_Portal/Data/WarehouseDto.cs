@@ -9,18 +9,18 @@ namespace TCPI_PR_Portal.Models
 {
     public class WarehouseDto
     {
-        public string WhsCode { get; set; }
-        public string WhsName { get; set; }
+        public string WarehouseCode { get; set; }
+        public string WarehouseName { get; set; }
 
         public override bool Equals(object o)
         {
             var other = o as WarehouseDto;
-            return other?.WhsCode == WhsCode;
+            return other?.WarehouseCode == WarehouseCode;
         }
-        public override int GetHashCode() => WhsCode.GetHashCode();
+        public override int GetHashCode() => WarehouseCode.GetHashCode();
         public override string ToString()
         {
-            return WhsName;
+            return WarehouseName;
         }
     }
 
