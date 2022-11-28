@@ -294,7 +294,7 @@
             WhsResponse = await whsResponse.Content.ReadFromJsonAsync<WarehouseResponse>();
             Warehouse = WhsResponse.value;
 
-            var vatGroupResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
+            var vatGroupResponse = await HttpClient.GetAsync("VatGroups?$select=Code,Name&$orderby = Name asc");
             VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
             VatGroup = VatGroupResponse.value;
 
