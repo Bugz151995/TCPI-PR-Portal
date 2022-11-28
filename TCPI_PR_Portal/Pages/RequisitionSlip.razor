@@ -226,13 +226,13 @@
     WarehouseResponse? WhsResponse = new WarehouseResponse();
     VatGroupsResponse? VatGroupResponse = new VatGroupsResponse();
 
-    private List<DocEntryDto>? LastDocEntry = new List<DocEntryDto>();
-    private List<ProjectsDto>? Projects = new List<ProjectsDto>();
-    private List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
-    private List<BranchesDto>? Branches = new List<BranchesDto>();
-    private List<ItemsDto>? ItemMaster = new List<ItemsDto>();
-    private List<WarehouseDto>? Warehouse = new List<WarehouseDto>();
-    private List<VatGroupsDto>? VatGroup = new List<VatGroupsDto>();
+    List<DocEntryDto>? LastDocEntry = new List<DocEntryDto>();
+    List<ProjectsDto>? Projects = new List<ProjectsDto>();
+    List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
+    List<BranchesDto>? Branches = new List<BranchesDto>();
+    List<ItemsDto>? ItemMaster = new List<ItemsDto>();
+    List<WarehouseDto>? Warehouse = new List<WarehouseDto>();
+    List<VatGroupsDto>? VatGroup = new List<VatGroupsDto>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
         new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)
@@ -316,13 +316,6 @@
             throw;
         }
     }
-
-    //void fetchData(string query, Type dataType, Type responseType)
-    //{
-    //    var response = await HttpClient.GetAsync(query);
-    //    responseType = await response.Content.ReadFromJsonAsync<dataType>();
-    //    Projects = responseType.value;
-    //}
 
     void SelectProject(ProjectsDto context, string selectedString)
     {

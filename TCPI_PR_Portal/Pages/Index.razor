@@ -14,6 +14,7 @@
 @inject NavigationManager Navigation;
 @inject IAuthService AuthService;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
+@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWSessionStorageService SessionStorage;
 
 @attribute [AllowAnonymous];
 @page "/"
@@ -53,7 +54,10 @@
 
 @code {
     LoginDto User = new LoginDto();
-    LoginSessionDto Session = new LoginSessionDto();
+    LoginSessionDto LoginSession = new LoginSessionDto();
+    LoginResponse LoginResponse= new LoginResponse();
+    
+    UserSessionDto UserSession = new UserSessionDto();
     bool success;
 
     private async Task OnValidSubmit(EditContext context)
@@ -68,31 +72,46 @@
             };
 
             HttpContent content = new StringContent(JsonConvert.SerializeObject(credential), Encoding.UTF8, "application/json");
-
             using var sapLogin = await HttpClient.PostAsync("Login", content);
 
-            Session = await sapLogin.Content.ReadFromJsonAsync<LoginSessionDto>();
-
-            Console.WriteLine(JsonConvert.SerializeObject(Session));
-
             if (!sapLogin.IsSuccessStatusCode)
+            {
                 Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);
+                return;
+            }
 
-            //await LocalStorage.SetItemAsync("Code", account.value[0].Code);
-            //await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
-            //await LocalStorage.SetItemAsync("Role", account.value[0].U_Role);
-            //await LocalStorage.SetItemAsync("U_ApproverCode1", account.value[0].U_ApproverCode1);
-            //await LocalStorage.SetItemAsync("U_ApproverCode2", account.value[0].U_ApproverCode2);
-            //await LocalStorage.SetItemAsync("U_ApproverCode3", account.value[0].U_ApproverCode3);
-            //await LocalStorage.SetItemAsync("U_ApproverCode4", account.value[0].U_ApproverCode4);
-            //await LocalStorage.SetItemAsync("U_ApproverSpecialCode", account.value[0].U_ApproverSpecialCode);
-            //await LocalStorage.SetItemAsync("U_Approver1", account.value[0].U_Approver1);
-            //await LocalStorage.SetItemAsync("U_Approver2", account.value[0].U_Approver2);
-            //await LocalStorage.SetItemAsync("U_Approver3", account.value[0].U_Approver3);
-            //await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
-            //await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
+            LoginSession = await sapLogin.Content.ReadFromJsonAsync<LoginSessionDto>();
 
-            //AuthService.Login(account.value[0].U_Employee, account.value[0].U_Role);
+            await SessionStorage.SetItemAsync("SessionId", LoginSession.SessionId);
+            await SessionStorage.SetItemAsync("Version", LoginSession.Version);
+            await SessionStorage.SetItemAsync("SessionTimeout", LoginSession.SessionTimeout);
+
+            using var response = await HttpClient.GetAsync("U_FT_WPUS?$select=Code,U_Employee,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add(response.ReasonPhrase, Severity.Error);
+                return;
+            }
+
+            LoginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            UserSession = LoginResponse.value;
+
+            await SessionStorage.SetItemAsync("Code", UserSession.Code);
+            await SessionStorage.SetItemAsync("EmployeeName", UserSession.U_Employee);
+            await SessionStorage.SetItemAsync("Role", UserSession.U_Role);
+            await SessionStorage.SetItemAsync("U_ApproverCode1", UserSession.U_ApproverCode1);
+            await SessionStorage.SetItemAsync("U_ApproverCode2", UserSession.U_ApproverCode2);
+            await SessionStorage.SetItemAsync("U_ApproverCode3", UserSession.U_ApproverCode3);
+            await SessionStorage.SetItemAsync("U_ApproverCode4", UserSession.U_ApproverCode4);
+            await SessionStorage.SetItemAsync("U_ApproverSpecialCode", UserSession.U_ApproverSpecialCode);
+            await SessionStorage.SetItemAsync("U_Approver1", UserSession.U_Approver1);
+            await SessionStorage.SetItemAsync("U_Approver2", UserSession.U_Approver2);
+            await SessionStorage.SetItemAsync("U_Approver3", UserSession.U_Approver3);
+            await SessionStorage.SetItemAsync("U_Approver4", UserSession.U_Approver4);
+            await SessionStorage.SetItemAsync("U_ApproverSpecial", UserSession.U_ApproverSpecial);
+
+            AuthService.Login(UserSession.U_Employee, UserSession.U_Role);
             Navigation.NavigateTo("user-setup");
 
             success = true;

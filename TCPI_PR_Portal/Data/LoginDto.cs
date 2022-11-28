@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TCPI_PR_Portal.Models;
 
 namespace TCPI_PR_Portal.Data
 {
@@ -10,13 +11,12 @@ namespace TCPI_PR_Portal.Data
         public string U_Password { get; set; } = string.Empty;
     }
 
-    public class SessionDto
+    public class UserSessionDto
     {
         public string Code { get; set; }
         public string U_Employee { get; set; }
         public string U_Role { get; set; }
         public string U_Password { get; set; }
-
         public string? U_Approver1 { get; set; }
         public string? U_Approver2 { get; set; }
         public string? U_Approver3 { get; set; }
@@ -48,5 +48,11 @@ namespace TCPI_PR_Portal.Data
     {
         public string lang { get; set; }
         public string value { get; set; }
+    }
+
+    public class LoginResponse
+    {
+        public string odata { get; set; } = string.Empty;
+        public UserSessionDto value { get; set; } = new UserSessionDto();
     }
 }
