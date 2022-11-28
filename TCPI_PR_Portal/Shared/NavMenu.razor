@@ -1,16 +1,5 @@
-﻿@using TCPI_PR_Portal.Services;
-@inject IAuthService AuthService;
-
-<MudNavMenu>
+﻿<MudNavMenu>
     <MudNavLink Class="px-3 mb-3" Href="user-setup" Match="NavLinkMatch.All" Icon="@Icons.Filled.PeopleAlt" IconColor="Color.Primary">User Setup</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="requisition-slip" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Receipt" IconColor="Color.Primary">Requisition Slip</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="document-status" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Assignment" IconColor="Color.Primary">Document Status</MudNavLink>
-    <MudNavLink Class="px-3 mb-3" Href="#" @OnClick="Logout" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Logout" IconColor="Color.Primary">Logout</MudNavLink>
 </MudNavMenu>
-
-@code {
-    void Logout()
-    {
-        AuthService.Logout();
-    }
-}
