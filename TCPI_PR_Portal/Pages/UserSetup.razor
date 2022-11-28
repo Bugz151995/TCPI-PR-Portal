@@ -28,7 +28,10 @@
                 <MudGrid Spacing="3" Justify="Justify.Center">
                     <MudItem xs="6">
                         <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                            <MudTextField Elevation="0" @bind-Value="User.Code" For="@(() => User.Code)" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
+                            <MudAutocomplete Label="User Code" @bind-Value="User.Code" SearchFunc="@SearchUserCode" Margin="Margin.None" Dense="true" Variant="Variant.Outlined" />
+
+                            @*<MudTextField Elevation="0" @bind-Value="User.Code" For="@(() => User.Code)" Label="User Code" Disabled="true" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />*@
+
                             <MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" For="@(() => User.U_Password)" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             <MudTextField Elevation="0" @bind-Value="User.U_Employee" For="@(() => User.U_Employee)" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
 
@@ -136,6 +139,10 @@
     DepartmentsResponse? DeptResponse = new DepartmentsResponse();
     List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
 
+    List<SAPUserDto> SapUser = new List<SAPUserDto>();
+    UserResponse? SapUserResponse = new UserResponse();
+    List<string> userCodes = new List<string>();
+
     private Roles roleValue { get; set; }
     public enum Roles { Admin, Requestor, Approver };
 
@@ -186,13 +193,31 @@
         DeptResponse = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
         Departments = DeptResponse.value;
 
-        User.Code = $"PR-";
-        User.Name = $"PR-";
+        using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department");
+        SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
+        SapUser = SapUserResponse.value;
+
+        foreach (var item in SapUser)
+        {
+            userCodes.Add(item.UserCode);
+        }
     }
 
     void displayApproverDetails(UserDto context, string selectedString)
     {
         context.U_Role = selectedString;
         display = selectedString == "Requestor" ? "block" : "none";
+    }
+
+    private async Task<IEnumerable<string>> SearchUserCode(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return userCodes;
+
+        return userCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 }

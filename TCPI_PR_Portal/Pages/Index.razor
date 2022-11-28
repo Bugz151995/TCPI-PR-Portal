@@ -88,7 +88,7 @@
 
             using var userUdtResponse = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}'");
 
-            using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$filter=U_Username eq '{User.U_UserName}'");
+            using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$filter=UserName eq '{User.U_UserName}'");
 
             if (!userUdtResponse.IsSuccessStatusCode && !userResponse.IsSuccessStatusCode)
             {
@@ -100,7 +100,7 @@
             LoginResponse = await userUdtResponse.Content.ReadFromJsonAsync<LoginResponse>();
             UserSession = LoginResponse.value[0];
 
-            SapUserResponse = await userUdtResponse.Content.ReadFromJsonAsync<UserResponse>();
+            SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
             SapUser = SapUserResponse.value[0];
 
             storeSessionToLocalStorage();
