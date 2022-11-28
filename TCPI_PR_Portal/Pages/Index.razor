@@ -53,7 +53,6 @@
 
 @code {
     LoginDto User = new LoginDto();
-    LoginResponse LoginResponse = new LoginResponse();
     LoginSessionDto Session = new LoginSessionDto();
     bool success;
 
@@ -72,9 +71,9 @@
 
             using var sapLogin = await HttpClient.PostAsync("Login", content);
 
-            LoginResponse = await sapLogin.Content.ReadFromJsonAsync<LoginResponse>();
+            Session = await sapLogin.Content.ReadFromJsonAsync<LoginSessionDto>();
 
-            Console.WriteLine(JsonConvert.SerializeObject(LoginResponse));
+            Console.WriteLine(JsonConvert.SerializeObject(Session));
 
             if (!sapLogin.IsSuccessStatusCode)
                 Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);

@@ -49,10 +49,4 @@ namespace TCPI_PR_Portal.Data
         public string lang { get; set; }
         public string value { get; set; }
     }
-
-    public class LoginResponse
-    {
-        public string odata { get; set; } = string.Empty;
-        public List<SessionDto> value { get; set; } = new List<SessionDto>();
-    }
 }
