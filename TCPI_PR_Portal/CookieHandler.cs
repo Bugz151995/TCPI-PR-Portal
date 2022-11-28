@@ -8,7 +8,6 @@ namespace Client.Extensions
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             request.SetBrowserRequestCredentials(BrowserRequestCredentials.Include);
-            request.Headers.Add("Prefer", "odata.maxpagesize = 1000");
             return await base.SendAsync(request, cancellationToken);
         }
     }
