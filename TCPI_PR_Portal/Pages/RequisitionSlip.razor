@@ -1,5 +1,4 @@
-﻿@using CSharpVitamins;
-@using Microsoft.AspNetCore.Authorization;
+﻿@using Microsoft.AspNetCore.Authorization;
 @using Newtonsoft.Json;
 @using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Shared;
@@ -102,10 +101,10 @@
                 <input type="hidden" @bind-value="@Items.Name" />
                 <input type="hidden" @bind-value="@Items.U_DocEntry" />
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
-            </MudTd>
-            <MudTd Style="min-width:200px" DataLabel="Item Code">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" Variant="Variant.Outlined">
-                    @foreach (var i in ItemMaster)
+                </MudTd>
+                <MudTd Style="min-width:200px" DataLabel="Item Code">
+                    <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" Variant="Variant.Outlined">
+                        @foreach (var i in ItemMaster)
                     {
                         <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
                     }
@@ -166,7 +165,7 @@
                 <MudTextField @bind-Value="@Items.U_OnHandQuantity" For="@(() => Items.U_OnHandQuantity)" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Inventory Type">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryType" For="@(() => Items.U_InventoryType)"  Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryType" For="@(() => Items.U_InventoryType)" Variant="Variant.Outlined">
                     <MudSelectItem Value="@("Short-Term")" />
                     <MudSelectItem Value="@("Mid-Term")" />
                     <MudSelectItem Value="@("Household")" />
@@ -200,12 +199,14 @@
 </EditForm>
 
 @code {
-    private int DocEntry = 0;
+    private int docEntry = 0;
+    private string code = string.Empty;
     // table settings
     private bool dense = false;
     private bool hover = true;
     private bool striped = true;
     private bool bordered = false;
+    private string employeeName = string.Empty;
 
     private PRHeaderDto PRHeader = new PRHeaderDto();
     private List<PRLinesDto> PRLines = new List<PRLinesDto>();
@@ -268,11 +269,12 @@
     {
         try
         {
+            int lastDocEntry = 0;
             var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
             LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
 
             if (LastDocEntryResponse.value.Count != 0)
-                DocEntry = LastDocEntryResponse.value[0].U_DocEntry;
+                lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
 
             var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
             ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
@@ -298,11 +300,14 @@
             VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
             VatGroup = VatGroupResponse.value;
 
-            ShortGuid code = Guid.NewGuid();
+            docEntry = lastDocEntry + 1;
+            employeeName = LocalStorage.GetItem<string>("EmployeeName");
+            code = $"PR-{LocalStorage.GetItem<string>("EmployeeName")}-{docEntry}";
+            
             PRHeader.Code = code;
             PRHeader.Name = code;
-            PRHeader.U_DocEntry = DocEntry + 1;
-            PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("EmployeeName");
+            PRHeader.U_DocEntry = docEntry;
+            PRHeader.U_PreparedBy = employeeName;
             PRHeader.U_DocStatus = "Waiting For Approval";
         }
         catch (Exception ex)
@@ -311,6 +316,13 @@
             throw;
         }
     }
+
+    //void fetchData(string query, Type dataType, Type responseType)
+    //{
+    //    var response = await HttpClient.GetAsync(query);
+    //    responseType = await response.Content.ReadFromJsonAsync<dataType>();
+    //    Projects = responseType.value;
+    //}
 
     void SelectProject(ProjectsDto context, string selectedString)
     {
@@ -321,29 +333,28 @@
 
     void AddLine()
     {
-        ShortGuid code = Guid.NewGuid();
         PRLines.Add(new PRLinesDto
-        {
-            Code = code,
-            Name = code,
-            U_DocEntry = PRHeader.U_DocEntry.ToString(),
-            U_ItemCode = null,
-            U_Dscription = null,
-            U_WhsCode = null,
-            U_BinLoc = null,
-            U_Scope = null,
-            U_ScopeDesc = null,
-            U_MaterialCode = null,
-            U_MaterialDesc = null,
-            U_Quantity =null,
-            U_InfoPrice = null,
-            U_UomCode = null,
-            U_ItemSpecification = null,
-            U_TaxCode = null,
-            U_OnHandQuantity = null,
-            U_InventoryType = null,
-            U_InventoryPurpose = null
-        });
+            {
+                Code = code,
+                Name = code,
+                U_DocEntry = PRHeader.U_DocEntry.ToString(),
+                U_ItemCode = null,
+                U_Dscription = null,
+                U_WhsCode = null,
+                U_BinLoc = null,
+                U_Scope = null,
+                U_ScopeDesc = null,
+                U_MaterialCode = null,
+                U_MaterialDesc = null,
+                U_Quantity = null,
+                U_InfoPrice = null,
+                U_UomCode = null,
+                U_ItemSpecification = null,
+                U_TaxCode = null,
+                U_OnHandQuantity = null,
+                U_InventoryType = null,
+                U_InventoryPurpose = null
+            });
     }
 
     void RemoveLine(int index)

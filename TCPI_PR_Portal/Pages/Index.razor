@@ -53,51 +53,48 @@
 
 @code {
     LoginDto User = new LoginDto();
-    LoginResponse account = new LoginResponse();
+    LoginResponse LoginResponse = new LoginResponse();
+    LoginSessionDto Session = new LoginSessionDto();
     bool success;
-
-    protected override async void OnInitialized()
-    {
-        var credential = new
-        {
-            CompanyDB = "TCPI_TESTDB",
-            UserName = "manager",
-            Password = "ftsi"
-        };
-
-        HttpContent content = new StringContent(JsonConvert.SerializeObject(credential), Encoding.UTF8, "application/json");
-
-        using var sapLogin = await HttpClient.PostAsync("Login", content);
-
-        if (!sapLogin.IsSuccessStatusCode)
-            Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);
-    }
 
     private async Task OnValidSubmit(EditContext context)
     {
         try
         {
-            var isAccountValid = await ValidateAccount();
-
-            if (isAccountValid)
+            var credential = new
             {
-                await LocalStorage.SetItemAsync("Code", account.value[0].Code);
-                await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
-                await LocalStorage.SetItemAsync("Role", account.value[0].U_Role);
-                await LocalStorage.SetItemAsync("U_ApproverCode1", account.value[0].U_ApproverCode1);
-                await LocalStorage.SetItemAsync("U_ApproverCode2", account.value[0].U_ApproverCode2);
-                await LocalStorage.SetItemAsync("U_ApproverCode3", account.value[0].U_ApproverCode3);
-                await LocalStorage.SetItemAsync("U_ApproverCode4", account.value[0].U_ApproverCode4);
-                await LocalStorage.SetItemAsync("U_ApproverSpecialCode", account.value[0].U_ApproverSpecialCode);
-                await LocalStorage.SetItemAsync("U_Approver1", account.value[0].U_Approver1);
-                await LocalStorage.SetItemAsync("U_Approver2", account.value[0].U_Approver2);
-                await LocalStorage.SetItemAsync("U_Approver3", account.value[0].U_Approver3);
-                await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
-                await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
+                CompanyDB = "TCPI_TESTDB",
+                UserName = User.U_UserName,
+                Password = User.U_Password
+            };
 
-                AuthService.Login(account.value[0].U_Employee, account.value[0].U_Role);
-                Navigation.NavigateTo("user-setup");
-            }
+            HttpContent content = new StringContent(JsonConvert.SerializeObject(credential), Encoding.UTF8, "application/json");
+
+            using var sapLogin = await HttpClient.PostAsync("Login", content);
+
+            LoginResponse = await sapLogin.Content.ReadFromJsonAsync<LoginResponse>();
+
+            Console.WriteLine(JsonConvert.SerializeObject(LoginResponse));
+
+            if (!sapLogin.IsSuccessStatusCode)
+                Snackbar.Add(sapLogin.ReasonPhrase, Severity.Error);
+
+            //await LocalStorage.SetItemAsync("Code", account.value[0].Code);
+            //await LocalStorage.SetItemAsync("EmployeeName", account.value[0].U_Employee);
+            //await LocalStorage.SetItemAsync("Role", account.value[0].U_Role);
+            //await LocalStorage.SetItemAsync("U_ApproverCode1", account.value[0].U_ApproverCode1);
+            //await LocalStorage.SetItemAsync("U_ApproverCode2", account.value[0].U_ApproverCode2);
+            //await LocalStorage.SetItemAsync("U_ApproverCode3", account.value[0].U_ApproverCode3);
+            //await LocalStorage.SetItemAsync("U_ApproverCode4", account.value[0].U_ApproverCode4);
+            //await LocalStorage.SetItemAsync("U_ApproverSpecialCode", account.value[0].U_ApproverSpecialCode);
+            //await LocalStorage.SetItemAsync("U_Approver1", account.value[0].U_Approver1);
+            //await LocalStorage.SetItemAsync("U_Approver2", account.value[0].U_Approver2);
+            //await LocalStorage.SetItemAsync("U_Approver3", account.value[0].U_Approver3);
+            //await LocalStorage.SetItemAsync("U_Approver4", account.value[0].U_Approver4);
+            //await LocalStorage.SetItemAsync("U_ApproverSpecial", account.value[0].U_ApproverSpecial);
+
+            //AuthService.Login(account.value[0].U_Employee, account.value[0].U_Role);
+            Navigation.NavigateTo("user-setup");
 
             success = true;
             StateHasChanged();
@@ -108,29 +105,5 @@
             Snackbar.Add(ex.Message, Severity.Error);
             throw;
         }
-    }
-
-    async Task<bool> ValidateAccount()
-    {
-        using var matchedUserAccount = await HttpClient.GetAsync($"U_FT_WPUS?$select=U_Role,U_Password,Code,U_Employee,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}'");
-
-        if (!matchedUserAccount.IsSuccessStatusCode)
-        {
-            Snackbar.Add(matchedUserAccount.ReasonPhrase, Severity.Error);
-            return false;
-        }
-
-        account = await matchedUserAccount.Content.ReadFromJsonAsync<LoginResponse>();
-
-        if (account.value.Count <= 0)
-            Snackbar.Add("User not found!", Severity.Error);
-
-        if (account.value[0].U_Password != User.U_Password)
-        {
-            Snackbar.Add("Password is incorrect!", Severity.Error);
-            return false;
-        }
-
-        return true;
     }
 }

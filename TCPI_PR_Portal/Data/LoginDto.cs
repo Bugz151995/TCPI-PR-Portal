@@ -29,6 +29,27 @@ namespace TCPI_PR_Portal.Data
         public string? U_ApproverSpecialCode { get; set; }
     }
 
+    public class LoginSessionDto
+    {
+        public string odata { get; set; } = string.Empty;
+        public string SessionId { get; set; } = string.Empty;
+        public string Version { get; set; } = string.Empty;
+        public int SessionTimeout { get; set; }
+        public Error error { get; set; } = new Error();
+    }
+
+    public class Error
+    {
+        public int code { get; set; }
+        public Message message { get; set; }
+    }
+
+    public class Message
+    {
+        public string lang { get; set; }
+        public string value { get; set; }
+    }
+
     public class LoginResponse
     {
         public string odata { get; set; } = string.Empty;

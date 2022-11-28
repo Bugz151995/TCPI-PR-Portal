@@ -34,11 +34,10 @@ namespace TCPI_PR_Portal.Models
         public string? U_ApproverCode3 { get; set; }
         public string? U_ApproverCode4 { get; set; }
         public string? U_ApproverSpecialCode { get; set; }
+        public string? U_ApprovalLevel { get; set; }
 
         // Uncomment if needed this is included in the mapping not in the UI
-        
         //public int U_UserId { get; set; }
-        //public string U_ApprovalLevel { get; set; }
         //public int U_Department { get; set; }
         //public int U_CostCenter { get; set; }
     }
