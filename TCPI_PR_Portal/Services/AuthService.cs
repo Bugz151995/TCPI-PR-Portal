@@ -13,10 +13,10 @@ namespace TCPI_PR_Portal.Services
         private readonly IIWLocalStorageService _localStorage;
 
         public AuthService(AuthenticationStateProvider authenticationStateProvider,
-                           IIWLocalStorageService localStorage)
+                           IIWLocalStorageService SessionStorage)
         {
             _authenticationStateProvider = authenticationStateProvider;
-            _localStorage = localStorage;
+            _localStorage = SessionStorage;
         }
 
         public void Login(string employeeName, string role)

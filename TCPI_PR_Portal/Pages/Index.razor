@@ -14,7 +14,6 @@
 @inject NavigationManager Navigation;
 @inject IAuthService AuthService;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
-@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWSessionStorageService SessionStorage;
 
 @attribute [AllowAnonymous];
 @page "/"
@@ -56,10 +55,14 @@
     bool success;
 
     LoginDto User = new LoginDto();
+
     LoginSessionDto LoginSession = new LoginSessionDto();
     LoginResponse? LoginResponse= new LoginResponse();
-    
+
     UserSessionDto UserSession = new UserSessionDto();
+
+    SAPUserDto SapUser = new SAPUserDto();
+    UserResponse? SapUserResponse = new UserResponse();
 
     private async Task OnValidSubmit(EditContext context)
     {
@@ -83,34 +86,24 @@
 
             LoginSession = await sapLogin.Content.ReadFromJsonAsync<LoginSessionDto>();
 
-            await SessionStorage.SetItemAsync("SessionId", LoginSession.SessionId);
-            await SessionStorage.SetItemAsync("Version", LoginSession.Version);
-            await SessionStorage.SetItemAsync("SessionTimeout", LoginSession.SessionTimeout);
+            using var userUdtResponse = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}'");
 
-            using var response = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserName eq '{User.U_UserName}'");
+            using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$filter=U_Username eq '{User.U_UserName}'");
 
-            if (!response.IsSuccessStatusCode)
+            if (!userUdtResponse.IsSuccessStatusCode && !userResponse.IsSuccessStatusCode)
             {
-                Snackbar.Add(response.ReasonPhrase, Severity.Error);
+                Snackbar.Add(userUdtResponse.ReasonPhrase, Severity.Error);
+                Snackbar.Add(userResponse.ReasonPhrase, Severity.Error);
                 return;
             }
 
-            LoginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            LoginResponse = await userUdtResponse.Content.ReadFromJsonAsync<LoginResponse>();
             UserSession = LoginResponse.value[0];
 
-            await SessionStorage.SetItemAsync("Code", UserSession.Code);
-            await SessionStorage.SetItemAsync("EmployeeName", UserSession.U_Employee);
-            await SessionStorage.SetItemAsync("Role", UserSession.U_Role);
-            await SessionStorage.SetItemAsync("U_ApproverCode1", UserSession.U_ApproverCode1);
-            await SessionStorage.SetItemAsync("U_ApproverCode2", UserSession.U_ApproverCode2);
-            await SessionStorage.SetItemAsync("U_ApproverCode3", UserSession.U_ApproverCode3);
-            await SessionStorage.SetItemAsync("U_ApproverCode4", UserSession.U_ApproverCode4);
-            await SessionStorage.SetItemAsync("U_ApproverSpecialCode", UserSession.U_ApproverSpecialCode);
-            await SessionStorage.SetItemAsync("U_Approver1", UserSession.U_Approver1);
-            await SessionStorage.SetItemAsync("U_Approver2", UserSession.U_Approver2);
-            await SessionStorage.SetItemAsync("U_Approver3", UserSession.U_Approver3);
-            await SessionStorage.SetItemAsync("U_Approver4", UserSession.U_Approver4);
-            await SessionStorage.SetItemAsync("U_ApproverSpecial", UserSession.U_ApproverSpecial);
+            SapUserResponse = await userUdtResponse.Content.ReadFromJsonAsync<UserResponse>();
+            SapUser = SapUserResponse.value[0];
+
+            storeSessionToLocalStorage();
 
             AuthService.Login(UserSession.U_Employee, UserSession.U_Role);
             Navigation.NavigateTo("user-setup");
@@ -124,5 +117,29 @@
             Snackbar.Add(ex.Message, Severity.Error);
             throw;
         }
+    }
+
+    void storeSessionToLocalStorage()
+    {
+        LocalStorage.SetItem("SessionId", LoginSession.SessionId);
+        LocalStorage.SetItem("Version", LoginSession.Version);
+        LocalStorage.SetItem("SessionTimeout", LoginSession.SessionTimeout);
+        LocalStorage.SetItem("Code", UserSession.Code);
+        LocalStorage.SetItem("UserName", SapUser.UserName);
+        LocalStorage.SetItem("UserCode", SapUser.UserCode);
+        LocalStorage.SetItem("EmployeeName", UserSession.U_Employee);
+        LocalStorage.SetItem("Role", UserSession.U_Role);
+        LocalStorage.SetItem("Branch", SapUser.Branch);
+        LocalStorage.SetItem("Department", SapUser.Department);
+        LocalStorage.SetItem("U_ApproverCode1", UserSession.U_ApproverCode1);
+        LocalStorage.SetItem("U_ApproverCode2", UserSession.U_ApproverCode2);
+        LocalStorage.SetItem("U_ApproverCode3", UserSession.U_ApproverCode3);
+        LocalStorage.SetItem("U_ApproverCode4", UserSession.U_ApproverCode4);
+        LocalStorage.SetItem("U_ApproverSpecialCode", UserSession.U_ApproverSpecialCode);
+        LocalStorage.SetItem("U_Approver1", UserSession.U_Approver1);
+        LocalStorage.SetItem("U_Approver2", UserSession.U_Approver2);
+        LocalStorage.SetItem("U_Approver3", UserSession.U_Approver3);
+        LocalStorage.SetItem("U_Approver4", UserSession.U_Approver4);
+        LocalStorage.SetItem("U_ApproverSpecial", UserSession.U_ApproverSpecial);
     }
 }

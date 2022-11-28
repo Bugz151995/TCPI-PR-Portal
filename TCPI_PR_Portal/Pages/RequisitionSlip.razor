@@ -302,13 +302,13 @@
 
             docEntry = lastDocEntry + 1;
             employeeName = LocalStorage.GetItem<string>("EmployeeName");
-            code = $"PR-{LocalStorage.GetItem<string>("EmployeeName")}-{docEntry}";
             
-            PRHeader.Code = code;
             PRHeader.Name = code;
             PRHeader.U_DocEntry = docEntry;
             PRHeader.U_PreparedBy = employeeName;
             PRHeader.U_DocStatus = "Waiting For Approval";
+            PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
+            PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
         catch (Exception ex)
         {

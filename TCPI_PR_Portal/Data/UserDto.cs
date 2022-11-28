@@ -11,19 +11,19 @@ namespace TCPI_PR_Portal.Models
     public class UserDto
     {
         [Required]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [Required, Display(Name="Username")]
-        public string U_UserName { get; set; }
+        public string U_UserName { get; set; } = string.Empty;
         [Required, Display(Name = "Password")]
-        public string U_Password { get; set; }
+        public string U_Password { get; set; } = string.Empty;
         [Required, Display(Name = "Employee Name")]
-        public string U_Employee { get; set; }
+        public string U_Employee { get; set; } = string.Empty;
         [EmailAddress, Required, Display(Name = "Email Address")]
-        public string U_EmailAddress { get; set; }
+        public string U_EmailAddress { get; set; } = string.Empty;
         [Required, Display(Name = "Role")]
-        public string U_Role { get; set; }
+        public string U_Role { get; set; } = string.Empty;
         public string? U_Approver1 { get; set; }
         public string? U_Approver2 { get; set; }
         public string? U_Approver3 { get; set; }
@@ -40,5 +40,21 @@ namespace TCPI_PR_Portal.Models
         //public int U_UserId { get; set; }
         //public int U_Department { get; set; }
         //public int U_CostCenter { get; set; }
+    }
+
+    public class UserResponse
+    {
+        public string odatametadata { get; set; } = string.Empty;
+        public List<SAPUserDto> value { get; set; } = new List<SAPUserDto>();   
+        public string odatanextLink { get; set; } = string.Empty;
+    }
+
+    public class SAPUserDto
+    {
+        public string UserCode { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public object eMail { get; set; } = new object();
+        public int Branch { get; set; } = new int();
+        public int Department { get; set; } = new int();
     }
 }
