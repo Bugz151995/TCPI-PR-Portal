@@ -53,12 +53,13 @@
 </EditForm>
 
 @code {
+    bool success;
+
     LoginDto User = new LoginDto();
     LoginSessionDto LoginSession = new LoginSessionDto();
-    LoginResponse LoginResponse= new LoginResponse();
+    LoginResponse? LoginResponse= new LoginResponse();
     
     UserSessionDto UserSession = new UserSessionDto();
-    bool success;
 
     private async Task OnValidSubmit(EditContext context)
     {
@@ -95,7 +96,7 @@
             }
 
             LoginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-            UserSession = LoginResponse.value;
+            UserSession = LoginResponse.value[0];
 
             await SessionStorage.SetItemAsync("Code", UserSession.Code);
             await SessionStorage.SetItemAsync("EmployeeName", UserSession.U_Employee);

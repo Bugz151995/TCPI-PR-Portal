@@ -53,6 +53,6 @@ namespace TCPI_PR_Portal.Data
     public class LoginResponse
     {
         public string odata { get; set; } = string.Empty;
-        public UserSessionDto value { get; set; } = new UserSessionDto();
+        public List<UserSessionDto> value { get; set; } = new List<UserSessionDto>();
     }
 }
