@@ -34,6 +34,7 @@ namespace TCPI_PR_Portal.Models
         public string? U_ApprovedBy2 { get; set; }
         public string? U_ApprovedBy3 { get; set; }
         public string? U_ApprovedBy4 { get; set; }
+        public string? U_ApprovedBySpecial { get; set; }
         public string? U_ApprovedDate { get; set; }
         public string? U_Remarks { get; set; }
         public string? U_ApproverRemarks { get; set; }

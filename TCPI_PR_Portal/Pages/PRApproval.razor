@@ -29,7 +29,7 @@
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-4 gap-2">
                 <MudTextField @bind-Value="PRHeader.U_DocNum" Label="Doc. No" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" Disabled="true"/>
+                <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" Disabled="true" />
                 <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_Urgency" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_PreparedBy" Label="Prepared By" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
@@ -72,52 +72,52 @@
                 <MudText>@(++index)</MudText>
                 </MudTd>
                 <MudTd DataLabel="Item Code">
-                    <MudTextField @bind-Value="@Items.U_ItemCode" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_ItemCode" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Item Description">
-                    <MudTextField @bind-Value="@Items.U_Dscription" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_Dscription" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Warehouse">
-                    <MudTextField @bind-Value="@Items.U_WhsCode" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_WhsCode" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Bin Location">
-                    <MudTextField @bind-Value="@Items.U_BinLoc" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_BinLoc" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Scope of Work">
-                    <MudTextField @bind-Value="@Items.U_Scope" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_Scope" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Scope Description">
-                    <MudTextField @bind-Value="@Items.U_ScopeDesc" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_ScopeDesc" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Material Code">
-                    <MudTextField @bind-Value="@Items.U_MaterialCode" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_MaterialCode" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Material Description">
-                    <MudTextField @bind-Value="@Items.U_MaterialDesc" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_MaterialDesc" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Quantity">
-                    <MudTextField @bind-Value="@Items.U_Quantity" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_Quantity" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Info Price">
-                    <MudTextField @bind-Value="@Items.U_InfoPrice" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_InfoPrice" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Units Of Measurement">
-                    <MudTextField @bind-Value="@Items.U_UomCode" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_UomCode" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Item Specification">
-                    <MudTextField @bind-Value="@Items.U_ItemSpecification" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_ItemSpecification" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Tax Code">
-                    <MudTextField @bind-Value="@Items.U_TaxCode" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_TaxCode" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="On hand Quantity">
-                    <MudTextField @bind-Value="@Items.U_OnHandQuantity" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_OnHandQuantity" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Inventory Type">
-                    <MudTextField @bind-Value="@Items.U_InventoryType" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_InventoryType" Disabled="true" />
                 </MudTd>
                 <MudTd DataLabel="Inventory Purpose">
-                    <MudTextField @bind-Value="@Items.U_InventoryPurpose" Disabled="true"/>
+                    <MudTextField @bind-Value="@Items.U_InventoryPurpose" Disabled="true" />
                 </MudTd>
             </RowTemplate>
         </MudTable>
