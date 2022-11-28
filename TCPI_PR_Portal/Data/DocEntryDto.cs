@@ -12,4 +12,15 @@ namespace TCPI_PR_Portal.Data
         public string odata { get; set; }
         public List<DocEntryDto> value { get; set; } = new List<DocEntryDto>();
     }
+
+    public class CodeDto
+    {
+        public string Code { get; set; }
+    }
+
+    public class CodeResponse
+    {
+        public string odata { get; set; }
+        public List<CodeDto> value { get; set; } = new List<CodeDto>();
+    }
 }

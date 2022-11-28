@@ -200,13 +200,12 @@
 
 @code {
     private int docEntry = 0;
-    private string code = string.Empty;
+    private string userName = string.Empty;
     // table settings
     private bool dense = false;
     private bool hover = true;
     private bool striped = true;
     private bool bordered = false;
-    private string employeeName = string.Empty;
 
     private PRHeaderDto PRHeader = new PRHeaderDto();
     private List<PRLinesDto> PRLines = new List<PRLinesDto>();
@@ -218,6 +217,7 @@
     WarehouseDto SelectedWhs = new WarehouseDto();
     VatGroupsDto SelectedVatGroup = new VatGroupsDto();
 
+    CodeResponse? LastCodeResponse = new CodeResponse();
     DocEntryResponse? LastDocEntryResponse = new DocEntryResponse();
     ProjectsResponse? ProjectResponse = new ProjectsResponse();
     DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
@@ -226,6 +226,7 @@
     WarehouseResponse? WhsResponse = new WarehouseResponse();
     VatGroupsResponse? VatGroupResponse = new VatGroupsResponse();
 
+    List<CodeDto>? LastCode = new List<CodeDto>();
     List<DocEntryDto>? LastDocEntry = new List<DocEntryDto>();
     List<ProjectsDto>? Projects = new List<ProjectsDto>();
     List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
@@ -301,11 +302,13 @@
             VatGroup = VatGroupResponse.value;
 
             docEntry = lastDocEntry + 1;
-            employeeName = LocalStorage.GetItem<string>("EmployeeName");
-            
-            PRHeader.Name = code;
+            userName = LocalStorage.GetItem<string>("UserName");
+
+            PRHeader.Code = docEntry.ToString();
+            PRHeader.Name = docEntry.ToString();
+            PRHeader.CardCode = userName;
             PRHeader.U_DocEntry = docEntry;
-            PRHeader.U_PreparedBy = employeeName;
+            PRHeader.U_PreparedBy = userName;
             PRHeader.U_DocStatus = "Waiting For Approval";
             PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
@@ -324,12 +327,21 @@
         PRHeader.U_ProjName = search.First();
     }
 
-    void AddLine()
+    async Task AddLine()
     {
+        int lastCode = 0;
+        var lastCodeResponse = await HttpClient.GetAsync("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
+        LastCodeResponse = await lastCodeResponse.Content.ReadFromJsonAsync<CodeResponse>();
+
+        if (LastCodeResponse.value.Count != 0)
+            lastCode = Convert.ToInt32(LastCodeResponse.value[0].Code);
+
+        lastCode = lastCode + 1;
+
         PRLines.Add(new PRLinesDto
             {
-                Code = code,
-                Name = code,
+                Code = lastCode.ToString(),
+                Name = lastCode.ToString(),
                 U_DocEntry = PRHeader.U_DocEntry.ToString(),
                 U_ItemCode = null,
                 U_Dscription = null,
