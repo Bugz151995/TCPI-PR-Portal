@@ -130,8 +130,8 @@
         LocalStorage.SetItem("UserCode", SapUser.UserCode);
         LocalStorage.SetItem("EmployeeName", UserSession.U_Employee);
         LocalStorage.SetItem("Role", UserSession.U_Role);
-        LocalStorage.SetItem("Branch", SapUser.Branch);
-        LocalStorage.SetItem("Department", SapUser.Department);
+        LocalStorage.SetItem("Branch", SapUser.Branch.ToString());
+        LocalStorage.SetItem("Department", SapUser.Department.ToString());
         LocalStorage.SetItem("U_ApproverCode1", UserSession.U_ApproverCode1);
         LocalStorage.SetItem("U_ApproverCode2", UserSession.U_ApproverCode2);
         LocalStorage.SetItem("U_ApproverCode3", UserSession.U_ApproverCode3);

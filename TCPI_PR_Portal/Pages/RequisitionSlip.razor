@@ -306,8 +306,10 @@
             PRHeader.U_DocStatus = "Waiting For Approval";
             PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserName");
             PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
-            PRHeader.U_Department = "-2";
-            PRHeader.U_Branch = "-2";
+            PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
+            PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
+            Console.WriteLine(LocalStorage.GetItem<string>("Department"));
+            Console.WriteLine(LocalStorage.GetItem<string>("Branch"));
         }
         catch (Exception ex)
         {
