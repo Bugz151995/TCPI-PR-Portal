@@ -34,7 +34,14 @@
 							<MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChanged(value)" Value="@User.Code" SearchFunc="@SearchUserCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
 							<MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" For="@(() => User.U_Password)" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
 							<MudTextField Elevation="0" @bind-Value="User.U_Employee" For="@(() => User.U_Employee)" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-
+							<div style="display: @displayLevel">
+								<MudSelect Margin="Margin.Dense" @bind-Value="User.U_ApprovalLevel" For="@(() => User.U_ApprovalLevel)" Label="Approval Level" Variant="Variant.Outlined">
+									<MudSelectItem Value="@("Level 1")" />
+									<MudSelectItem Value="@("Level 2")" />
+									<MudSelectItem Value="@("Level 3")" />
+									<MudSelectItem Value="@("Level 4")" />
+								</MudSelect>
+							</div>
 							@*<MudSelect Margin="Margin.Dense" @bind-Value="User.U_Branch" For="@(() => User.U_Branch)" Label="Branch" Variant="Variant.Outlined">
 								@foreach (var b in Branches)
 								{
@@ -60,15 +67,6 @@
 								<MudSelectItem Value="@("Requestor")" />
 								<MudSelectItem Value="@("Approver")" />
 							</MudSelect>
-
-							<div style="display: @displayLevel">
-								<MudSelect Margin="Margin.Dense" @bind-Value="User.U_ApprovalLevel" For="@(() => User.U_ApprovalLevel)" Label="Approval Level" Variant="Variant.Outlined">
-									<MudSelectItem Value="@("Level 1")" />
-									<MudSelectItem Value="@("Level 2")" />
-									<MudSelectItem Value="@("Level 3")" />
-									<MudSelectItem Value="@("Level 4")" />
-								</MudSelect>
-							</div>
 						</MudPaper>
 					</MudItem>
 				</MudGrid>
@@ -196,7 +194,7 @@
 			Navigation.NavigateTo("/");
 		}
 
-		using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey asc");
+		using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department");
 		SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
 		SapUser = SapUserResponse.value;
 
@@ -229,4 +227,4 @@
 
 		return userCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
 	}
-}
+}z

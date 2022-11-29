@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace TCPI_PR_Portal.Models
         public string U_Password { get; set; } = string.Empty;
         [Required, Display(Name = "Employee Name")]
         public string U_Employee { get; set; } = string.Empty;
-        [EmailAddress, Display(Name = "Email Address")]
+        [AllowNull ,EmailAddress, Display(Name = "Email Address")]
         public string U_EmailAddress { get; set; } = string.Empty;
         [Required, Display(Name = "Role")]
         public string U_Role { get; set; } = string.Empty;
