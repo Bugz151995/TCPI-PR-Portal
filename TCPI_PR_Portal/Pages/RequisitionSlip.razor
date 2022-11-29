@@ -106,7 +106,7 @@
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Code">
-                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" ValueChanged="value => SelectItem(Items, value)" Label="Project ID" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" ValueChanged="value => SelectItem(Items, value)" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
                     {
                         <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
@@ -133,7 +133,7 @@
                 <MudTextField @bind-Value="@Items.U_BinLoc" For="@(() => Items.U_BinLoc)" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Scope of Work">
-                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_Scope" For="@(() => Items.U_Scope)" ValueChanged="value => SelectScopeOfWork(Items, value)" Label="Project ID" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_Scope" For="@(() => Items.U_Scope)" ValueChanged="value => SelectScopeOfWork(Items, value)" Variant="Variant.Outlined">
                     @foreach (var i in ScopeOfWork)
                     {
                         <MudSelectItem Value="@i.FactorCode">@i.FactorCode</MudSelectItem>
