@@ -35,13 +35,13 @@
                 <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Branch" For="@(() => PRHeader.U_Branch)" Label="Branch" Variant="Variant.Outlined">
                     @foreach (var b in Branches)
                     {
-                        <MudSelectItem Value="@b">@b.Name</MudSelectItem>
+                        <MudSelectItem Value="@b.Name">@b.Name</MudSelectItem>
                     }
                 </MudSelect>
                 <MudSelect Margin="Margin.Dense" @bind-Value="PRHeader.U_Department" For="@(() => PRHeader.U_Department)" Label="Department" Variant="Variant.Outlined">
                     @foreach (var d in Departments)
                     {
-                        <MudSelectItem Value="@d">@d.Name</MudSelectItem>
+                        <MudSelectItem Value="@d.Name">@d.Name</MudSelectItem>
                     }
                 </MudSelect>
             </MudPaper>
@@ -229,7 +229,7 @@
     List<CodeDto>? LastCode = new List<CodeDto>();
     List<DocEntryDto>? LastDocEntry = new List<DocEntryDto>();
     List<ProjectsDto>? Projects = new List<ProjectsDto>();
-    HashSet<DepartmentsDto>? Departments = new HashSet<DepartmentsDto>();
+    List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
     List<BranchesDto>? Branches = new List<BranchesDto>();
     List<ItemsDto>? ItemMaster = new List<ItemsDto>();
     List<WarehouseDto>? Warehouse = new List<WarehouseDto>();
