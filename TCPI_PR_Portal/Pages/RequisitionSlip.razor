@@ -235,7 +235,8 @@
 
     CodeResponse? LastCodeResponse = new CodeResponse();
     DocEntryResponse? LastDocEntryResponse = new DocEntryResponse();
-    DocNumResponse? LastDocNumResponse = new DocNumResponse();
+    DocNumResponse? LastDocNumSapResponse = new DocNumResponse();
+    DocNumUdtResponse? LastDocNumUdtResponse = new DocNumUdtResponse();
 
     ProjectsResponse? ProjectResponse = new ProjectsResponse();
     DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
@@ -292,43 +293,11 @@
             using var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
             LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
 
-            int lastDocNum = 0;
-            using var lastDocNumResponse = await HttpClient.GetAsync("PurchaseRequests?$select=DocNum&$orderby=DocNum desc&$top=1");
-            LastDocNumResponse = await lastDocNumResponse.Content.ReadFromJsonAsync<DocNumResponse>();
-
             if (LastDocEntryResponse.value.Count != 0)
                 lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
 
-            if (LastDocNumResponse.value.Count != 0)
-                lastDocNum = LastDocNumResponse.value[0].DocNum;
-
-            using var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
-            ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
-            Projects = ProjectResponse.value;
-
-            using var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
-            DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
-            Departments = DepartmentResponse.value;
-
-            using var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
-            BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
-            Branches = BranchResponse.value;
-
-            using var itemsResponse = await HttpClient.GetAsync("Items?$select=ItemCode,ItemName");
-            ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
-            ItemMaster = ItemResponse.value;
-
-            using var whsResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
-            WhsResponse = await whsResponse.Content.ReadFromJsonAsync<WarehouseResponse>();
-            Warehouse = WhsResponse.value;
-
-            using var vatGroupResponse = await HttpClient.GetAsync("VatGroups?$select=Code,Name&$orderby = Name asc");
-            VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
-            VatGroup = VatGroupResponse.value;
-
-            using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
-            ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
-            ScopeOfWork = ScopeOfWorkResponse.value;
+            await FetchDropdownData();
+            int lastDocNum = await GetLastDocNum();
 
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
@@ -396,5 +365,62 @@
     void RemoveLine(int index)
     {
         PRLines.RemoveAt(index);
+    }
+
+    async Task FetchDropdownData()
+    {
+        using var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
+        ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
+        Projects = ProjectResponse.value;
+
+        using var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
+        DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
+        Departments = DepartmentResponse.value;
+
+        using var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
+        BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
+        Branches = BranchResponse.value;
+
+        using var itemsResponse = await HttpClient.GetAsync("Items?$select=ItemCode,ItemName");
+        ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
+        ItemMaster = ItemResponse.value;
+
+        using var whsResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
+        WhsResponse = await whsResponse.Content.ReadFromJsonAsync<WarehouseResponse>();
+        Warehouse = WhsResponse.value;
+
+        using var vatGroupResponse = await HttpClient.GetAsync("VatGroups?$select=Code,Name&$orderby = Name asc");
+        VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
+        VatGroup = VatGroupResponse.value;
+
+        using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
+        ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
+        ScopeOfWork = ScopeOfWorkResponse.value;
+    }
+
+    async Task<int> GetLastDocNum()
+    {
+        int docNum = 0;
+        int lastDocNumSAP = 0;
+        int lastDocNumUdt = 0;
+
+        using var lastDocNumSAPResponse = await HttpClient.GetAsync("PurchaseRequests?$select=DocNum&$orderby=DocNum desc&$top=1");
+        LastDocNumSapResponse = await lastDocNumSAPResponse.Content.ReadFromJsonAsync<DocNumResponse>();
+
+        using var lastDocNumUdtResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocNum&$orderby=U_DocEntry desc&$top=1");
+        LastDocNumUdtResponse = await lastDocNumUdtResponse.Content.ReadFromJsonAsync<DocNumUdtResponse>();
+
+        if (LastDocNumSapResponse.value.Count != 0)
+            lastDocNumSAP = LastDocNumSapResponse.value[0].DocNum;
+
+        if (LastDocNumUdtResponse.value.Count != 0)
+            lastDocNumUdt = LastDocNumUdtResponse.value[0].U_DocNum;
+
+        if (lastDocNumUdt > lastDocNumSAP)
+            docNum = lastDocNumUdt;
+        
+        docNum = lastDocNumSAP;
+
+        return docNum;
     }
 }
