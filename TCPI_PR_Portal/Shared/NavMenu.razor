@@ -1,4 +1,7 @@
-﻿@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
+﻿@using TCPI_PR_Portal.Services;
+@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
+@inject IAuthService AuthService
+@inject NavigationManager Navigation;
 
 <MudNavMenu>
     <div class="d-flex px-3 ps-5 align-center justify-start">
@@ -25,6 +28,7 @@
     <MudNavLink Class="px-3 mb-3" Href="user-setup" Match="NavLinkMatch.All" Icon="@Icons.Filled.PeopleAlt" IconColor="Color.Primary">User Setup</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="requisition-slip" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Receipt" IconColor="Color.Primary">Requisition Slip</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="document-status" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Assignment" IconColor="Color.Primary">Document Status</MudNavLink>
+    <MudNavLink Class="px-3 mb-3" OnClick="Logout" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Logout" IconColor="Color.Primary">Logout</MudNavLink>
 </MudNavMenu>
 
 @code {
@@ -35,5 +39,11 @@
     {
         Username = LocalStorage.GetItem<string>("UserName");
         Role = LocalStorage.GetItem<string>("Role");
+    }
+
+    void Logout()
+    {
+        AuthService.Logout();
+        Navigation.NavigateTo("/");
     }
 }
