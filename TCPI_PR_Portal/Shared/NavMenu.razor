@@ -1,13 +1,15 @@
-﻿<MudNavMenu>
-    <MudNavLink Class="px-3 mb-3" Disabled="true" Match="NavLinkMatch.All" Icon="@Icons.Filled.PeopleAlt" IconColor="Color.Primary">
+﻿@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
+
+<MudNavMenu>
+    <MudNavLink Class="px-3 mb-3" Disabled="true" Match="NavLinkMatch.All" IconColor="Color.Primary">
         <MudCard>
             <MudCardHeader>
                 <CardHeaderAvatar>
-                    <MudAvatar Color="Color.Secondary">I</MudAvatar>
+                    <MudAvatar Color="Color.Secondary">A</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.body1">Istra Croatia</MudText>
-                    <MudText Typo="Typo.body2">Peninsula in Europe</MudText>
+                    <MudText Typo="Typo.body1">@Username</MudText>
+                    <MudText Typo="Typo.body2">@Role</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
                     <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
@@ -19,3 +21,14 @@
     <MudNavLink Class="px-3 mb-3" Href="requisition-slip" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Receipt" IconColor="Color.Primary">Requisition Slip</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="document-status" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Assignment" IconColor="Color.Primary">Document Status</MudNavLink>
 </MudNavMenu>
+
+@code {
+    public string Username { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        Username = LocalStorage.GetItem<string>("UserName");
+        Role = LocalStorage.GetItem<string>("Role");
+    }
+}
