@@ -208,6 +208,7 @@
 
         JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
         CodeDto code = codeJson["value"].ToObject<CodeDto>();
+        Console.WriteLine(JsonConvert.SerializeObject(code));
         int nextCode = Convert.ToInt32(code.Code) + 1;
         User.Code = nextCode.ToString();
         User.Name = nextCode.ToString();
