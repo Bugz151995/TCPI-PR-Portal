@@ -133,7 +133,7 @@
                 <MudTextField @bind-Value="@Items.U_BinLoc" For="@(() => Items.U_BinLoc)" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Scope of Work">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Scope" For="@(() => Items.U_Scope)" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_Scope" For="@(() => Items.U_Scope)" ValueChanged="value => SelectScopeOfWork(Items, value)" Label="Project ID" Variant="Variant.Outlined">
                     @foreach (var i in ScopeOfWork)
                     {
                         <MudSelectItem Value="@i.FactorCode">@i.FactorCode</MudSelectItem>
@@ -330,6 +330,13 @@
         var search = ItemMaster.Where(e => e.ItemCode == selectedString).Select(e => e.ItemName);
         context.U_Dscription = search.First();
         context.U_MaterialDesc = search.First();
+    }
+
+    void SelectScopeOfWork(PRLinesDto context, string selectedString)
+    {
+        context.U_Scope = selectedString;
+        var search = ScopeOfWork.Where(e => e.FactorCode == selectedString).Select(e => e.FactorDescription);
+        context.U_ScopeDesc = search.First();
     }
 
     async Task AddLine()
