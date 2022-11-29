@@ -271,12 +271,12 @@
         try
         {
             int lastDocEntry = 0;
-            var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
+            using var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
             LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
 
             int lastDocNum = 0;
-            var lastDocNumResponse = await HttpClient.GetAsync("PurchaseRequests?$select=DocNum&$orderby=DocNum desc&$top=1");
-            LastDocNumResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocNumResponse>();
+            using var lastDocNumResponse = await HttpClient.GetAsync("PurchaseRequests?$select=DocNum&$orderby=DocNum desc&$top=1");
+            LastDocNumResponse = await lastDocNumResponse.Content.ReadFromJsonAsync<DocNumResponse>();
 
             if (LastDocEntryResponse.value.Count != 0)
                 lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
@@ -284,27 +284,27 @@
             if (LastDocNumResponse.value.Count != 0)
                 lastDocNum = LastDocNumResponse.value[0].DocNum;
 
-            var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
+            using var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
             ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
             Projects = ProjectResponse.value;
 
-            var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
+            using var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
             DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
             Departments = DepartmentResponse.value;
 
-            var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
+            using var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
             BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
             Branches = BranchResponse.value;
 
-            var itemsResponse = await HttpClient.GetAsync("Items?$select=ItemCode,ItemName");
+            using var itemsResponse = await HttpClient.GetAsync("Items?$select=ItemCode,ItemName");
             ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
             ItemMaster = ItemResponse.value;
 
-            var whsResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
+            using var whsResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
             WhsResponse = await whsResponse.Content.ReadFromJsonAsync<WarehouseResponse>();
             Warehouse = WhsResponse.value;
 
-            var vatGroupResponse = await HttpClient.GetAsync("VatGroups?$select=Code,Name&$orderby = Name asc");
+            using var vatGroupResponse = await HttpClient.GetAsync("VatGroups?$select=Code,Name&$orderby = Name asc");
             VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
             VatGroup = VatGroupResponse.value;
 
