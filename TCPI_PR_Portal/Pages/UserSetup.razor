@@ -195,23 +195,16 @@
 		}
 
 		string query = "Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc";
-
+		JObject json;
 		do
 		{
 			using var userResponse = await HttpClient.GetAsync(query);
 			string responses = await userResponse.Content.ReadAsStringAsync();
-			JObject json = JObject.Parse(responses);
+			json = JObject.Parse(responses);
 
-			JToken emptyToken = null;
-
-			JToken token = json["value"] ?? emptyToken;
-			if (token.HasValues)
-				SapUser = token.ToObject<List<SAPUserDto>>();
-
-			JToken nextLinkToken = json["odata.nextLink"] ?? emptyToken;
-			query = nextLinkToken.ToString() ?? null;
-
-		} while (query != "");
+			SapUser = json["value"].ToObject<List<SAPUserDto>>();
+			query = json["odata.nextLink"].ToString();
+		} while (json.ContainsKey("odata.nextLink"));
 		@*
 		foreach (var item in SapUser)
 		{
