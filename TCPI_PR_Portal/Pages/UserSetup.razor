@@ -197,12 +197,14 @@
 		using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc");
 		SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
 		SapUser = SapUserResponse.value;
+		string nextLink = SapUserResponse.odatanextLink;
 
-		while (SapUserResponse.odatanextLink != null)
+		while (nextLink != null)
 		{
 			using var nextChunk = await HttpClient.GetAsync(SapUserResponse.odatanextLink);
 			SapUserResponse = await nextChunk.Content.ReadFromJsonAsync<UserResponse>();
 			SapUser.AddRange(SapUserResponse.value);
+			nextLink = SapUserResponse.odatanextLink;
 		}
 
 		foreach (var item in SapUser)
