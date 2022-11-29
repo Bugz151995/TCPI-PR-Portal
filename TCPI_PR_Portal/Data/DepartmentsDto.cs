@@ -26,6 +26,6 @@ namespace TCPI_PR_Portal.Models
     public class DepartmentsResponse
     {
         public string odata { get; set; } = string.Empty;
-        public List<DepartmentsDto> value { get; set; } = new List<DepartmentsDto>();
+        public HashSet<DepartmentsDto> value { get; set; } = new HashSet<DepartmentsDto>();
     }
 }
