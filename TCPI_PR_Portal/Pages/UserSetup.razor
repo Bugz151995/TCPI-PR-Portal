@@ -202,17 +202,16 @@
 			string responses = await userResponse.Content.ReadAsStringAsync();
 			json = JObject.Parse(responses);
 
-			SapUser = json["value"].ToObject<List<SAPUserDto>>();
+			SapUser.AddRange(json["value"].ToObject<List<SAPUserDto>>());
+
 			if (json.ContainsKey("odata.nextLink"))
 				query = json["odata.nextLink"].ToString();
 		} while (json.ContainsKey("odata.nextLink"));
-		@*
+		
 		foreach (var item in SapUser)
 		{
-			userCodes.Add(item["UserCode"].ToString());
-		} *@
-		Console.WriteLine(JsonConvert.SerializeObject(SapUser));
-		//Console.WriteLine(JsonConvert.SerializeObject(userCodes));
+			userCodes.Add(item.UserCode);
+		} 
 	}
 
 	void SelectRole(UserDto context, string selectedString)
