@@ -1,5 +1,6 @@
 ﻿@using Blazor.SubtleCrypto;
 @using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
 @using Microsoft.AspNetCore.Authorization;
@@ -194,18 +195,18 @@
 			Navigation.NavigateTo("/");
 		}
 
-		using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc");
-		SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
-		SapUser = SapUserResponse.value;
-		string nextLink = SapUserResponse.odatanextLink;
+		string query = "Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc";
 
-		while (nextLink != null)
+		do
 		{
-			using var nextChunk = await HttpClient.GetAsync(SapUserResponse.odatanextLink);
-			SapUserResponse = await nextChunk.Content.ReadFromJsonAsync<UserResponse>();
-			SapUser.AddRange(SapUserResponse.value);
-			nextLink = SapUserResponse.odatanextLink;
-		}
+			using var userResponse = await HttpClient.GetAsync(query);
+			string responses = await userResponse.Content.ReadAsStringAsync();
+			JObject json = JObject.Parse(responses);
+			//SapUser.AddRange(SapUserResponse.value);
+
+			Console.WriteLine(json);
+			//query = SapUserResponse.nextLink.ToString();
+		} while (false);
 
 		foreach (var item in SapUser)
 		{
