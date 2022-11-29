@@ -141,8 +141,7 @@
 	DepartmentsResponse? DeptResponse = new DepartmentsResponse();
 	List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
 
-	List<SAPUserDto> SapUser = new List<SAPUserDto>();
-	UserResponse? SapUserResponse = new UserResponse();
+	List<JToken> SapUser = new List<JToken>();
 	List<string> userCodes = new List<string>();
 
 	private Roles roleValue { get; set; }
@@ -202,15 +201,18 @@
 			using var userResponse = await HttpClient.GetAsync(query);
 			string responses = await userResponse.Content.ReadAsStringAsync();
 			JObject json = JObject.Parse(responses);
-			//SapUser.AddRange(SapUserResponse.value);
+			foreach (var item in json["value"])
+			{
+				SapUser.Add(item);
+			}
 
-			Console.WriteLine(json);
-			//query = SapUserResponse.nextLink.ToString();
-		} while (false);
+			Console.WriteLine(SapUser[]);
+			query = json["odata.nextLink"].ToString();
+		} while (query != null);
 
 		foreach (var item in SapUser)
 		{
-			userCodes.Add(item.UserCode);
+			userCodes.Add(item["UserCode"].ToString());
 		}
 	}
 
@@ -224,9 +226,9 @@
 	private void OnValueChanged(string value)
 	{
 		User.Code = value;
-		SAPUserDto result = SapUser.Find(e => e.UserCode == User.Code);
-		User.U_UserName = result.UserName;
-		User.U_EmailAddress = result.eMail;
+		JToken result = SapUser.Find(e => e["UserCode"].ToString() == User.Code);
+		User.U_UserName = result["UserName"].ToString();
+		User.U_EmailAddress = result["eMail"].ToString();
 	}
 
 	private async Task<IEnumerable<string>> SearchUserCode(string value)
