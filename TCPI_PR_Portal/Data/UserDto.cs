@@ -16,14 +16,19 @@ namespace TCPI_PR_Portal.Models
         public string Code { get; set; } = string.Empty;
         [Required]
         public string Name { get; set; } = string.Empty;
+
         [Required, Display(Name="Username")]
         public string U_UserName { get; set; } = string.Empty;
+
         [Required, Display(Name = "Password")]
         public string U_Password { get; set; } = string.Empty;
+
         [Required, Display(Name = "Employee Name")]
         public string U_Employee { get; set; } = string.Empty;
+
         [AllowNull ,EmailAddress, Display(Name = "Email Address")]
         public string U_EmailAddress { get; set; } = string.Empty;
+
         [Required, Display(Name = "Role")]
         public string U_Role { get; set; } = string.Empty;
         public string? U_Approver1 { get; set; }
