@@ -44,16 +44,16 @@
 								</MudSelect>
 							</div>
 							@*<MudSelect Margin="Margin.Dense" @bind-Value="User.U_Branch" For="@(() => User.U_Branch)" Label="Branch" Variant="Variant.Outlined">
-								@foreach (var b in Branches)
-								{
-									<MudSelectItem Value="@b.Code">@b.Name</MudSelectItem>
-								}
+							@foreach (var b in Branches)
+							{
+							<MudSelectItem Value="@b.Code">@b.Name</MudSelectItem>
+							}
 							</MudSelect>
 							<MudSelect Margin="Margin.Dense" @bind-Value="User.U_Department" For="@(() => User.U_Department)" Label="Department" Variant="Variant.Outlined">
-								@foreach (var d in Departments)
-								{
-									<MudSelectItem Value="@d.Code">@d.Name</MudSelectItem>
-								}
+							@foreach (var d in Departments)
+							{
+							<MudSelectItem Value="@d.Code">@d.Name</MudSelectItem>
+							}
 							</MudSelect>*@
 							@*<MudTextField Elevation="0" @bind-Value="User.U_CostCenter" Label="Cost Center" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />*@
 						</MudPaper>
@@ -141,7 +141,7 @@
 	DepartmentsResponse? DeptResponse = new DepartmentsResponse();
 	List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
 
-	List<JToken> SapUser = new List<JToken>();
+	List<SAPUserDto>? SapUser = new List<SAPUserDto>();
 	List<string> userCodes = new List<string>();
 
 	private Roles roleValue { get; set; }
@@ -201,18 +201,24 @@
 			using var userResponse = await HttpClient.GetAsync(query);
 			string responses = await userResponse.Content.ReadAsStringAsync();
 			JObject json = JObject.Parse(responses);
-			foreach (var item in json["value"])
-			{
-				SapUser.Add(item);
-			}
 
-			query = json["odata.nextLink"].ToString();
-		} while (query != null);
+			JToken emptyToken = null;
 
+			JToken token = json["value"] ?? emptyToken;
+			if (token.HasValues)
+				SapUser = token.ToObject<List<SAPUserDto>>();
+
+			JToken nextLinkToken = json["odata.nextLink"] ?? emptyToken;
+			query = nextLinkToken.ToString() ?? null;
+
+		} while (query != "");
+		@*
 		foreach (var item in SapUser)
 		{
 			userCodes.Add(item["UserCode"].ToString());
-		}
+		} *@
+		Console.WriteLine(JsonConvert.SerializeObject(SapUser));
+		//Console.WriteLine(JsonConvert.SerializeObject(userCodes));
 	}
 
 	void SelectRole(UserDto context, string selectedString)
@@ -225,9 +231,9 @@
 	private void OnValueChanged(string value)
 	{
 		User.Code = value;
-		JToken result = SapUser.Find(e => e["UserCode"].ToString() == User.Code);
-		User.U_UserName = result["UserName"].ToString();
-		User.U_EmailAddress = result["eMail"].ToString();
+		SAPUserDto result = SapUser.Find(e => e.UserCode == User.Code);
+		User.U_UserName = result.UserName;
+		User.U_EmailAddress = result.eMail;
 	}
 
 	private async Task<IEnumerable<string>> SearchUserCode(string value)
