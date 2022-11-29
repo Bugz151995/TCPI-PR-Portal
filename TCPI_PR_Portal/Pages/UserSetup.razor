@@ -1,6 +1,7 @@
 ﻿@using Blazor.SubtleCrypto;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+@using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
 @using Microsoft.AspNetCore.Authorization;
@@ -163,13 +164,14 @@
 
             if (!response.IsSuccessStatusCode)
             {
-                Snackbar.Add("A new User was successfully created!", Severity.Success);
+                Snackbar.Add(response.ReasonPhrase, Severity.Error);
                 Console.WriteLine(response.ReasonPhrase);
                 return;
             }
 
             Snackbar.Add("A new User was successfully created!", Severity.Success);
 
+            User = new UserDto();
             success = true;
             StateHasChanged();
         }
@@ -190,17 +192,8 @@
         string query = "Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc";
         JObject json;
         do
-        {
-            using var userResponse = await HttpClient.GetAsync(query);
-            if (!userResponse.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Session has expired", Severity.Error);
-                AuthService.Logout();
-                Navigation.NavigateTo("/");
-            }
-
-            string responses = await userResponse.Content.ReadAsStringAsync();
-            json = JObject.Parse(responses);
+        {            
+            json = await GetData(query);
 
             SapUser.AddRange(json["value"].ToObject<List<SAPUserDto>>());
 
@@ -212,6 +205,12 @@
         {
             userCodes.Add(item.UserCode);
         }
+
+        JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
+        CodeDto code = codeJson["value"].ToObject<CodeDto>();
+        int nextCode = Convert.ToInt32(code.Code) + 1;
+        User.Code = nextCode.ToString();
+        User.Name = nextCode.ToString();
     }
 
     void SelectRole(UserDto context, string selectedString)
@@ -223,8 +222,8 @@
 
     private void OnValueChanged(string value)
     {
-        User.Code = value;
-        SAPUserDto result = SapUser.Find(e => e.UserCode == User.Code);
+        User.U_UserCode = value;
+        SAPUserDto result = SapUser.Find(e => e.UserCode == User.U_UserCode);
         User.U_UserName = result.UserName;
         User.U_EmailAddress = result.eMail;
     }
@@ -236,5 +235,18 @@
             return userCodes;
 
         return userCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    async Task<JObject> GetData(string query)
+    {
+        using var response = await HttpClient.GetAsync(query);
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Session has expired", Severity.Error);
+            AuthService.Logout();
+            Navigation.NavigateTo("/");
+        }
+        string content = await response.Content.ReadAsStringAsync();
+        return JObject.Parse(content);
     }
 }

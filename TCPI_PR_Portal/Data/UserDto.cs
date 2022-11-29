@@ -17,6 +17,9 @@ namespace TCPI_PR_Portal.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        [Required, Display(Name = "User Code")]
+        public string U_UserCode { get; set; } = string.Empty;
+
         [Required, Display(Name="Username")]
         public string U_UserName { get; set; } = string.Empty;
 
