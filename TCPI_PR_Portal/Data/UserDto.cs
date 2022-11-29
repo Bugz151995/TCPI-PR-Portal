@@ -12,9 +12,7 @@ namespace TCPI_PR_Portal.Models
 {
     public class UserDto
     {
-        [Required]
         public string Code { get; set; } = string.Empty;
-        [Required]
         public string Name { get; set; } = string.Empty;
 
         [Required, Display(Name = "User Code")]
