@@ -149,7 +149,7 @@
                 </MudSelect>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Material Description">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_MaterialDesc" For="@(() => Items.U_MaterialDesc)" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
                     {
                         <MudSelectItem Value="@i.ItemName">@i.ItemName</MudSelectItem>
@@ -417,9 +417,12 @@
             lastDocNumUdt = LastDocNumUdtResponse.value[0].U_DocNum;
 
         if (lastDocNumUdt > lastDocNumSAP)
+        {
             docNum = lastDocNumUdt;
-        
-        docNum = lastDocNumSAP;
+        } else docNum = lastDocNumSAP;
+                
+        Console.WriteLine($"SAP DocNum: {lastDocNumSAP}");
+        Console.WriteLine($"UDT DocNum: {lastDocNumUdt}");
 
         return docNum;
     }
