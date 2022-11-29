@@ -61,7 +61,7 @@
                                 <MudSelectItem Value="@("Approver")" />
                             </MudSelect>
 
-                            <div style="display: @displayApprover">
+                            <div style="display: @displayLevel">
                                 <MudSelect Margin="Margin.Dense" @bind-Value="User.U_ApprovalLevel" For="@(() => User.U_ApprovalLevel)" Label="Approval Level" Variant="Variant.Outlined">
                                     <MudSelectItem Value="@("Level 1")" />
                                     <MudSelectItem Value="@("Level 2")" />
@@ -196,7 +196,7 @@
         DeptResponse = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
         Departments = DeptResponse.value;
 
-        using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department");
+        using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey asc");
         SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
         SapUser = SapUserResponse.value;
 
