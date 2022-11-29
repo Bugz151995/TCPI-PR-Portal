@@ -194,7 +194,7 @@
 			Navigation.NavigateTo("/");
 		}
 
-		using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department");
+		using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc");
 		SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
 		SapUser = SapUserResponse.value;
 
