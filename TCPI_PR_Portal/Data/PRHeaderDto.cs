@@ -11,7 +11,7 @@ namespace TCPI_PR_Portal.Models
     {
         [Key, Required]
         public string Code { get; set; }
-        public string CardCode { get; set; }
+        public string U_CardCode { get; set; }
         [Required]
         public string Name { get; set; }
         public int? U_DocEntry { get; set; }
