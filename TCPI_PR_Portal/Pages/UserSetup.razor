@@ -82,11 +82,11 @@
                     <MudGrid Spacing="3" Justify="Justify.Center">
                         <MudItem xs="6">
                             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode1" Label="Approver Code 1" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode2" Label="Approver Code 2" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode3" Label="Approver Code 3" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverCode4" Label="Approver Code 4" Variant="Variant.Outlined" Margin="Margin.Dense" />
-                                <MudTextField Elevation="0" @bind-Value="User.U_ApproverSpecialCode" Label="Approver Code Special" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                                <MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChanged1(value)" Value="User.U_ApproverCode1" For="@(() => User.U_ApproverCode1)" SearchFunc="@SearchApprover1" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                                <MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChanged2(value)" Value="User.U_ApproverCode2" For="@(() => User.U_ApproverCode2)" SearchFunc="@SearchApprover2" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                                <MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChanged3(value)" Value="User.U_ApproverCode3" For="@(() => User.U_ApproverCode3)" SearchFunc="@SearchApprover3" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                                <MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChanged4(value)" Value="User.U_ApproverCode4" For="@(() => User.U_ApproverCode4)" SearchFunc="@SearchApprover4" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                                <MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChangedSpec(value)" Value="User.U_ApproverSpecialCode" For="@(() => User.U_ApproverSpecialCode)" SearchFunc="@SearchApproverSpecial" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
                             </MudPaper>
                         </MudItem>
 
@@ -144,10 +144,13 @@
     //List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
 
     List<SAPUserDto>? SapUser = new List<SAPUserDto>();
+    List<PortalUserDto>? PortalUser = new List<PortalUserDto>();
     List<string> userCodes = new List<string>();
-
-    private Roles roleValue { get; set; }
-    public enum Roles { Admin, Requestor, Approver };
+    List<string> approver1Codes = new List<string>();
+    List<string> approver2Codes = new List<string>();
+    List<string> approver3Codes = new List<string>();
+    List<string> approver4Codes = new List<string>();
+    List<string> approverSpecCodes = new List<string>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
         new BreadcrumbItem("User Setup", href: "user-setup", disabled: true)
@@ -198,21 +201,24 @@
         //DeptResponse = await response.Content.ReadFromJsonAsync<DepartmentsResponse>();
         //Departments = DeptResponse.value;
 
-        string query = "Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc";
-        JObject json;
-        do
-        {            
-            json = await GetData(query);
-
-            SapUser.AddRange(json["value"].ToObject<List<SAPUserDto>>());
-
-            if (json.ContainsKey("odata.nextLink"))
-                query = json["odata.nextLink"].ToString();
-        } while (json.ContainsKey("odata.nextLink"));
-
-        foreach (var item in SapUser)
+        await GetUsers();
+        await GetApprovers();       
+        foreach (var item in PortalUser)
         {
-            userCodes.Add(item.UserCode);
+            if (item.U_Role == "Approver" && item.U_ApproverLevel == "Level 1")
+                approver1Codes.Add(item.U_UserCode);
+
+            if (item.U_Role == "Approver" && item.U_ApproverLevel == "Level 2")
+                approver2Codes.Add(item.U_UserCode);
+
+            if (item.U_Role == "Approver" && item.U_ApproverLevel == "Level 3")
+                approver3Codes.Add(item.U_UserCode);
+
+            if (item.U_Role == "Approver" && item.U_ApproverLevel == "Level 4")
+                approver4Codes.Add(item.U_UserCode);
+
+            if (item.U_Role == "Approver" && item.U_ApproverLevel == "Special")
+                approverSpecCodes.Add(item.U_UserCode);
         }
     }
 
@@ -231,6 +237,41 @@
         User.U_EmailAddress = result.eMail;
     }
 
+    private void OnValueChanged1(string value)
+    {
+        User.U_ApproverCode1 = value;
+        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
+        User.U_Approver1 = result.U_UserName;
+    }
+
+    private void OnValueChanged2(string value)
+    {
+        User.U_ApproverCode2 = value;
+        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
+        User.U_Approver2 = result.U_UserName;
+    }
+
+    private void OnValueChanged3(string value)
+    {
+        User.U_ApproverCode3 = value;
+        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
+        User.U_Approver3 = result.U_UserName;
+    }
+
+    private void OnValueChanged4(string value)
+    {
+        User.U_ApproverCode4 = value;
+        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
+        User.U_Approver4 = result.U_UserName;
+    }
+
+    private void OnValueChangedSpec(string value)
+    {
+        User.U_ApproverSpecialCode = value;
+        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
+        User.U_ApproverSpecial = result.U_UserName;
+    }
+
     private async Task<IEnumerable<string>> SearchUserCode(string value)
     {
         // if text is null or empty, show complete list
@@ -238,6 +279,51 @@
             return userCodes;
 
         return userCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task<IEnumerable<string>> SearchApprover1(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return approver1Codes;
+
+        return approver1Codes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    
+    private async Task<IEnumerable<string>> SearchApprover2(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return approver2Codes;
+
+        return approver2Codes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    
+    private async Task<IEnumerable<string>> SearchApprover3(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return approver3Codes;
+
+        return approver3Codes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    
+    private async Task<IEnumerable<string>> SearchApprover4(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return approver4Codes;
+
+        return approver4Codes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    
+    private async Task<IEnumerable<string>> SearchApproverSpecial(string value)
+    {
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return approverSpecCodes;
+
+        return approverSpecCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
 
     async Task<JObject> GetData(string query)
@@ -251,5 +337,40 @@
         }
         string content = await response.Content.ReadAsStringAsync();
         return JObject.Parse(content);
+    }
+
+    async Task GetUsers()
+    {
+        string query = "Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc";
+        JObject json;
+        do
+        {
+            json = await GetData(query);
+
+            SapUser.AddRange(json["value"].ToObject<List<SAPUserDto>>());
+
+            if (json.ContainsKey("odata.nextLink"))
+                query = json["odata.nextLink"].ToString();
+        } while (json.ContainsKey("odata.nextLink"));
+
+        foreach (var item in SapUser)
+        {
+            userCodes.Add(item.UserCode);
+        }
+    } 
+
+    async Task GetApprovers()
+    {
+        string query = "U_FT_WPUS?$select=U_UserCode,U_UserName,U_Role,U_ApproverLevel,U_Employee,U_EmailAddress&$orderby=Code desc";
+        JObject json;
+        do
+        {
+            json = await GetData(query);
+
+            PortalUser.AddRange(json["value"].ToObject<List<PortalUserDto>>());
+
+            if (json.ContainsKey("odata.nextLink"))
+                query = json["odata.nextLink"].ToString();
+        } while (json.ContainsKey("odata.nextLink"));
     }
 }

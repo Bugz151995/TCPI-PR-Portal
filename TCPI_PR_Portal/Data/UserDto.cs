@@ -66,4 +66,14 @@ namespace TCPI_PR_Portal.Models
         public int Branch { get; set; } = new int();
         public int Department { get; set; } = new int();
     }
+
+    public class PortalUserDto
+    {
+        public string U_UserCode { get; set; } = string.Empty;
+        public string U_UserName { get; set; } = string.Empty;
+        public string U_Employee { get; set; } = string.Empty;
+        public string U_EmailAddress { get; set; } = string.Empty;
+        public string U_Role { get; set; } = string.Empty;
+        public string U_ApproverLevel { get; set; } = string.Empty;
+    }
 }
