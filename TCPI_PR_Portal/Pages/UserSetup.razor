@@ -55,23 +55,25 @@
                         <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
                             <MudTextField Elevation="0" @bind-Value="User.U_EmailAddress" For="@(() => User.U_EmailAddress)" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense" />
                             <MudTextField Elevation="0" @bind-Value="User.U_UserName" For="@(() => User.U_UserName)" Label="User Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
-                            <MudSelect T="string" Value="User.U_Role" For="@(() => User.U_Role)" ValueChanged="value => displayApproverDetails(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
+                            <MudSelect T="string" Value="User.U_Role" For="@(() => User.U_Role)" ValueChanged="value => SelectRole(User, value)" Margin="Margin.Dense" Label="Role" Variant="Variant.Outlined">
                                 <MudSelectItem Value="@("Admin")" />
                                 <MudSelectItem Value="@("Requestor")" />
                                 <MudSelectItem Value="@("Approver")" />
                             </MudSelect>
 
-                            <MudSelect Margin="Margin.Dense" T="string" Label="Approval Level" Variant="Variant.Outlined">
-                            <MudSelectItem Value="@("Level 1")" />
-                            <MudSelectItem Value="@("Level 2")" />
-                            <MudSelectItem Value="@("Level 3")" />
-                            <MudSelectItem Value="@("Level 4")" />
-                            </MudSelect>
+                            <div style="display: @displayApprover">
+                                <MudSelect Margin="Margin.Dense" @bind-Value="User.U_ApprovalLevel" For="@(() => User.U_ApprovalLevel)" Label="Approval Level" Variant="Variant.Outlined">
+                                    <MudSelectItem Value="@("Level 1")" />
+                                    <MudSelectItem Value="@("Level 2")" />
+                                    <MudSelectItem Value="@("Level 3")" />
+                                    <MudSelectItem Value="@("Level 4")" />
+                                </MudSelect>
+                            </div>
                         </MudPaper>
                     </MudItem>
                 </MudGrid>
 
-                <div style="display: @display">
+                <div style="display: @displayApprover">
                     <div class="d-flex gap-1 align-center">
                         <MudIcon Icon="@Icons.Filled.NewLabel" Title="Breadcrumb" Color="Color.Primary" />
                         <MudText>Approver Details</MudText>
@@ -132,7 +134,8 @@
 
 @code {
     bool success = false;
-    string display = "none";
+    string displayApprover = "none";
+    string displayLevel = "none";
 
     UserDto User = new UserDto();
     DepartmentsDto SelectedDepartment;
@@ -203,10 +206,11 @@
         }
     }
 
-    void displayApproverDetails(UserDto context, string selectedString)
+    void SelectRole(UserDto context, string selectedString)
     {
         context.U_Role = selectedString;
-        display = selectedString == "Requestor" ? "block" : "none";
+        displayApprover = selectedString == "Requestor" ? "block" : "none";
+        displayLevel = selectedString == "Approver" ? "block" : "none";
     }
 
     private async Task<IEnumerable<string>> SearchUserCode(string value)
@@ -217,6 +221,7 @@
         // if text is null or empty, show complete list
         if (string.IsNullOrEmpty(value))
             return userCodes;
+
 
         return userCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
     }
