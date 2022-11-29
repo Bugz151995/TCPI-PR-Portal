@@ -28,5 +28,6 @@ namespace TCPI_PR_Portal.Models
     {
         public string odata { get; set; } = string.Empty;
         public List<ItemsDto> value { get; set; } = new List<ItemsDto>();
-    }
+		public Error error { get; set; } = new Error();
+	}
 }

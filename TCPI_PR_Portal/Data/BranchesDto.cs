@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TCPI_PR_Portal.Data;
 
 namespace TCPI_PR_Portal.Models
 {
@@ -27,5 +28,6 @@ namespace TCPI_PR_Portal.Models
     {
         public string odata { get; set; } = string.Empty;
         public List<BranchesDto> value { get; set; } = new List<BranchesDto>();
-    }
+		public Error error { get; set; } = new Error();
+	}
 }

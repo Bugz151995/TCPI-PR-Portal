@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TCPI_PR_Portal.Data;
 
 namespace TCPI_PR_Portal.Models
 {
@@ -45,15 +46,16 @@ namespace TCPI_PR_Portal.Models
     public class UserResponse
     {
         public string odatametadata { get; set; } = string.Empty;
-        public List<SAPUserDto> value { get; set; } = new List<SAPUserDto>();   
-        public string odatanextLink { get; set; } = string.Empty;
+        public List<SAPUserDto> value { get; set; } = new List<SAPUserDto>();
+		public Error error { get; set; } = new Error();
+		public string odatanextLink { get; set; } = string.Empty;
     }
 
     public class SAPUserDto
     {
         public string UserCode { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
-        public object eMail { get; set; } = new object();
+        public string eMail { get; set; } = string.Empty;
         public int Branch { get; set; } = new int();
         public int Department { get; set; } = new int();
     }
