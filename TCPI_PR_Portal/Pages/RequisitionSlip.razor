@@ -299,6 +299,10 @@
             PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
             PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
+
+            Console.WriteLine(LocalStorage.GetItem<string>("UserName"));
+            Console.WriteLine(LocalStorage.GetItem<string>("Department"));
+            Console.WriteLine(LocalStorage.GetItem<string>("Branch"));
         }
         catch (Exception ex)
         {
