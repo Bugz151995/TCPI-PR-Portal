@@ -1,14 +1,27 @@
 ﻿@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 
 <MudNavMenu>
-    <div class="d-flex px-3 align-center justify-center">
-        <MudAvatar Color="Color.Primary">A</MudAvatar>
+    <div class="d-flex px-3 ps-5 align-center justify-start">
+        <MudAvatar Color="Color.Primary">
+            @if (Role == "Admin")
+            {
+                <span>S</span>
+            }
+            @if (Role == "Requestor")
+            {
+                <span>R</span>
+            }
+            @if (Role == "Approver")
+            {
+                <span>A</span>
+            }
+        </MudAvatar>
         <div>
             <MudText Typo="Typo.h6" Class="px-4">@Username</MudText>
             <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">@Role</MudText>
         </div>
     </div>
-    <MudDivider Class="my-2" />
+    <MudDivider Class="ma-3" />
     <MudNavLink Class="px-3 mb-3" Href="user-setup" Match="NavLinkMatch.All" Icon="@Icons.Filled.PeopleAlt" IconColor="Color.Primary">User Setup</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="requisition-slip" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Receipt" IconColor="Color.Primary">Requisition Slip</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="document-status" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Assignment" IconColor="Color.Primary">Document Status</MudNavLink>
