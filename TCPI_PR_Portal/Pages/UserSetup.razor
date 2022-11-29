@@ -31,7 +31,7 @@
 				<MudGrid Spacing="3" Justify="Justify.Center">
 					<MudItem xs="6">
 						<MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-							<MudAutocomplete Label="User Code" TextChanged="OnValueChanged" Value="@User.Code" SearchFunc="@SearchUserCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+							<MudAutocomplete Label="User Code" T="string" ValueChanged="value => OnValueChanged(value)" Value="@User.Code" SearchFunc="@SearchUserCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
 							<MudTextField Elevation="0" InputType="InputType.Password" @bind-Value="User.U_Password" For="@(() => User.U_Password)" Label="Password" Variant="Variant.Outlined" Margin="Margin.Dense" />
 							<MudTextField Elevation="0" @bind-Value="User.U_Employee" For="@(() => User.U_Employee)" Label="Employee Name" Variant="Variant.Outlined" Margin="Margin.Dense" disable="true" />
 
@@ -213,12 +213,13 @@
 		displayLevel = selectedString == "Approver" ? "block" : "none";
 	}
 
-	private void OnValueChanged()
+	private void OnValueChanged(string value)
 	{
+		User.Code = value;
 		SAPUserDto result = SapUser.Find(e => e.UserCode == User.Code);
 		User.U_UserName = result.UserName;
 		User.U_EmailAddress = result.eMail;
-    }
+	}
 
 	private async Task<IEnumerable<string>> SearchUserCode(string value)
 	{
