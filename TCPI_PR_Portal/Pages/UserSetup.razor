@@ -203,7 +203,8 @@
 			json = JObject.Parse(responses);
 
 			SapUser = json["value"].ToObject<List<SAPUserDto>>();
-			query = json["odata.nextLink"].ToString();
+			if (json.ContainsKey("odata.nextLink"))
+				query = json["odata.nextLink"].ToString();
 		} while (json.ContainsKey("odata.nextLink"));
 		@*
 		foreach (var item in SapUser)
