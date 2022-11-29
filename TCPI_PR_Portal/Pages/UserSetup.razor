@@ -16,7 +16,7 @@
 
 <Title PageName="User Setup" Breadcrumb="_items" />
 
-<EditForm Model="@User" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@User" OnSubmit="OnSubmit">
     <input type="hidden" @bind-value="User.Name" />
     <DataAnnotationsValidator />
 
@@ -151,7 +151,7 @@
         new BreadcrumbItem("User Setup", href: "user-setup", disabled: true)
     };
 
-    private async Task OnValidSubmit(EditContext context)
+    private async Task OnSubmit(EditContext context)
     {
         try
         {
