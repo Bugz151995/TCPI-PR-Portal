@@ -129,7 +129,7 @@
             <MudTd DataLabel="Bin Location">
                 <MudTextField @bind-Value="@Items.U_BinLoc" For="@(() => Items.U_BinLoc)" />
             </MudTd>
-            <MudTd DataLabel="Scope of Work">
+            <MudTd Style="min-width:200px" DataLabel="Scope of Work">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Scope" For="@(() => Items.U_Scope)" Variant="Variant.Outlined">
                     @foreach (var i in ScopeOfWork)
                     {
@@ -138,9 +138,9 @@
                 </MudSelect>
             </MudTd>
             <MudTd DataLabel="Scope Description">
-                <MudTextField @bind-Value="@Items.U_ScopeDesc" For="@(() => Items.U_ScopeDesc)" />
+                <MudTextField @bind-Value="@Items.U_ScopeDesc" For="@(() => Items.U_ScopeDesc)" Disabled="true"/>
             </MudTd>
-            <MudTd DataLabel="Material Code">
+            <MudTd Style="min-width:200px" DataLabel="Material Code">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_MaterialCode" For="@(() => Items.U_MaterialCode)" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
                     {
@@ -148,7 +148,7 @@
                     }
                 </MudSelect>
             </MudTd>
-            <MudTd DataLabel="Material Description">
+            <MudTd Style="min-width:200px" DataLabel="Material Description">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
                     {
@@ -201,7 +201,7 @@
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" For="@(() => PRHeader.U_Remarks)" Variant="Variant.Outlined" Text="" Lines="3" />
+                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" For="@(() => PRHeader.U_Remarks)" Variant="Variant.Outlined" Lines="3" />
             </MudPaper>
         </MudItem>
         <MudItem xs="6" Class="d-flex flex-column justify-end">
