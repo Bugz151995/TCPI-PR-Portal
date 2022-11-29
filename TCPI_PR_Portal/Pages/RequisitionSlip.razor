@@ -200,6 +200,7 @@
 
 @code {
     private int docEntry = 0;
+    private int docNum = 0;
     private string userName = string.Empty;
     // table settings
     private bool dense = false;
@@ -219,6 +220,7 @@
 
     CodeResponse? LastCodeResponse = new CodeResponse();
     DocEntryResponse? LastDocEntryResponse = new DocEntryResponse();
+    DocNumResponse? LastDocNumResponse = new DocNumResponse();
     ProjectsResponse? ProjectResponse = new ProjectsResponse();
     DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
     BranchesResponse? BranchResponse = new BranchesResponse();
@@ -226,8 +228,6 @@
     WarehouseResponse? WhsResponse = new WarehouseResponse();
     VatGroupsResponse? VatGroupResponse = new VatGroupsResponse();
 
-    List<CodeDto>? LastCode = new List<CodeDto>();
-    List<DocEntryDto>? LastDocEntry = new List<DocEntryDto>();
     List<ProjectsDto>? Projects = new List<ProjectsDto>();
     List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
     List<BranchesDto>? Branches = new List<BranchesDto>();
@@ -274,8 +274,15 @@
             var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
             LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
 
+            int lastDocNum = 0;
+            var lastDocNumResponse = await HttpClient.GetAsync("PurchaseRequests?$select=DocNum&$orderby=DocNum desc&$top=1");
+            LastDocNumResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocNumResponse>();
+
             if (LastDocEntryResponse.value.Count != 0)
                 lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
+
+            if (LastDocNumResponse.value.Count != 0)
+                lastDocNum = LastDocNumResponse.value[0].DocNum;
 
             var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
             ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
@@ -302,19 +309,18 @@
             VatGroup = VatGroupResponse.value;
 
             docEntry = lastDocEntry + 1;
+            docNum = lastDocNum + 1;
             userName = LocalStorage.GetItem<string>("UserName");
 
             PRHeader.Code = docEntry.ToString();
             PRHeader.Name = docEntry.ToString();
             PRHeader.U_CardCode = userName;
             PRHeader.U_DocEntry = docEntry;
+            PRHeader.U_DocNum = docNum.ToString();
             PRHeader.U_PreparedBy = userName;
             PRHeader.U_DocStatus = "Waiting For Approval";
             PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
-
-            Console.WriteLine(PRHeader.U_Department);
-            Console.WriteLine(PRHeader.U_Branch);
         }
         catch (Exception ex)
         {

@@ -13,6 +13,17 @@ namespace TCPI_PR_Portal.Data
         public List<DocEntryDto> value { get; set; } = new List<DocEntryDto>();
     }
 
+    public class DocNumDto
+    {
+        public int DocNum { get; set; }
+    }
+
+    public class DocNumResponse
+    {
+        public string odata { get; set; }
+        public List<DocNumDto> value { get; set; } = new List<DocNumDto>();
+    }
+
     public class CodeDto
     {
         public string Code { get; set; }

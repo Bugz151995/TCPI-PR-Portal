@@ -20,7 +20,7 @@ namespace TCPI_PR_Portal.Models
         public string U_Password { get; set; } = string.Empty;
         [Required, Display(Name = "Employee Name")]
         public string U_Employee { get; set; } = string.Empty;
-        [EmailAddress, Required, Display(Name = "Email Address")]
+        [EmailAddress, Display(Name = "Email Address")]
         public string U_EmailAddress { get; set; } = string.Empty;
         [Required, Display(Name = "Role")]
         public string U_Role { get; set; } = string.Empty;
