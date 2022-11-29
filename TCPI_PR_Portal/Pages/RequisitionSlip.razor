@@ -106,11 +106,11 @@
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Code">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" ValueChanged="value => SelectItem(Items, value)" Label="Project ID" Variant="Variant.Outlined">
                     @foreach (var i in ItemMaster)
-                {
-                    <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
-                }
+                    {
+                        <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
+                    }
                 </MudSelect>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
@@ -321,6 +321,15 @@
         PRHeader.U_ProjectID = selectedString;
         var search = Projects.Where(e => e.Code == selectedString).Select(e => e.Name);
         PRHeader.U_ProjName = search.First();
+    }
+
+    void SelectItem(PRLinesDto context, string selectedString)
+    {
+        context.U_ItemCode = selectedString;
+        context.U_MaterialCode = selectedString;
+        var search = ItemMaster.Where(e => e.ItemCode == selectedString).Select(e => e.ItemName);
+        context.U_Dscription = search.First();
+        context.U_MaterialDesc = search.First();
     }
 
     async Task AddLine()
