@@ -49,7 +49,7 @@ namespace TCPI_PR_Portal.Models
         public string odatametadata { get; set; } = string.Empty;
         public List<SAPUserDto> value { get; set; } = new List<SAPUserDto>();
 		public Error error { get; set; } = new Error();
-		//public string odatanextLink { get; set; } = string.Empty;
+		public string odatanextLink { get; set; } = string.Empty;
     }
 
     public class SAPUserDto

@@ -29,5 +29,6 @@ namespace TCPI_PR_Portal.Models
         public string odata { get; set; } = string.Empty;
         public List<VatGroupsDto> value { get; set; } = new List<VatGroupsDto>();
 		public Error error { get; set; } = new Error();
+		public string odatanextLink { get; set; } = string.Empty;
 	}
 }
