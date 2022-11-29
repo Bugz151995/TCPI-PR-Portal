@@ -289,27 +289,20 @@
     {
         try
         {
-            int lastDocEntry = 0;
-            using var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
-            LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
-
-            if (LastDocEntryResponse.value.Count != 0)
-                lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
-
             await FetchDropdownData();
+            int lastDocEntry = await GetLastDocEntry();
             int lastDocNum = await GetLastDocNum();
 
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
-            userName = LocalStorage.GetItem<string>("UserName");
 
             PRHeader.Code = docEntry.ToString();
             PRHeader.Name = docEntry.ToString();
-            PRHeader.U_CardCode = userName;
-            PRHeader.U_DocEntry = docEntry;
             PRHeader.U_DocNum = docNum.ToString();
-            PRHeader.U_PreparedBy = userName;
+            PRHeader.U_DocEntry = docEntry;
             PRHeader.U_DocStatus = "Waiting For Approval";
+            PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserName");
+            PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
             PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
@@ -420,10 +413,21 @@
         {
             docNum = lastDocNumUdt;
         } else docNum = lastDocNumSAP;
-                
+
         Console.WriteLine($"SAP DocNum: {lastDocNumSAP}");
         Console.WriteLine($"UDT DocNum: {lastDocNumUdt}");
 
         return docNum;
+    }
+
+    async Task<int> GetLastDocEntry()
+    {
+        int lastDocEntry = 0;
+        using var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
+        LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
+
+        if (LastDocEntryResponse.value.Count != 0)
+            lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
+        return lastDocEntry;
     }
 }
