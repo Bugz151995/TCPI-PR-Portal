@@ -101,13 +101,13 @@
                 <input type="hidden" @bind-value="@Items.Name" />
                 <input type="hidden" @bind-value="@Items.U_DocEntry" />
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
-                </MudTd>
-                <MudTd Style="min-width:200px" DataLabel="Item Code">
-                    <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" Variant="Variant.Outlined">
-                        @foreach (var i in ItemMaster)
-                    {
-                        <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
-                    }
+            </MudTd>
+            <MudTd Style="min-width:200px" DataLabel="Item Code">
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" Variant="Variant.Outlined">
+                    @foreach (var i in ItemMaster)
+                {
+                    <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
+                }
                 </MudSelect>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
@@ -130,16 +130,31 @@
                 <MudTextField @bind-Value="@Items.U_BinLoc" For="@(() => Items.U_BinLoc)" />
             </MudTd>
             <MudTd DataLabel="Scope of Work">
-                <MudTextField @bind-Value="@Items.U_Scope" For="@(() => Items.U_Scope)" />
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Scope" For="@(() => Items.U_Scope)" Variant="Variant.Outlined">
+                    @foreach (var i in ScopeOfWork)
+                    {
+                        <MudSelectItem Value="@i.FactorCode">@i.FactorCode</MudSelectItem>
+                    }
+                </MudSelect>
             </MudTd>
             <MudTd DataLabel="Scope Description">
                 <MudTextField @bind-Value="@Items.U_ScopeDesc" For="@(() => Items.U_ScopeDesc)" />
             </MudTd>
             <MudTd DataLabel="Material Code">
-                <MudTextField @bind-Value="@Items.U_MaterialCode" For="@(() => Items.U_MaterialCode)" />
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_MaterialCode" For="@(() => Items.U_MaterialCode)" Variant="Variant.Outlined">
+                    @foreach (var i in ItemMaster)
+                    {
+                        <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
+                    }
+                </MudSelect>
             </MudTd>
             <MudTd DataLabel="Material Description">
-                <MudTextField @bind-Value="@Items.U_MaterialDesc" For="@(() => Items.U_MaterialDesc)" />
+                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" Variant="Variant.Outlined">
+                    @foreach (var i in ItemMaster)
+                    {
+                        <MudSelectItem Value="@i.ItemName">@i.ItemName</MudSelectItem>
+                    }
+                </MudSelect>
             </MudTd>
             <MudTd DataLabel="Quantity">
                 <MudTextField @bind-Value="@Items.U_Quantity" For="@(() => Items.U_Quantity)" />
@@ -221,12 +236,14 @@
     CodeResponse? LastCodeResponse = new CodeResponse();
     DocEntryResponse? LastDocEntryResponse = new DocEntryResponse();
     DocNumResponse? LastDocNumResponse = new DocNumResponse();
+
     ProjectsResponse? ProjectResponse = new ProjectsResponse();
     DepartmentsResponse? DepartmentResponse = new DepartmentsResponse();
     BranchesResponse? BranchResponse = new BranchesResponse();
     ItemsResponse? ItemResponse = new ItemsResponse();
     WarehouseResponse? WhsResponse = new WarehouseResponse();
     VatGroupsResponse? VatGroupResponse = new VatGroupsResponse();
+    ScopeOfWorkResponse? ScopeOfWorkResponse = new ScopeOfWorkResponse();
 
     List<ProjectsDto>? Projects = new List<ProjectsDto>();
     List<DepartmentsDto>? Departments = new List<DepartmentsDto>();
@@ -234,6 +251,7 @@
     List<ItemsDto>? ItemMaster = new List<ItemsDto>();
     List<WarehouseDto>? Warehouse = new List<WarehouseDto>();
     List<VatGroupsDto>? VatGroup = new List<VatGroupsDto>();
+    List<ScopeOfWorkDto>? ScopeOfWork = new List<ScopeOfWorkDto>();
 
     private List<BreadcrumbItem> _items = new List<BreadcrumbItem> {
         new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)
@@ -308,6 +326,10 @@
             VatGroupResponse = await vatGroupResponse.Content.ReadFromJsonAsync<VatGroupsResponse>();
             VatGroup = VatGroupResponse.value;
 
+            using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
+            ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
+            ScopeOfWork = ScopeOfWorkResponse.value;
+
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
             userName = LocalStorage.GetItem<string>("UserName");
@@ -374,10 +396,5 @@
     void RemoveLine(int index)
     {
         PRLines.RemoveAt(index);
-    }
-
-    async Task validateDocNum()
-    {
-        
     }
 }
