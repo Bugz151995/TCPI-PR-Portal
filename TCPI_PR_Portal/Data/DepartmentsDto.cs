@@ -19,7 +19,7 @@ namespace TCPI_PR_Portal.Models
         public override int GetHashCode() => Code.GetHashCode();
         public override string ToString()
         {
-            return Code.ToString();
+            return Name;
         }
     }
 
