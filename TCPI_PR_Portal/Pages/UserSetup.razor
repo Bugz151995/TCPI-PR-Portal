@@ -17,7 +17,7 @@
 
 <Title PageName="User Setup" Breadcrumb="_items" />
 
-<EditForm Model="@User" OnSubmit="OnSubmit">
+<EditForm Model="@User" OnValidSubmit="OnValidSubmit">
     <input type="hidden" @bind-value="User.Name" />
     <DataAnnotationsValidator />
 
@@ -152,13 +152,21 @@
         new BreadcrumbItem("User Setup", href: "user-setup", disabled: true)
     };
 
-    private async Task OnSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
         try
         {
             //string password = User.U_Password;
             //CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
             //User.U_Password = encryptedPassword.Value;
+
+            JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
+            CodeDto code = codeJson["value"][0].ToObject<CodeDto>();
+            Console.WriteLine(JsonConvert.SerializeObject(code));
+            int nextCode = Convert.ToInt32(code.Code) + 1;
+            User.Code = nextCode.ToString();
+            User.Name = nextCode.ToString();
+
             HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
             using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
 
@@ -205,13 +213,6 @@
         {
             userCodes.Add(item.UserCode);
         }
-
-        JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
-        CodeDto code = codeJson["value"].ToObject<CodeDto>();
-        Console.WriteLine(JsonConvert.SerializeObject(code));
-        int nextCode = Convert.ToInt32(code.Code) + 1;
-        User.Code = nextCode.ToString();
-        User.Name = nextCode.ToString();
     }
 
     void SelectRole(UserDto context, string selectedString)
