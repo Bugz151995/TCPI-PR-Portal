@@ -9,6 +9,7 @@ namespace TCPI_PR_Portal.Models
     public class ScopeOfWorkDto
     {
         public string FactorCode { get; set; }
+        public string FactorDescription { get; set; }
 
         public override bool Equals(object o)
         {
