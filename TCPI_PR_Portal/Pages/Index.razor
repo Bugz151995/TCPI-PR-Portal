@@ -103,6 +103,7 @@
             SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
             SapUser = SapUserResponse.value[0];
 
+            Console.WriteLine(JsonConvert.SerializeObject(SapUser));
             storeSessionToLocalStorage();
 
             AuthService.Login(UserSession.U_Employee, UserSession.U_Role);
