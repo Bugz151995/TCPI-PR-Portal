@@ -1,22 +1,14 @@
 ﻿@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 
 <MudNavMenu>
-    <MudNavLink Class="px-3 mb-3" Disabled="true" Match="NavLinkMatch.All" IconColor="Color.Primary">
-        <MudCard>
-            <MudCardHeader>
-                <CardHeaderAvatar>
-                    <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                </CardHeaderAvatar>
-                <CardHeaderContent>
-                    <MudText Typo="Typo.body1">@Username</MudText>
-                    <MudText Typo="Typo.body2">@Role</MudText>
-                </CardHeaderContent>
-                <CardHeaderActions>
-                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-                </CardHeaderActions>
-            </MudCardHeader>
-        </MudCard>
-    </MudNavLink>
+    <div class="d-flex">
+        <MudAvatar Color="Color.Secondary">A</MudAvatar>
+        <div>
+            <MudText Typo="Typo.h6" Class="px-4">My Application</MudText>
+            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
+        </div>
+    </div>
+    <MudDivider Class="my-2" />
     <MudNavLink Class="px-3 mb-3" Href="user-setup" Match="NavLinkMatch.All" Icon="@Icons.Filled.PeopleAlt" IconColor="Color.Primary">User Setup</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="requisition-slip" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Receipt" IconColor="Color.Primary">Requisition Slip</MudNavLink>
     <MudNavLink Class="px-3 mb-3" Href="document-status" Match="NavLinkMatch.Prefix" Icon="@Icons.Filled.Assignment" IconColor="Color.Primary">Document Status</MudNavLink>
