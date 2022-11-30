@@ -44,8 +44,7 @@
         <MudTd>
             <MudIconButton Link="/document-status/approval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
         </MudTd>
-        <MudTd DataLabel="DocEntry">
-            <MudTextField @bind-Value="context.U_DocEntry" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        <MudTd DataLabel="DocEntry" @bind-value="context.U_DocEntry">
         </MudTd>
         <MudTd DataLabel="Project ID">
             <MudTextField @bind-Value="context.U_ProjectID" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
