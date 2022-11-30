@@ -1,8 +1,10 @@
 ﻿@using System.Net.Http.Json;
 @using Microsoft.AspNetCore.Authorization;
+@using Newtonsoft.Json.Linq;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
 @inject IAuthService AuthService;
+@inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
 @inject NavigationManager Navigation;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
@@ -146,16 +148,17 @@
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
-        var userCode = LocalStorage.GetItem<string>("UserCode");
-        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
-        if (!response.IsSuccessStatusCode)
+        string role = LocalStorage.GetItem<string>("Role");
+
+        if (role == "Approver")
         {
-            AuthService.Logout();
-            Navigation.NavigateTo("/");
+            await GetMyRequestors();
         }
 
-        PRHeaderResponse = await response.Content.ReadFromJsonAsync<PRHeaderResponse>();
-        PRRequests = PRHeaderResponse.value;
+        if (role == "Requestor")
+        {
+            await GetMyRequests();
+        }
     }
 
     private bool FilterFunc1(PRHeaderDto element) => FilterFunc(element, searchString);
@@ -176,4 +179,72 @@
     {
         Navigation.NavigateTo($"document-status/{docEntry}");
     }
+
+    async Task GetMyRequests()
+    {
+        var userCode = LocalStorage.GetItem<string>("UserCode");
+        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
+        if (!response.IsSuccessStatusCode)
+        {
+            AuthService.Logout();
+            Navigation.NavigateTo("/");
+        }
+
+        PRHeaderResponse = await response.Content.ReadFromJsonAsync<PRHeaderResponse>();
+        PRRequests = PRHeaderResponse.value;
+    }
+
+    async Task GetMyRequestors()
+    {
+        List<string> userCodes = new List<string>();
+        string approvalLevel = LocalStorage.GetItem<string>("ApprovalLevel");
+        string userCode = LocalStorage.GetItem<string>("UserCode");
+        string filterField = string.Empty;
+
+        if (approvalLevel == "Level 1")
+            filterField = "ApproverCode1";
+
+        if (approvalLevel == "Level 2")
+            filterField = "ApproverCode2";
+
+        if (approvalLevel == "Level 3")
+            filterField = "ApproverCode3";
+
+        if (approvalLevel == "Level 4")
+            filterField = "ApproverCode4";
+
+        if (approvalLevel == "Special")
+            filterField = "ApproverSpecialCode";
+
+        string query = $"U_FT_WPUS?$select=U_UserCode&$filter={filterField} eq '{userCode}'";
+        JObject user;
+        do
+        {
+            user = await GetData(query);
+            userCodes.AddRange(user["value"].ToObject<List<string>>());
+
+            if (user.ContainsKey("odata.nextLink"))
+                query = user["odata.nextLink"].ToString();
+        } while (user.ContainsKey("odata.nextLink"));
+
+        foreach (var code in userCodes)
+        {
+            Console.WriteLine(code);
+        }
+    }
+
+    async Task<JObject> GetData(string query)
+    {
+        using var response = await HttpClient.GetAsync(query);
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add(response.ReasonPhrase, Severity.Error);
+            AuthService.Logout();
+            Navigation.NavigateTo("/");
+        }
+        string content = await response.Content.ReadAsStringAsync();
+        return JObject.Parse(content);
+    }
+    //TODO: get list of users assigned to me, if i am lvl 1 then get all the users where i am assigned to
+    //TODO: if we have the list of users, then get all the requests from them..
 }
