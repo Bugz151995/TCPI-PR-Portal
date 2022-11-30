@@ -186,8 +186,7 @@
         using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
         if (!response.IsSuccessStatusCode)
         {
-            AuthService.Logout();
-            Navigation.NavigateTo("/");
+            Snackbar.Add(response.ReasonPhrase, Severity.Error);
         }
 
         PRHeaderResponse = await response.Content.ReadFromJsonAsync<PRHeaderResponse>();
@@ -196,7 +195,7 @@
 
     async Task GetMyRequestors()
     {
-        List<string> userCodes = new List<string>();
+        List<UserCodeDto> userCodes = new List<UserCodeDto>();
         string approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
         string userCode = LocalStorage.GetItem<string>("UserCode");
         Console.WriteLine(approvalLevel);
@@ -222,7 +221,7 @@
         do
         {
             user = await GetData(query);
-            userCodes.AddRange(user["value"].ToObject<List<string>>());
+            userCodes.AddRange(user["value"].ToObject<List<UserCodeDto>>());
 
             if (user.ContainsKey("odata.nextLink"))
                 query = user["odata.nextLink"].ToString();
@@ -230,7 +229,16 @@
 
         foreach (var code in userCodes)
         {
-            Console.WriteLine(code);
+            string requestsQuery = $"U_FT_OPRQ?$filter=U_CardCode eq '{code.UserCode}'";
+            JObject requests;
+            do
+            {
+                requests = await GetData(requestsQuery);
+                PRRequests.AddRange(requests["value"].ToObject<List<PRHeaderDto>>());
+
+                if (requests.ContainsKey("odata.nextLink"))
+                    requestsQuery = requests["odata.nextLink"].ToString();
+            } while (requests.ContainsKey("odata.nextLink"));
         }
     }
 
@@ -246,4 +254,9 @@
     }
     //TODO: get list of users assigned to me, if i am lvl 1 then get all the users where i am assigned to
     //TODO: if we have the list of users, then get all the requests from them..
+
+    public class UserCodeDto 
+    {
+        public string UserCode { get; set; }
+    }
 }
