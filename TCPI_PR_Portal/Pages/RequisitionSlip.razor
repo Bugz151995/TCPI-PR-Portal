@@ -217,6 +217,7 @@
 </EditForm>
 
 @code {
+    bool success = false;
     private int docEntry = 0;
     private int docNum = 0;
     private string userName = string.Empty;
@@ -261,8 +262,6 @@
         new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)
     };
 
-    // form validation
-    bool success = false;
     private async Task OnSubmit(EditContext context)
     {
         try
@@ -295,7 +294,6 @@
         }
     }
 
-    // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
         try
@@ -303,12 +301,9 @@
             await FetchDropdownData();
             int lastDocEntry = await GetLastDocEntry();
             int lastDocNum = await GetLastDocNum();
-
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
-
             Autofill();
-
             await AddLine();
         }
         catch (Exception ex)
@@ -350,7 +345,8 @@
         if (LastCodeResponse.value.Count != 0)
             lastCode = Convert.ToInt32(LastCodeResponse.value[0].Code);
 
-        lastCode = lastCode + 1;
+        int increments = (PRLines.Count == 0) ? 1 : PRLines.Count;
+        lastCode = lastCode + increments;
 
         PRLines.Add(new PRLinesDto
             {
@@ -465,7 +461,7 @@
         PRHeader.U_DocNum = docNum.ToString();
         PRHeader.U_DocEntry = docEntry;
         PRHeader.U_DocStatus = "Waiting For Approval";
-        PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserName");
+        PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserCode");
         PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
         PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
         PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
