@@ -199,6 +199,7 @@
         List<string> userCodes = new List<string>();
         string approvalLevel = LocalStorage.GetItem<string>("ApprovalLevel");
         string userCode = LocalStorage.GetItem<string>("UserCode");
+        Console.WriteLine(approvalLevel);
         string filterField = string.Empty;
 
         if (approvalLevel == "Level 1")
