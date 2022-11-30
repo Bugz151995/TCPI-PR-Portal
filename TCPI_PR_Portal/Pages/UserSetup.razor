@@ -241,36 +241,31 @@
     private void OnValueChanged1(string value)
     {
         User.U_ApproverCode1 = value;
-        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
-        User.U_Approver1 = result.U_UserName;
+        User.U_Approver1 = PortalUser.Where(e => e.U_UserCode == value).Select(e => e.U_UserName).First();
     }
 
     private void OnValueChanged2(string value)
     {
         User.U_ApproverCode2 = value;
-        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
-        User.U_Approver2 = result.U_UserName;
+        User.U_Approver2 = PortalUser.Where(e => e.U_UserCode == value).Select(e => e.U_UserName).First();
     }
 
     private void OnValueChanged3(string value)
     {
         User.U_ApproverCode3 = value;
-        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
-        User.U_Approver3 = result.U_UserName;
+        User.U_Approver3 = PortalUser.Where(e => e.U_UserCode == value).Select(e => e.U_UserName).First();
     }
 
     private void OnValueChanged4(string value)
     {
         User.U_ApproverCode4 = value;
-        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
-        User.U_Approver4 = result.U_UserName;
+        User.U_Approver4 = PortalUser.Where(e => e.U_UserCode == value).Select(e => e.U_UserName).First();
     }
 
     private void OnValueChangedSpec(string value)
     {
         User.U_ApproverSpecialCode = value;
-        PortalUserDto result = PortalUser.Find(e => e.U_UserCode == value);
-        User.U_ApproverSpecial = result.U_UserName;
+        User.U_ApproverSpecial = PortalUser.Where(e => e.U_UserCode == value).Select(e => e.U_UserName).First();
     }
 
     private async Task<IEnumerable<string>> SearchUserCode(string value)
