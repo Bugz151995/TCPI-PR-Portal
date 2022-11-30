@@ -86,7 +86,7 @@
 
             LoginSession = await sapLogin.Content.ReadFromJsonAsync<LoginSessionDto>();
 
-            using var userUdtResponse = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserCode eq '{User.U_UserName}'");
+            using var userUdtResponse = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_ApproverLevel,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserCode eq '{User.U_UserName}'");
 
             using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$filter=UserCode eq '{User.U_UserName}'");
 
@@ -130,6 +130,7 @@
         LocalStorage.SetItem("UserCode", SapUser.UserCode);
         LocalStorage.SetItem("EmployeeName", UserSession.U_Employee);
         LocalStorage.SetItem("Role", UserSession.U_Role);
+        LocalStorage.SetItem("ApproverLevel", UserSession.U_ApproverLevel);
         LocalStorage.SetItem("Branch", SapUser.Branch.ToString());
         LocalStorage.SetItem("Department", SapUser.Department.ToString());
         LocalStorage.SetItem("U_ApproverCode1", UserSession.U_ApproverCode1);

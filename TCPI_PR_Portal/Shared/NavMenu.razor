@@ -21,7 +21,7 @@
         </MudAvatar>
         <div>
             <MudText Typo="Typo.h6" Class="px-4">@Username</MudText>
-            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">@Role</MudText>
+            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">@Role (@ApproverLevel)</MudText>
         </div>
     </div>
     <MudDivider Class="ma-3" />
@@ -34,11 +34,13 @@
 @code {
     public string Username { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public string ApproverLevel { get; set; } = string.Empty;
 
     protected override void OnInitialized()
     {
         Username = LocalStorage.GetItem<string>("UserName");
         Role = LocalStorage.GetItem<string>("Role");
+        ApproverLevel = LocalStorage.GetItem<string>("ApproverLevel");
     }
 
     void Logout()

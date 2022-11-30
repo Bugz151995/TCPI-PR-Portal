@@ -17,6 +17,7 @@ namespace TCPI_PR_Portal.Data
         public string U_Employee { get; set; }
         public string U_Role { get; set; }
         public string U_Password { get; set; }
+        public string? U_ApproverLevel { get; set; }
         public string? U_Approver1 { get; set; }
         public string? U_Approver2 { get; set; }
         public string? U_Approver3 { get; set; }
