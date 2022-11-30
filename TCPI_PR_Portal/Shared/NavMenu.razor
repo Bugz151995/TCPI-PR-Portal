@@ -22,11 +22,7 @@
         <div>
             <MudText Typo="Typo.h6" Class="px-4">@Username</MudText>
             <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">
-                @Role 
-                @if (@ApproverLevel != null || @ApproverLevel != string.Empty || @ApproverLevel != "")
-                {
-                    <span>(@ApproverLevel)</span>
-                }
+                @Role @ApproverLevel
             </MudText>
 
         </div>
