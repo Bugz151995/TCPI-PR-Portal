@@ -200,15 +200,14 @@
 
     async Task<JObject> GetData(string query)
     {
-        using var response = await HttpClient.GetAsync(query);
+        var response = await HttpClient.GetAsync(query);
         if (!response.IsSuccessStatusCode)
         {
-            Snackbar.Add("Session has expired", Severity.Error);
+            Snackbar.Add(response.ReasonPhrase, Severity.Error);
             AuthService.Logout();
             Navigation.NavigateTo("/");
         }
         string content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(content);
         return JObject.Parse(content);
     }
 }
