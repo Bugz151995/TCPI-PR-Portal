@@ -14,7 +14,7 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">&nbsp;</MudText>
         <MudSpacer />
-        <MudTextField Disabled="true" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh></MudTh>
@@ -45,7 +45,7 @@
             <MudIconButton Link="/document-status/approval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
         </MudTd>
         <MudTd DataLabel="DocEntry">
-            <MudTextField Disabled="true" @bind-Value="context.U_DocEntry" Variant="Variant.Text" Margin="Margin.Dense"></MudTextField>
+            @context.U_DocEntry;
         </MudTd>
         <MudTd DataLabel="Project ID">
             <MudTextField Disabled="true" @bind-Value="context.U_ProjectID" Variant="Variant.Text" Margin="Margin.Dense"></MudTextField>
@@ -54,7 +54,7 @@
             <MudTextField Disabled="true" @bind-Value="context.U_ProjName" Variant="Variant.Text" Margin="Margin.Dense"></MudTextField>
         </MudTd>
         <MudTd DataLabel="Location">
-            <MudTextField Disabled="true" @bind-Value="context.U_Location" Variant="Variant.Text" Margin="Margin.Dense"></MudTextField>
+            @context.U_Location;
         </MudTd>
         <MudTd DataLabel="PR Type">
             <MudTextField Disabled="true" @bind-Value="context.U_PRType" Variant="Variant.Text" Margin="Margin.Dense"></MudTextField>
