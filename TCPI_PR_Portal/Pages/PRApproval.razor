@@ -208,6 +208,7 @@
             Navigation.NavigateTo("/");
         }
         string content = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(content);
         return JObject.Parse(content);
     }
 }
