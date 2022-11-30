@@ -203,19 +203,19 @@
         string filterField = string.Empty;
 
         if (approvalLevel == "Level 1")
-            filterField = "ApproverCode1";
+            filterField = "U_ApproverCode1";
 
         if (approvalLevel == "Level 2")
-            filterField = "ApproverCode2";
+            filterField = "U_ApproverCode2";
 
         if (approvalLevel == "Level 3")
-            filterField = "ApproverCode3";
+            filterField = "U_ApproverCode3";
 
         if (approvalLevel == "Level 4")
-            filterField = "ApproverCode4";
+            filterField = "U_ApproverCode4";
 
         if (approvalLevel == "Special")
-            filterField = "ApproverSpecialCode";
+            filterField = "U_ApproverSpecialCode";
 
         string query = $"U_FT_WPUS?$select=U_UserCode&$filter={filterField} eq '{userCode}'";
         JObject user;
