@@ -1,9 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Authorization;
 @using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
 @using TCPI_PR_Portal.Data;
+@using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
 @inject HttpClient HttpClient;
+@inject IAuthService AuthService;
+@inject ISnackbar Snackbar;
+@inject NavigationManager Navigation;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 @attribute [Authorize];
 
@@ -17,12 +22,12 @@
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudTextField @bind-Value="PRHeader.U_ProjectID" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_ProjectID" Label="Project ID" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_ProjName" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_Location" Label="Location" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                <MudTextField @bind-Value="PRHeader.U_PRType" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                <MudTextField @bind-Value="PRHeader.U_Branch" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
-                <MudTextField @bind-Value="PRHeader.U_Department" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_PRType" Label="PR Type" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Branch" Label="Branch" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Department" Label="Department" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
             </MudPaper>
         </MudItem>
         <MudItem xs="6">
@@ -31,7 +36,7 @@
                 <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" />
                 <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" Disabled="true" />
                 <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" Disabled="true" />
-                <MudTextField @bind-Value="PRHeader.U_Urgency" Label="Project Name" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
+                <MudTextField @bind-Value="PRHeader.U_Urgency" Label="Urgency Priority" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_PreparedBy" Label="Prepared By" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_ReviewedBy" Label="Reviewed By" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
 
@@ -72,70 +77,70 @@
                 <MudText>@(++index)</MudText>
                 </MudTd>
                 <MudTd DataLabel="Item Code">
-                    <MudTextField @bind-Value="@Items.U_ItemCode" Disabled="true" />
+                    @Items.U_ItemCode
                 </MudTd>
                 <MudTd DataLabel="Item Description">
-                    <MudTextField @bind-Value="@Items.U_Dscription" Disabled="true" />
+                    @Items.U_Dscription
                 </MudTd>
                 <MudTd DataLabel="Warehouse">
-                    <MudTextField @bind-Value="@Items.U_WhsCode" Disabled="true" />
+                    @Items.U_WhsCode
                 </MudTd>
                 <MudTd DataLabel="Bin Location">
-                    <MudTextField @bind-Value="@Items.U_BinLoc" Disabled="true" />
+                    @Items.U_BinLoc
                 </MudTd>
                 <MudTd DataLabel="Scope of Work">
-                    <MudTextField @bind-Value="@Items.U_Scope" Disabled="true" />
+                    @Items.U_Scope
                 </MudTd>
                 <MudTd DataLabel="Scope Description">
-                    <MudTextField @bind-Value="@Items.U_ScopeDesc" Disabled="true" />
+                    @Items.U_ScopeDesc
                 </MudTd>
                 <MudTd DataLabel="Material Code">
-                    <MudTextField @bind-Value="@Items.U_MaterialCode" Disabled="true" />
+                    @Items.U_MaterialCode
                 </MudTd>
                 <MudTd DataLabel="Material Description">
-                    <MudTextField @bind-Value="@Items.U_MaterialDesc" Disabled="true" />
+                    @Items.U_MaterialDesc
                 </MudTd>
                 <MudTd DataLabel="Quantity">
-                    <MudTextField @bind-Value="@Items.U_Quantity" Disabled="true" />
+                    @Items.U_Quantity
                 </MudTd>
                 <MudTd DataLabel="Info Price">
-                    <MudTextField @bind-Value="@Items.U_InfoPrice" Disabled="true" />
+                    @Items.U_InfoPrice
                 </MudTd>
                 <MudTd DataLabel="Units Of Measurement">
-                    <MudTextField @bind-Value="@Items.U_UomCode" Disabled="true" />
+                    @Items.U_UomCode
                 </MudTd>
                 <MudTd DataLabel="Item Specification">
-                    <MudTextField @bind-Value="@Items.U_ItemSpecification" Disabled="true" />
+                    @Items.U_ItemSpecification
                 </MudTd>
                 <MudTd DataLabel="Tax Code">
-                    <MudTextField @bind-Value="@Items.U_TaxCode" Disabled="true" />
+                    @Items.U_TaxCode
                 </MudTd>
                 <MudTd DataLabel="On hand Quantity">
-                    <MudTextField @bind-Value="@Items.U_OnHandQuantity" Disabled="true" />
+                    @Items.U_OnHandQuantity
                 </MudTd>
                 <MudTd DataLabel="Inventory Type">
-                    <MudTextField @bind-Value="@Items.U_InventoryType" Disabled="true" />
+                    @Items.U_InventoryType
                 </MudTd>
                 <MudTd DataLabel="Inventory Purpose">
-                    <MudTextField @bind-Value="@Items.U_InventoryPurpose" Disabled="true" />
+                    @Items.U_InventoryPurpose
                 </MudTd>
             </RowTemplate>
         </MudTable>
 
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem xs="6">
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Text="" Lines="3" Disabled="true" />
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="6" Class="d-flex flex-column justify-end">
-                @if (LocalStorage.GetItem<string>("Role") == "Approver")
-                {
-                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
-                </MudPaper>
-                }
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        <MudItem xs="6">
+            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Text="" Lines="3" Disabled="true" />
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" Class="d-flex flex-column justify-end">
+            @if (LocalStorage.GetItem<string>("Role") == "Approver")
+            {
+            <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+            </MudPaper>
+            }
         </MudItem>
     </MudGrid>
 </EditForm>
@@ -177,6 +182,32 @@
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
-        
+        JObject FTOPRQ = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq '{DocEntry}'");
+        PRHeader = FTOPRQ["value"].ToObject<PRHeaderDto>();
+
+        string query = $"U_FT_PRQ1$filter=U_DocEntry eq '{DocEntry}'";
+        JObject FTPRQ1;
+        do
+        {
+            FTPRQ1 = await GetData(query);
+
+            PRLines.AddRange(FTPRQ1["value"].ToObject<List<PRLinesDto>>());
+
+            if (FTPRQ1.ContainsKey("odata.nextLink"))
+                query = FTPRQ1["odata.nextLink"].ToString();
+        } while (FTPRQ1.ContainsKey("odata.nextLink"));
+    }
+
+    async Task<JObject> GetData(string query)
+    {
+        using var response = await HttpClient.GetAsync(query);
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Session has expired", Severity.Error);
+            AuthService.Logout();
+            Navigation.NavigateTo("/");
+        }
+        string content = await response.Content.ReadAsStringAsync();
+        return JObject.Parse(content);
     }
 }
