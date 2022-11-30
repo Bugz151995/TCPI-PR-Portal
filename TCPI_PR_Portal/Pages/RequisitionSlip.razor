@@ -393,7 +393,6 @@
             Navigation.NavigateTo("/");
         }
 
-
         using var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
         DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
         Departments = DepartmentResponse.value;

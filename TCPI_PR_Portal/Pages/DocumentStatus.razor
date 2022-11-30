@@ -1,12 +1,14 @@
 ﻿@using System.Net.Http.Json;
 @using Microsoft.AspNetCore.Authorization;
+@using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
-
-@page "/document-status";
-@attribute [Authorize];
+@inject IAuthService AuthService;
 @inject HttpClient HttpClient;
 @inject NavigationManager Navigation;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
+@attribute [Authorize];
+
+@page "/document-status";
 
 <Title PageName="Document Status" Breadcrumb="_items" />
 
@@ -36,13 +38,14 @@
         <MudTh style="white-space: nowrap!important;">Approved By (Level2)</MudTh>
         <MudTh style="white-space: nowrap!important;">Approved By (Level3)</MudTh>
         <MudTh style="white-space: nowrap!important;">Approved By (Level4)</MudTh>
+        <MudTh style="white-space: nowrap!important;">Approved By (Special)</MudTh>
         <MudTh style="white-space: nowrap!important;">Approved Date</MudTh>
         <MudTh style="white-space: nowrap!important;">Remarks</MudTh>
         <MudTh style="white-space: nowrap!important;">Approver Remarks</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
-            <MudIconButton Link="/document-status/approval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
+            <MudIconButton OnClick="() => ViewDocument(context.U_DocEntry)" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
         </MudTd>
         <MudTd DataLabel="DocEntry">
             @context.U_DocEntry
@@ -98,6 +101,9 @@
         <MudTd DataLabel="Approved By (Level4)">
             @context.U_ApprovedBy4
         </MudTd>
+        <MudTd DataLabel="Approved By (Special)">
+            @context.U_ApprovedBySpecial
+        </MudTd>
         <MudTd DataLabel="Approved Date">
             @context.U_ApprovedDate
         </MudTd>
@@ -142,6 +148,12 @@
     {
         var userCode = LocalStorage.GetItem<string>("UserCode");
         using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
+        if (!response.IsSuccessStatusCode)
+        {
+            AuthService.Logout();
+            Navigation.NavigateTo("/");
+        }
+
         PRHeaderResponse = await response.Content.ReadFromJsonAsync<PRHeaderResponse>();
         PRRequests = PRHeaderResponse.value;
     }
@@ -158,5 +170,10 @@
             return true;
 
         return false;
+    }
+
+    void ViewDocument(int? docEntry)
+    {
+        Navigation.NavigateTo($"document-status/{docEntry}");
     }
 }

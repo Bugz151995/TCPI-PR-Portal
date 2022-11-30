@@ -4,8 +4,8 @@
 @using TCPI_PR_Portal.Shared;
 @using System.Text;
 
-@page "/document-status/approval";
-@attribute [Authorize];
+@page "/document-status/{DocEntry}";
+@attribute [Authorize(Roles = "Approver")];
 @inject HttpClient HttpClient;
 
 <Title PageName="Requisition Slip Approval" Breadcrumb="_items" />
@@ -128,6 +128,10 @@
                 </MudPaper>
             </MudItem>
             <MudItem xs="6" Class="d-flex flex-column justify-end">
+                @if (LocalStorage.)
+            {
+                
+            }
                 <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
@@ -136,7 +140,10 @@
         </MudGrid>
     </EditForm>
 
-    @code {
+@code {
+    [Parameter]
+    public int DocEntry { get; set; }
+
     public int HeaderDocEntry;
     public int index = 0;
     // table settings
