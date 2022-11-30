@@ -239,8 +239,6 @@
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add(response.ReasonPhrase, Severity.Error);
-            AuthService.Logout();
-            Navigation.NavigateTo("/");
         }
         string content = await response.Content.ReadAsStringAsync();
         return JObject.Parse(content);
