@@ -281,6 +281,12 @@
             StateHasChanged();
             PRHeader = new PRHeaderDto();
             PRLines = new List<PRLinesDto>();
+            int lastDocEntry = await GetLastDocEntry();
+            int lastDocNum = await GetLastDocNum();
+            docEntry = lastDocEntry + 1;
+            docNum = lastDocNum + 1;
+            Autofill();
+            await AddLine();
         }
         catch (Exception ex)
         {
@@ -301,15 +307,8 @@
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
 
-            PRHeader.Code = docEntry.ToString();
-            PRHeader.Name = docEntry.ToString();
-            PRHeader.U_DocNum = docNum.ToString();
-            PRHeader.U_DocEntry = docEntry;
-            PRHeader.U_DocStatus = "Waiting For Approval";
-            PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserName");
-            PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
-            PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
-            PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
+            Autofill();
+
             await AddLine();
         }
         catch (Exception ex)
@@ -457,5 +456,18 @@
         if (LastDocEntryResponse.value.Count != 0)
             lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
         return lastDocEntry;
+    }
+
+    void Autofill()
+    {
+        PRHeader.Code = docEntry.ToString();
+        PRHeader.Name = docEntry.ToString();
+        PRHeader.U_DocNum = docNum.ToString();
+        PRHeader.U_DocEntry = docEntry;
+        PRHeader.U_DocStatus = "Waiting For Approval";
+        PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserName");
+        PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
+        PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
+        PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
     }
 }
