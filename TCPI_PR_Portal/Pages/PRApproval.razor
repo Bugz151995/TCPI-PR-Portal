@@ -179,7 +179,7 @@
         StateHasChanged();
     }
 
-    // get method json ang makukua,
+    // TODO: Populate the lines and header
     protected override async Task OnInitializedAsync()
     {
         JObject FTOPRQ = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq {DocEntry}");
@@ -190,7 +190,7 @@
         do
         {
             FTPRQ1 = await GetData(query);
-
+            Console.WriteLine(JsonConvert.SerializeObject(FTPRQ1));
             PRLines.AddRange(FTPRQ1["value"].ToObject<List<PRLinesDto>>());
 
             if (FTPRQ1.ContainsKey("odata.nextLink"))
