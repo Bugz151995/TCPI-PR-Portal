@@ -279,6 +279,8 @@
             Snackbar.Add("The Purchase Request was successfully posted!", Severity.Success);
             success = true;
             StateHasChanged();
+            PRHeader = new PRHeaderDto();
+            PRLines = new List<PRLinesDto>();
         }
         catch (Exception ex)
         {
