@@ -182,25 +182,25 @@
     // TODO: Populate the lines and header
     protected override async Task OnInitializedAsync()
     {
-        JObject FTOPRQ = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq {DocEntry}");
-        PRHeader = FTOPRQ["value"].ToObject<PRHeaderDto>();
+        JObject headerResponse = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq {DocEntry}");
+        List<PRHeaderDto> header = headerResponse["value"].ToObject<List<PRHeaderDto>>();
+        PRHeader = header[0];
 
         string query = $"U_FT_PRQ1?$filter=U_DocEntry eq '{DocEntry}'";
-        JObject FTPRQ1;
-            Console.WriteLine(query);
+        JObject lines;
         do
         {            
-            FTPRQ1 = await GetData(query);
-            PRLines.AddRange(FTPRQ1["value"].ToObject<List<PRLinesDto>>());
+            lines = await GetData(query);
+            PRLines.AddRange(lines["value"].ToObject<List<PRLinesDto>>());
 
-            if (FTPRQ1.ContainsKey("odata.nextLink"))
-                query = FTPRQ1["odata.nextLink"].ToString();
-        } while (FTPRQ1.ContainsKey("odata.nextLink"));
+            if (lines.ContainsKey("odata.nextLink"))
+                query = lines["odata.nextLink"].ToString();
+        } while (lines.ContainsKey("odata.nextLink"));
     }
 
     async Task<JObject> GetData(string query)
     {
-        var response = await HttpClient.GetAsync(query);
+        using var response = await HttpClient.GetAsync(query);
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add(response.ReasonPhrase, Severity.Error);
