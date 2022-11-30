@@ -141,7 +141,7 @@
     protected override async Task OnInitializedAsync()
     {
         var userCode = LocalStorage.GetItem<string>("UserCode");
-        using var response = await HttpClient.GetAsync($"U_FT_WPUS?$filter=U_CardCode eq '{userCode}'");
+        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
         PRHeaderResponse = await response.Content.ReadFromJsonAsync<PRHeaderResponse>();
         PRRequests = PRHeaderResponse.value;
     }
