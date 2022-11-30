@@ -100,8 +100,6 @@
         <RowTemplate Context="Items">
             <MudTd><MudIconButton OnClick="() => RemoveLine(PRLines.IndexOf(Items))" Icon="@Icons.Material.Filled.Delete" aria-label="delete" Color="Color.Error"></MudIconButton></MudTd>
             <MudTd>
-                <input type="hidden" @bind-value="@Items.Code" />
-                <input type="hidden" @bind-value="@Items.Name" />
                 <input type="hidden" @bind-value="@Items.U_DocEntry" />
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
@@ -271,6 +269,10 @@
 
             foreach (var line in PRLines)
             {
+                int nextCode = await GetNextCodeLines();
+
+                line.Code = nextCode.ToString();
+                line.Name = nextCode.ToString();
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(line), Encoding.UTF8, "application/json");
                 var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", content);
             }
@@ -336,7 +338,7 @@
         context.U_ScopeDesc = search.First();
     }
 
-    async Task AddLine()
+    async Task<int> GetNextCodeLines()
     {
         int lastCode = 0;
         var lastCodeResponse = await HttpClient.GetAsync("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
@@ -345,13 +347,14 @@
         if (LastCodeResponse.value.Count != 0)
             lastCode = Convert.ToInt32(LastCodeResponse.value[0].Code);
 
-        int increments = (PRLines.Count == 0) ? 1 : PRLines.Count;
-        lastCode = lastCode + increments;
+        lastCode += 1;
+        return lastCode;
+    }
 
+    async Task AddLine()
+    {
         PRLines.Add(new PRLinesDto
             {
-                Code = lastCode.ToString(),
-                Name = lastCode.ToString(),
                 U_DocEntry = PRHeader.U_DocEntry.ToString(),
                 U_ItemCode = null,
                 U_Dscription = null,
