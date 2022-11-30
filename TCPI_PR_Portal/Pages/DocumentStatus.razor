@@ -4,16 +4,17 @@
 
 @page "/document-status";
 @attribute [Authorize];
-@inject HttpClient _httpClient;
-@inject NavigationManager _navigation;
+@inject HttpClient HttpClient;
+@inject NavigationManager Navigation;
+@inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 
 <Title PageName="Document Status" Breadcrumb="_items" />
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Element,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+<MudTable Items="@PRRequests" T="PRHeaderDto" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<PRHeaderDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
     <ToolBarContent>
         <MudText Typo="Typo.h6">&nbsp;</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh></MudTh>
@@ -43,27 +44,69 @@
         <MudTd>
             <MudIconButton Link="/document-status/approval" Icon="@Icons.Filled.RemoveRedEye" aria-label="View" Color="Color.Primary"></MudIconButton>
         </MudTd>
-        <MudTd DataLabel="DocEntry"></MudTd>
-        <MudTd DataLabel="Project ID"></MudTd>
-        <MudTd DataLabel="Project Name"></MudTd>
-        <MudTd DataLabel="Location"></MudTd>
-        <MudTd DataLabel="PR Type"></MudTd>
-        <MudTd DataLabel="Document Number"></MudTd>
-        <MudTd DataLabel="Department"></MudTd>
-        <MudTd DataLabel="Branch"></MudTd>
-        <MudTd DataLabel="Status"></MudTd>
-        <MudTd DataLabel="Document Date"></MudTd>
-        <MudTd DataLabel="Required Date"></MudTd>
-        <MudTd DataLabel="Urgency Priority"></MudTd>
-        <MudTd DataLabel="Prepared By"></MudTd>
-        <MudTd DataLabel="Reviewed By"></MudTd>
-        <MudTd DataLabel="Approved By (Level1)"></MudTd>
-        <MudTd DataLabel="Approved By (Level2)"></MudTd>
-        <MudTd DataLabel="Approved By (Level3)"></MudTd>
-        <MudTd DataLabel="Approved By (Level4)"></MudTd>
-        <MudTd DataLabel="Approved Date"></MudTd>
-        <MudTd DataLabel="Remarks"></MudTd>
-        <MudTd DataLabel="Approver Remarks"></MudTd>
+        <MudTd DataLabel="DocEntry">
+            <MudTextField @bind-Value="context.U_DocEntry" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Project ID">
+            <MudTextField @bind-Value="context.U_ProjectID" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Project Name">
+            <MudTextField @bind-Value="context.U_ProjName" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Location">
+            <MudTextField @bind-Value="context.U_Location" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="PR Type">
+            <MudTextField @bind-Value="context.U_PRType" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Document Number">
+            <MudTextField @bind-Value="context.U_DocNum" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Department">
+            <MudTextField @bind-Value="context.U_Department" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Branch">
+            <MudTextField @bind-Value="context.U_Branch" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Status">
+            <MudTextField @bind-Value="context.U_DocStatus" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Document Date">
+            <MudTextField @bind-Value="context.U_TaxDate" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Required Date">
+            <MudTextField @bind-Value="context.U_ReqDate" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Urgency Priority">
+            <MudTextField @bind-Value="context.U_Urgency" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Prepared By">
+            <MudTextField @bind-Value="context.U_PreparedBy" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Reviewed By">
+            <MudTextField @bind-Value="context.U_ReviewedBy" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Approved By (Level1)">
+            <MudTextField @bind-Value="context.U_ApprovedBy1" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Approved By (Level2)">
+            <MudTextField @bind-Value="context.U_ApprovedBy2" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Approved By (Level3)">
+            <MudTextField @bind-Value="context.U_ApprovedBy3" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Approved By (Level4)">
+            <MudTextField @bind-Value="context.U_ApprovedBy4" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Approved Date">
+            <MudTextField @bind-Value="context.U_ApprovedDate" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Remarks">
+            <MudTextField @bind-Value="context.U_Remarks" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
+        <MudTd DataLabel="Approver Remarks">
+            <MudTextField @bind-Value="context.U_ApproverRemarks" Label="Outlined" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+        </MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
@@ -85,82 +128,35 @@
     //// <summary>
     /// from here all logic are tests refactor later
     /// </summary>
-    private string searchString1 = "";
-    private Element selectedItem1 = null;
+    private string searchString = "";
+    private PRHeaderDto selectedItem1 = null;
 
     private List<PRLinesDto> _lines = new List<PRLinesDto>();
 
     //test data
-    private List<Element> Elements = new List<Element>();
-
+    private List<PRHeaderDto> PRRequests = new List<PRHeaderDto>();
+    PRHeaderResponse? PRHeaderResponse = new PRHeaderResponse();
 
     // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
-        //Elements = await httpClient.GetFromJsonAsync<List<Element>>("dummyjson.com/products");
-        // HARD CODED DATA
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    _lines.Add(new PRLines
-        //        {
-        //            DocEntry = 1,
-        //            U_ItemCode = 1,
-        //            U_Dscription = 1,
-        //            U_WhsCode = 1,
-        //            U_BinLoc = 1,
-        //            U_Scope = 1,
-        //            U_ScopeDesc = 1,
-        //            U_MaterialCode = 1,
-        //            U_MaterialDesc = 1,
-        //            U_Quantity = 1,
-        //            U_InfoPrice = 1,
-        //            U_UomCode = 1,
-        //            U_ItemSpecification = 1,
-        //            TaxCode = 1,
-        //            U_OnHandQuantity = 1,
-        //            U_InventoryType = 1,
-        //            U_InventoryPurpose = 1
-        //        });
-        //}
-
-        // test data hardcoded data
-        for (int i = 0; i < 5; i++)
-        {
-            Elements.Add(new Element
-                {
-                    Number = 1,
-                    Sign = "test",
-                    Name = "test",
-                    Position = 2,
-                    Molar = 3
-                });
-        }
+        var userCode = LocalStorage.GetItem<string>("UserCode");
+        using var response = await HttpClient.GetAsync($"U_FT_WPUS?$filter=U_CardCode eq '{userCode}'");
+        PRHeaderResponse = await response.Content.ReadFromJsonAsync<PRHeaderResponse>();
+        PRRequests = PRHeaderResponse.value;
     }
 
-    private bool FilterFunc1(Element element) => FilterFunc(element, searchString1);
+    private bool FilterFunc1(PRHeaderDto element) => FilterFunc(element, searchString);
 
-    private bool FilterFunc(Element element, string searchString)
+    private bool FilterFunc(PRHeaderDto element, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.U_ProjectID.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        if (element.U_ProjName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
-        if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
-            return true;
+
         return false;
     }
-
-    // test data
-    public class Element
-    {
-        public int Number { get; set; }
-        public string Sign { get; set; }
-        public string Name { get; set; }
-        public int Position { get; set; }
-        public int Molar { get; set; }
-    }
-
-
 }
