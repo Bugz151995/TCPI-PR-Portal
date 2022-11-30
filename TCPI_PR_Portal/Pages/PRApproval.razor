@@ -185,7 +185,7 @@
         JObject FTOPRQ = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq {DocEntry}");
         PRHeader = FTOPRQ["value"].ToObject<PRHeaderDto>();
 
-        string query = $"U_FT_PRQ1$filter=U_DocEntry eq {DocEntry}";
+        string query = $"U_FT_PRQ1?$filter=U_DocEntry eq '{DocEntry}'";
         JObject FTPRQ1;
         do
         {
