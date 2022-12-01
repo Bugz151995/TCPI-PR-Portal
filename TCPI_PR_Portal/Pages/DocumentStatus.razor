@@ -135,9 +135,6 @@
         new BreadcrumbItem("Document Status", href: "document-status", disabled: true)
     };
 
-    //// <summary>
-    /// from here all logic are tests refactor later
-    /// </summary>
     private string searchString = "";
     private PRHeaderDto selectedItem1 = null;
 
@@ -147,7 +144,6 @@
     private List<PRHeaderDto> PRRequests = new List<PRHeaderDto>();
     PRHeaderResponse? PRHeaderResponse = new PRHeaderResponse();
 
-    // get method json ang makukua,
     protected override async Task OnInitializedAsync()
     {
         string role = LocalStorage.GetItem<string>("Role");
@@ -185,7 +181,7 @@
     async Task GetMyRequests()
     {
         var userCode = LocalStorage.GetItem<string>("UserCode");
-        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}' and U_DocStatus eq ''");
+        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add(response.ReasonPhrase, Severity.Error);
@@ -265,6 +261,9 @@
         if (approvalLevel == "Level 1")
             status = "Waiting For Approval";
 
+        if (approvalLevel == "Special")
+            status = "A1-NotCompleted";
+
         if (approvalLevel == "Level 2")
             status = "A1";
 
@@ -272,10 +271,7 @@
             status = "A2";
 
         if (approvalLevel == "Level 4")
-            status = "A3";
-
-        if (approvalLevel == "Special")
-            status = "A4-NotCompleted";
+            status = "A3";        
 
         return status;
     }

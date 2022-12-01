@@ -34,6 +34,10 @@
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-4 gap-2">
                 <MudTextField @bind-Value="PRHeader.U_DocNum" Label="Doc. No" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_DocStatus" Disabled="true" Label="Status" Variant="Variant.Outlined" Margin="Margin.Dense" />
+
+                @*Add In Case the client wants to add extension of posting date*@
+                @*<MudDatePicker Label="Valid Until" @bind-Date="PRHeader.U_ValidUntil" Disabled="true" />*@
+
                 <MudDatePicker Label="Document Date" @bind-Date="PRHeader.U_TaxDate" Disabled="true" />
                 <MudDatePicker Label="Required Date" @bind-Date="PRHeader.U_ReqDate" Disabled="true" />
                 <MudTextField @bind-Value="PRHeader.U_Urgency" Label="Urgency Priority" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" />
@@ -138,12 +142,12 @@
             </MudItem>
             <MudItem xs="6" Class="d-flex flex-column justify-end">
                 @if (LocalStorage.GetItem<string>("Role") == "Approver")
-                {
-                    <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
-                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
-                    </MudPaper>
-                }
+            {
+                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+                </MudPaper>
+            }
         </MudItem>
     </MudGrid>
 </EditForm>
@@ -175,9 +179,9 @@
         var approverDetails = FilterApprover();
 
         HttpContent content = new StringContent(JsonConvert.SerializeObject(approverDetails), Encoding.UTF8, "application/json");
-        using var response = HttpClient.PatchAsync($"U_FT_OPRQ('{PRHeader.Code}')", content);
+        using var response = await HttpClient.PatchAsync($"U_FT_OPRQ('{PRHeader.Code}')", content);
 
-        if (response.Status.ToString() != "204")
+        if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add("Sorry, Approval was not successful!", Severity.Error);
             return;
@@ -231,7 +235,29 @@
         var approver = LocalStorage.GetItem<string>("UserCode");
         var approverDetails = new object();
 
-        if (approvalLevel == "Level 1")
+        if (PRHeader.U_PRType != "Regular" && approvalLevel == "Level 1")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy1 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_DocStatus = "A1-NotCompleted"
+            };
+        }
+
+        if (PRHeader.U_PRType != "Regular" && approvalLevel == "Special")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy1 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_DocStatus = "A1"
+            };
+        }
+
+        if (PRHeader.U_PRType == "Regular" && approvalLevel == "Level 1")
         {
             approverDetails = new
             {
@@ -264,33 +290,11 @@
             };
         }
 
-        if (PRHeader.U_PRType == "Regular" && approvalLevel == "Level 4")
+        if (approvalLevel == "Level 4")
         {
             approverDetails = new
             {
                 U_ApprovedBy4 = approver,
-                U_ApprovedDate = approveDate,
-                U_ApproverRemarks = remarks,
-                U_DocStatus = "A4"
-            };
-        }
-
-        if (PRHeader.U_PRType != "Regular" && approvalLevel == "Level 4")
-        {
-            approverDetails = new
-            {
-                U_ApprovedBy4 = approver,
-                U_ApprovedDate = approveDate,
-                U_ApproverRemarks = remarks,
-                U_DocStatus = "A4-NotCompleted"
-            };
-        }
-
-        if (approvalLevel == "Special")
-        {
-            approverDetails = new
-            {
-                U_ApprovedBySpecial = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
                 U_DocStatus = "A4"
