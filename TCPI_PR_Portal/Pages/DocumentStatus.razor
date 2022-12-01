@@ -4,6 +4,7 @@
 @using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
+@using Newtonsoft.Json;
 @inject IAuthService AuthService;
 @inject ISnackbar Snackbar;
 @inject HttpClient HttpClient;
@@ -175,7 +176,6 @@
 
         return false;
     }
-
     void ViewDocument(int? docEntry)
     {
         Navigation.NavigateTo($"document-status/{docEntry}");
@@ -228,9 +228,11 @@
                 query = user["odata.nextLink"].ToString();
         } while (user.ContainsKey("odata.nextLink"));
 
+        Console.WriteLine(JsonConvert.SerializeObject(userCodes));
+
         foreach (var code in userCodes)
         {
-            string requestsQuery = $"U_FT_OPRQ?$filter=U_CardCode eq '{code.UserCode}'";
+            string requestsQuery = $"U_FT_OPRQ?$filter=U_CardCode eq '{code.U_UserCode}'";
             JObject requests;
             do
             {
@@ -253,6 +255,4 @@
         string content = await response.Content.ReadAsStringAsync();
         return JObject.Parse(content);
     }
-    //TODO: get list of users assigned to me, if i am lvl 1 then get all the users where i am assigned to
-    //TODO: if we have the list of users, then get all the requests from them..
 }

@@ -125,29 +125,32 @@
                     @Items.U_InventoryPurpose
                 </MudTd>
             </RowTemplate>
-     </MudTable>
+        </MudTable>
 
-    <MudGrid Spacing="2" Justify="Justify.Center">
-        <MudItem xs="6">
-            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Lines="3" Disabled="true" />
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="6" Class="d-flex flex-column justify-end">
-            @if (LocalStorage.GetItem<string>("Role") == "Approver")
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem xs="6">
+                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Lines="3" Disabled="true" />
+                </MudPaper>
+                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_ApproverRemarks" Variant="Variant.Outlined" Lines="3" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="6" Class="d-flex flex-column justify-end">
+                @if (LocalStorage.GetItem<string>("Role") == "Approver")
             {
-            <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
-                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
-            </MudPaper>
+                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+                </MudPaper>
             }
         </MudItem>
     </MudGrid>
 </EditForm>
 
 @code {
-        [Parameter]
-        public string DocEntry { get; set; }
+    [Parameter]
+    public string DocEntry { get; set; }
 
     public int HeaderDocEntry;
     public int index = 0;
@@ -157,6 +160,7 @@
     private bool striped = true;
     private bool bordered = false;
 
+    private ApproverDetailsDto Approver = new ApproverDetailsDto();
     private PRHeaderDto PRHeader = new PRHeaderDto();
     private List<PRLinesDto> PRLines = new List<PRLinesDto>();
 
@@ -169,11 +173,17 @@
     bool success = false;
     private async Task OnSubmit(EditContext context)
     {
-        HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
-        var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
+        var approverDetails = FilterApprover();
 
-        HttpContent lines = new StringContent(JsonConvert.SerializeObject(PRLines), Encoding.UTF8, "application/json");
-        var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", lines);
+        HttpContent content = new StringContent(JsonConvert.SerializeObject(approverDetails), Encoding.UTF8, "application/json");
+        using var response = HttpClient.PatchAsync($"U_FT_OPRQ('{PRHeader.Code}')", content);
+
+        if (!response.IsCompletedSuccessfully)
+        {
+            Snackbar.Add("Sorry, Approval was not successful!", Severity.Error);
+        }
+
+        Snackbar.Add("The Document was successfully approved!", Severity.Success);
 
         success = true;
         StateHasChanged();
@@ -209,5 +219,84 @@
         }
         string content = await response.Content.ReadAsStringAsync();
         return JObject.Parse(content);
+    }
+
+    object FilterApprover()
+    {
+        string approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
+        string filterField = string.Empty;
+
+        DateTime approveDate = DateTime.Now;
+        var remarks = PRHeader.U_ApproverRemarks;
+        var approver = LocalStorage.GetItem<string>("UserCode");
+        var approverDetails = new object();
+
+        if (approvalLevel == "Level 1")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy1 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_Status = "A1"
+            };
+        }
+
+        if (approvalLevel == "Level 2")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy2 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_Status = "A2"
+            };
+        }
+
+        if (approvalLevel == "Level 3")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy3 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_Status = "A3"
+            };
+        }
+
+        if (PRHeader.U_PRType == "Regular" && approvalLevel == "Level 4")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy4 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_Status = "A4"
+            };
+        }
+
+        if (PRHeader.U_PRType != "Regular" && approvalLevel == "Level 4")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBy4 = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_Status = "A4-NotCompleted"
+            };
+        }
+
+        if (approvalLevel == "Special")
+        {
+            approverDetails = new
+            {
+                U_ApprovedBySpecial = approver,
+                U_ApprovedDate = approveDate,
+                U_ApproverRemarks = remarks,
+                U_Status = "A4"
+            };
+        }
+
+        return approverDetails;
     }
 }

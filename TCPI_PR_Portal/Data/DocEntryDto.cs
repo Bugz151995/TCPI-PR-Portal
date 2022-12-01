@@ -37,7 +37,7 @@ namespace TCPI_PR_Portal.Data
 
     public class UserCodeDto
     {
-        public string UserCode { get; set; }
+        public string U_UserCode { get; set; }
     }
 
     public class CodeDto
