@@ -307,7 +307,7 @@
             int lastDocNum = await GetLastDocNum();
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
-            Autofill();
+            await Autofill();
             await AddLine();
         }
         catch (Exception ex)
