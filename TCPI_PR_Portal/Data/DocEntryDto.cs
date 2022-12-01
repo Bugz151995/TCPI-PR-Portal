@@ -35,6 +35,11 @@ namespace TCPI_PR_Portal.Data
         public List<DocNumUdtDto> value { get; set; } = new List<DocNumUdtDto>();
     }
 
+    public class UserCodeDto
+    {
+        public string UserCode { get; set; }
+    }
+
     public class CodeDto
     {
         public string Code { get; set; }

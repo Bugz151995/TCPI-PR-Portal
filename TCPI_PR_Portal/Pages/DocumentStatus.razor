@@ -1,6 +1,7 @@
 ﻿@using System.Net.Http.Json;
 @using Microsoft.AspNetCore.Authorization;
 @using Newtonsoft.Json.Linq;
+@using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
 @inject IAuthService AuthService;
@@ -254,9 +255,4 @@
     }
     //TODO: get list of users assigned to me, if i am lvl 1 then get all the users where i am assigned to
     //TODO: if we have the list of users, then get all the requests from them..
-
-    public class UserCodeDto 
-    {
-        public string UserCode { get; set; }
-    }
 }
