@@ -129,7 +129,7 @@
 
         <MudGrid Spacing="2" Justify="Justify.Center">
             <MudItem xs="6">
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pt-8 px-1 gap-2">
+                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pt-8 pb-3 px-1 gap-2">
                     <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Lines="3" Disabled="true" />
                 </MudPaper>
                 <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pb-8 px-1 gap-2">
@@ -181,6 +181,7 @@
         if (!response.IsCompletedSuccessfully)
         {
             Snackbar.Add("Sorry, Approval was not successful!", Severity.Error);
+            return;
         }
 
         Snackbar.Add("The Document was successfully approved!", Severity.Success);
