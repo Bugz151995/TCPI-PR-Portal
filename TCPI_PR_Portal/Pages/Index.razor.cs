@@ -37,16 +37,18 @@ namespace TCPI_PR_Portal.Pages
         UserSessionDto UserSession = new UserSessionDto();
         SAPUserDto SapUser = new SAPUserDto();
         UserResponse? SapUserResponse = new UserResponse();
+
         private async Task OnValidSubmit(EditContext context)
         {
             try
             {
                 var credential = new
                 {
-                CompanyDB = "TCPI_TESTDB", UserName = User.U_UserName, Password = User.U_Password
-                }
+                    CompanyDB = "TCPI_TESTDB",
+                    UserName = User.U_UserName,
+                    Password = User.U_Password
+                };
 
-                ;
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(credential), Encoding.UTF8, "application/json");
                 using var sapLogin = await HttpClient.PostAsync("Login", content);
                 if (!sapLogin.IsSuccessStatusCode)

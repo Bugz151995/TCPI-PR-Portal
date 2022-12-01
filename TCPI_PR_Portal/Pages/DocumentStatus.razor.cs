@@ -35,7 +35,7 @@ namespace TCPI_PR_Portal.Pages
         protected override async Task OnInitializedAsync()
         {
             string role = LocalStorage.GetItem<string>("Role");
-
+            
             if (role == "Approver")
                 await GetMyRequestors();
 
