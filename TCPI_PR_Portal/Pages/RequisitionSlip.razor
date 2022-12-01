@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Authorization;
 @using Newtonsoft.Json;
+@using System.Text.RegularExpressions;
 @using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
@@ -184,7 +185,7 @@
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_InventoryType" For="@(() => Items.U_InventoryType)" Variant="Variant.Outlined">
                     <MudSelectItem Value="@("Short-Term")" />
                     <MudSelectItem Value="@("Mid-Term")" />
-                    <MudSelectItem Value="@("Household")" />
+                    <MudSelectItem Value="@("HouseHold")" />
                     <MudSelectItem Value="@("Order")" />
                     <MudSelectItem Value="@("Long-Term")" />
                 </MudSelect>
@@ -269,10 +270,10 @@
 
             foreach (var line in PRLines)
             {
-                int nextCode = await GetNextCodeLines();
+                string nextCode = await GetNextCodeLines();
 
-                line.Code = nextCode.ToString();
-                line.Name = nextCode.ToString();
+                line.Code = nextCode;
+                line.Name = nextCode;
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(line), Encoding.UTF8, "application/json");
                 var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", content);
             }
@@ -280,6 +281,7 @@
             Snackbar.Add("The Purchase Request was successfully posted!", Severity.Success);
             success = true;
             StateHasChanged();
+
             PRHeader = new PRHeaderDto();
             PRLines = new List<PRLinesDto>();
             int lastDocEntry = await GetLastDocEntry();
@@ -338,16 +340,16 @@
         context.U_ScopeDesc = search.First();
     }
 
-    async Task<int> GetNextCodeLines()
+    async Task<string> GetNextCodeLines()
     {
-        int lastCode = 0;
+        string lastCode = "PR0000";
         var lastCodeResponse = await HttpClient.GetAsync("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
         LastCodeResponse = await lastCodeResponse.Content.ReadFromJsonAsync<CodeResponse>();
 
         if (LastCodeResponse.value.Count != 0)
-            lastCode = Convert.ToInt32(LastCodeResponse.value[0].Code);
+            lastCode = LastCodeResponse.value[0].Code;
 
-        lastCode += 1;
+        lastCode = Regex.Replace(lastCode, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string('0', m.Value.Length)));
         return lastCode;
     }
 
