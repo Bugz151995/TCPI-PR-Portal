@@ -1,6 +1,7 @@
 ﻿@using Blazor.SubtleCrypto;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+@using System.Text.RegularExpressions;
 @using TCPI_PR_Portal.Data;
 @using TCPI_PR_Portal.Services;
 @using TCPI_PR_Portal.Shared;
@@ -164,12 +165,14 @@
             //CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
             //User.U_Password = encryptedPassword.Value;
 
+            string lastCode = "PR0000000000";
             JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
             CodeDto code = codeJson["value"][0].ToObject<CodeDto>();
-            Console.WriteLine(JsonConvert.SerializeObject(code));
-            int nextCode = Convert.ToInt32(code.Code) + 1;
-            User.Code = nextCode.ToString();
-            User.Name = nextCode.ToString();
+
+            string nextCode = IncrementCode(code.Code);
+
+            User.Code = nextCode;
+            User.Name = nextCode;
 
             HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
             using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
@@ -194,6 +197,10 @@
         }
     }
 
+    string IncrementCode(string code){
+        return Regex.Replace(code, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string('0', m.Value.Length)));
+
+    }
     protected override async void OnInitialized()
     {
         //Uncomment this to get the list of departments

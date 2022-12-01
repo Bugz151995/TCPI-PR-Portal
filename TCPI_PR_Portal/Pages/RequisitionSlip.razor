@@ -342,15 +342,20 @@
 
     async Task<string> GetNextCodeLines()
     {
-        string lastCode = "PR0000";
+        string lastCode = "PR0000000000"; // increment this using regex
         var lastCodeResponse = await HttpClient.GetAsync("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
         LastCodeResponse = await lastCodeResponse.Content.ReadFromJsonAsync<CodeResponse>();
 
         if (LastCodeResponse.value.Count != 0)
             lastCode = LastCodeResponse.value[0].Code;
 
-        lastCode = Regex.Replace(lastCode, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string('0', m.Value.Length)));
+        lastCode = IncrementCode(lastCode);
+
         return lastCode;
+    }
+
+    string IncrementCode(string code){
+        return Regex.Replace(code, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string('0', m.Value.Length)));
     }
 
     async Task AddLine()
