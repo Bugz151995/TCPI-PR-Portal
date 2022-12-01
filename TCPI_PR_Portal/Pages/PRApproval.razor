@@ -129,11 +129,11 @@
 
         <MudGrid Spacing="2" Justify="Justify.Center">
             <MudItem xs="6">
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
+                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pt-8 px-1 gap-2">
                     <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Lines="3" Disabled="true" />
                 </MudPaper>
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_ApproverRemarks" Variant="Variant.Outlined" Lines="3" />
+                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pb-8 px-1 gap-2">
+                    <MudTextField T="string" Label="Approver Remarks" @bind-Value="PRHeader.U_ApproverRemarks" Variant="Variant.Outlined" Lines="3" />
                 </MudPaper>
             </MudItem>
             <MudItem xs="6" Class="d-flex flex-column justify-end">
@@ -238,7 +238,7 @@
                 U_ApprovedBy1 = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
-                U_Status = "A1"
+                U_DocStatus = "A1"
             };
         }
 
@@ -249,7 +249,7 @@
                 U_ApprovedBy2 = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
-                U_Status = "A2"
+                U_DocStatus = "A2"
             };
         }
 
@@ -260,7 +260,7 @@
                 U_ApprovedBy3 = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
-                U_Status = "A3"
+                U_DocStatus = "A3"
             };
         }
 
@@ -271,7 +271,7 @@
                 U_ApprovedBy4 = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
-                U_Status = "A4"
+                U_DocStatus = "A4"
             };
         }
 
@@ -282,7 +282,7 @@
                 U_ApprovedBy4 = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
-                U_Status = "A4-NotCompleted"
+                U_DocStatus = "A4-NotCompleted"
             };
         }
 
@@ -293,7 +293,7 @@
                 U_ApprovedBySpecial = approver,
                 U_ApprovedDate = approveDate,
                 U_ApproverRemarks = remarks,
-                U_Status = "A4"
+                U_DocStatus = "A4"
             };
         }
 
