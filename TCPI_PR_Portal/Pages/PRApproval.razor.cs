@@ -28,25 +28,37 @@ namespace TCPI_PR_Portal.Pages
     public partial class PRApproval
     {
         [Parameter]
-        public string DocEntry { get; set; }
-
+        public string DocEntry { get; set; } = string.Empty;
 
         bool success = false;
         public int HeaderDocEntry;
         public int index = 0;
         public bool isApprover = false;
         string approvalLevel = string.Empty;
-        // table settings
-        private bool dense = false;
-        private bool hover = true;
-        private bool striped = true;
-        private bool bordered = false;
+
         private PRHeaderDto PRHeader = new PRHeaderDto();
         private List<PRLinesDto> PRLines = new List<PRLinesDto>();
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Document Status", href: "document-status", disabled: true), new BreadcrumbItem("Requisition Slip Approval", href: "approval") };
-        // form validation
 
-        private async Task Approve(EditContext context)
+        protected override async Task OnInitializedAsync()
+        {
+            approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
+            JObject headerResponse = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq {DocEntry}");
+            List<PRHeaderDto> header = headerResponse["value"].ToObject<List<PRHeaderDto>>();
+            PRHeader = header[0];
+            string query = $"U_FT_PRQ1?$filter=U_DocEntry eq '{DocEntry}'";
+            JObject lines;
+            do
+            {
+                lines = await GetData(query);
+                PRLines.AddRange(lines["value"].ToObject<List<PRLinesDto>>());
+                if (lines.ContainsKey("odata.nextLink"))
+                    query = lines["odata.nextLink"].ToString();
+            }
+            while (lines.ContainsKey("odata.nextLink"));
+        }
+
+        private async Task ApproveDocument(EditContext context)
         {
             var approverDetails = FilterApprover();
             HttpContent content = new StringContent(JsonConvert.SerializeObject(approverDetails), Encoding.UTF8, "application/json");
@@ -63,7 +75,7 @@ namespace TCPI_PR_Portal.Pages
             Navigation.NavigateTo("document-status");
         }
 
-        private async Task Reject()
+        private async Task RejectDocument()
         {
             var rejectContent = new
             {
@@ -83,26 +95,7 @@ namespace TCPI_PR_Portal.Pages
             Navigation.NavigateTo("document-status");
         }
 
-        // TODO: Populate the lines and header
-        protected override async Task OnInitializedAsync()
-        {
-            approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
-            JObject headerResponse = await GetData($"U_FT_OPRQ?$filter=U_DocEntry eq {DocEntry}");
-            List<PRHeaderDto> header = headerResponse["value"].ToObject<List<PRHeaderDto>>();
-            PRHeader = header[0];
-            string query = $"U_FT_PRQ1?$filter=U_DocEntry eq '{DocEntry}'";
-            JObject lines;
-            do
-            {
-                lines = await GetData(query);
-                PRLines.AddRange(lines["value"].ToObject<List<PRLinesDto>>());
-                if (lines.ContainsKey("odata.nextLink"))
-                    query = lines["odata.nextLink"].ToString();
-            }
-            while (lines.ContainsKey("odata.nextLink"));
-        }
-
-        async Task<JObject> GetData(string query)
+        private async Task<JObject> GetData(string query)
         {
             using var response = await HttpClient.GetAsync(query);
             if (!response.IsSuccessStatusCode)
@@ -114,7 +107,7 @@ namespace TCPI_PR_Portal.Pages
             return JObject.Parse(content);
         }
 
-        object FilterApprover()
+        private object FilterApprover()
         {
             string filterField = string.Empty;
             DateTime approveDate = DateTime.Now;

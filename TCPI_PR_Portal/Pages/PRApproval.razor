@@ -16,7 +16,7 @@
 
 <Title PageName="Requisition Slip Approval" Breadcrumb="_items" />
 
-<EditForm Model="@PRHeader" OnSubmit="Approve">
+<EditForm Model="@PRHeader" OnSubmit="ApproveDocument">
     <DataAnnotationsValidator />
 
     <MudGrid Spacing="2" Justify="Justify.Center">
@@ -131,22 +131,22 @@
             </RowTemplate>
         </MudTable>
 
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem xs="6">
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pt-8 pb-3 px-1 gap-2">
-                    <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Lines="3" Disabled="true" />
-                </MudPaper>
-                <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pb-8 px-1 gap-2">
-                    <MudTextField T="string" Disabled="@isApprover" Label="Approver Remarks" @bind-Value="PRHeader.U_ApproverRemarks" Variant="Variant.Outlined" Lines="3" />
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="6" Class="d-flex flex-column justify-end">
-                @if (LocalStorage.GetItem<string>("Role") == "Approver")
+    <MudGrid Spacing="2" Justify="Justify.Center">
+        <MudItem xs="6">
+            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pt-8 pb-3 px-1 gap-2">
+                <MudTextField T="string" Label="Remarks" @bind-Value="PRHeader.U_Remarks" Variant="Variant.Outlined" Lines="3" Disabled="true" />
+            </MudPaper>
+            <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full pb-8 px-1 gap-2">
+                <MudTextField T="string" Disabled="@isApprover" Label="Approver Remarks" @bind-Value="PRHeader.U_ApproverRemarks" Variant="Variant.Outlined" Lines="3" />
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" Class="d-flex flex-column justify-end">
+            @if (LocalStorage.GetItem<string>("Role") == "Approver")
             {
-                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
-                    <MudButton Variant="Variant.Filled" OnClick="Reject" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Reject</MudButton>
-                </MudPaper>
+            <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
+                <MudButton Variant="Variant.Filled" OnClick="RejectDocument" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Reject</MudButton>
+            </MudPaper>
             }
         </MudItem>
     </MudGrid>

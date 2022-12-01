@@ -205,6 +205,7 @@ namespace TCPI_PR_Portal.Pages
                 User.Name = nextCode;
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
                 using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     Snackbar.Add(response.ReasonPhrase, Severity.Error);
@@ -219,7 +220,7 @@ namespace TCPI_PR_Portal.Pages
             }
             catch (Exception ex)
             {
-                Snackbar.Add(ex.Message, Severity.Error);
+                Snackbar.Add("Oops! Seems like we have hit a snag!", Severity.Error);
                 throw;
             }
         }
