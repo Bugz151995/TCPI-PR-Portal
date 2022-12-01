@@ -138,12 +138,12 @@
             </MudItem>
             <MudItem xs="6" Class="d-flex flex-column justify-end">
                 @if (LocalStorage.GetItem<string>("Role") == "Approver")
-            {
-                <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
-                </MudPaper>
-            }
+                {
+                    <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
+                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+                    </MudPaper>
+                }
         </MudItem>
     </MudGrid>
 </EditForm>
@@ -160,7 +160,6 @@
     private bool striped = true;
     private bool bordered = false;
 
-    private ApproverDetailsDto Approver = new ApproverDetailsDto();
     private PRHeaderDto PRHeader = new PRHeaderDto();
     private List<PRLinesDto> PRLines = new List<PRLinesDto>();
 
@@ -178,7 +177,7 @@
         HttpContent content = new StringContent(JsonConvert.SerializeObject(approverDetails), Encoding.UTF8, "application/json");
         using var response = HttpClient.PatchAsync($"U_FT_OPRQ('{PRHeader.Code}')", content);
 
-        if (!response.IsCompletedSuccessfully)
+        if (response.Status.ToString() != "204")
         {
             Snackbar.Add("Sorry, Approval was not successful!", Severity.Error);
             return;

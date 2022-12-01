@@ -176,6 +176,7 @@
 
         return false;
     }
+
     void ViewDocument(int? docEntry)
     {
         Navigation.NavigateTo($"document-status/{docEntry}");
@@ -184,7 +185,7 @@
     async Task GetMyRequests()
     {
         var userCode = LocalStorage.GetItem<string>("UserCode");
-        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
+        using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}' and U_DocStatus eq ''");
         if (!response.IsSuccessStatusCode)
         {
             Snackbar.Add(response.ReasonPhrase, Severity.Error);
@@ -229,10 +230,11 @@
         } while (user.ContainsKey("odata.nextLink"));
 
         Console.WriteLine(JsonConvert.SerializeObject(userCodes));
+        var filteredRequest = FilterRequests();
 
         foreach (var code in userCodes)
         {
-            string requestsQuery = $"U_FT_OPRQ?$filter=U_CardCode eq '{code.U_UserCode}'";
+            string requestsQuery = $"U_FT_OPRQ?$filter=U_CardCode eq '{code.U_UserCode}' and U_DocStatus eq '{filteredRequest}'";
             JObject requests;
             do
             {
@@ -254,5 +256,27 @@
         }
         string content = await response.Content.ReadAsStringAsync();
         return JObject.Parse(content);
+    }
+
+    string FilterRequests()
+    {
+        string approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
+        string status = string.Empty;
+        if (approvalLevel == "Level 1")
+            status = "Waiting For Approval";
+
+        if (approvalLevel == "Level 2")
+            status = "A1";
+
+        if (approvalLevel == "Level 3")
+            status = "A2";
+
+        if (approvalLevel == "Level 4")
+            status = "A3";
+
+        if (approvalLevel == "Special")
+            status = "A4-NotCompleted";
+
+        return status;
     }
 }
