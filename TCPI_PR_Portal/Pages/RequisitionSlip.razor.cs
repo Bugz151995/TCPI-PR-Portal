@@ -30,11 +30,6 @@ namespace TCPI_PR_Portal.Pages
         private bool success = false;
         private int docEntry = 0;
         private int docNum = 0;
-        // table settings
-        private bool dense = false;
-        private bool hover = true;
-        private bool striped = true;
-        private bool bordered = false;
         private PRHeaderDto PRHeader = new PRHeaderDto();
         private List<PRLinesDto> PRLines = new List<PRLinesDto>();
         private CodeResponse? LastCodeResponse = new CodeResponse();
@@ -55,13 +50,17 @@ namespace TCPI_PR_Portal.Pages
         private List<WarehouseDto>? Warehouse = new List<WarehouseDto>();
         private List<VatGroupsDto>? VatGroup = new List<VatGroupsDto>();
         private List<ScopeOfWorkDto>? ScopeOfWork = new List<ScopeOfWorkDto>();
-        private List<BreadcrumbItem> _items = new List<BreadcrumbItem>{new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true)};
+        private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
+        /// <summary>
+        /// Override function when the component initializes
+        /// </summary>
+        /// <returns></returns>
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                await FetchDropdownData();
+                await PopulateDropdownFields();
                 int lastDocEntry = await GetLastDocEntry();
                 int lastDocNum = await GetLastDocNum();
                 docEntry = lastDocEntry + 1;
@@ -76,13 +75,23 @@ namespace TCPI_PR_Portal.Pages
             }
         }
 
-        private void SelectProject(string selectedString)
+        /// <summary>
+        /// Callback method for the autofill of the Project Name.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="selectedString"></param>
+        private void SelectProject(PRHeaderDto context, string selectedString)
         {
-            PRHeader.U_ProjectID = selectedString;
+            context.U_ProjectID = selectedString;
             var search = Projects.Where(e => e.Code == selectedString).Select(e => e.Name);
-            PRHeader.U_ProjName = search.First();
+            context.U_ProjName = search.First();
         }
 
+        /// <summary>
+        /// Callback method for the autofill of the Item Description and Material Code and Material Description.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="selectedString"></param>
         private void SelectItem(PRLinesDto context, string selectedString)
         {
             context.U_ItemCode = selectedString;
@@ -92,6 +101,11 @@ namespace TCPI_PR_Portal.Pages
             context.U_MaterialDesc = search.First();
         }
 
+        /// <summary>
+        /// Callback method for the autofill of the Scope Description.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="selectedString"></param>
         private void SelectScopeOfWork(PRLinesDto context, string selectedString)
         {
             context.U_Scope = selectedString;
@@ -99,27 +113,61 @@ namespace TCPI_PR_Portal.Pages
             context.U_ScopeDesc = search.First();
         }
 
+        /// <summary>
+        /// Reset the Purchase Requisition Header DTO and Purchase Requisition Lines DTO.
+        /// </summary>
+        /// <returns></returns>
+        private void ResetFields()
+        {
+            PRHeader = new PRHeaderDto();
+            PRLines = new List<PRLinesDto>();
+        }
+
+        /// <summary>
+        /// Add Row to the table in lines by assigning values to the DTO.
+        /// </summary>
         private void AddTableRow()
         {
             PRLines.Add(new PRLinesDto { U_DocEntry = PRHeader.U_DocEntry.ToString(), U_ItemCode = null, U_Dscription = null, U_WhsCode = null, U_BinLoc = null, U_Scope = null, U_ScopeDesc = null, U_MaterialCode = null, U_MaterialDesc = null, U_Quantity = null, U_InfoPrice = null, U_UomCode = null, U_ItemSpecification = null, U_TaxCode = null, U_OnHandQuantity = null, U_InventoryType = null, U_InventoryPurpose = null });
         }
 
+        /// <summary>
+        /// Deletes the specific row in the table through an index assigned to every row
+        /// </summary>
+        /// <param name="index"></param>
         private void DeleteTableRow(int index)
         {
             PRLines.RemoveAt(index);
         }
-        
-        private string IncrementCode(string code)
+
+        /// <summary>
+        /// Increments the Code of the Document using Regex to match the digits and increment it by one.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns>The new Code of the Document</returns>
+        private string IncrementComplexId(string code)
         {
             return Regex.Replace(code, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string('0', m.Value.Length)));
         }
 
+        /// <summary>
+        /// Post data to Purchase Requisition Header and Purchase Requisition Lines
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         private async Task OnSubmit(EditContext context)
         {
             try
             {
                 HttpContent header = new StringContent(JsonConvert.SerializeObject(PRHeader), Encoding.UTF8, "application/json");
                 var headerResponse = await HttpClient.PostAsync("U_FT_OPRQ", header);
+
+                if (!headerResponse.IsSuccessStatusCode)
+                {
+                    Snackbar.Add("Oops! Something went wrong. Please try again.", Severity.Error);
+                    return;
+                }
+
                 foreach (var line in PRLines)
                 {
                     string nextCode = await GetNextCode("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
@@ -127,39 +175,50 @@ namespace TCPI_PR_Portal.Pages
                     line.Name = nextCode;
                     HttpContent content = new StringContent(JsonConvert.SerializeObject(line), Encoding.UTF8, "application/json");
                     var linesResponse = await HttpClient.PostAsync("U_FT_PRQ1", content);
+
+                    if (!linesResponse.IsSuccessStatusCode)
+                    {
+                        Snackbar.Add($"Oops! The Item with Code of {line.Code} did not submit.", Severity.Error);
+                    }
                 }
 
-                Snackbar.Add("The Purchase Request was successfully posted!", Severity.Success);
+                Snackbar.Add("The Purchase Request was successfully submitted!", Severity.Success);
                 success = true;
                 StateHasChanged();
-
-                PRHeader = new PRHeaderDto();
-                PRLines = new List<PRLinesDto>();
-                int lastDocEntry = await GetLastDocEntry();
-                int lastDocNum = await GetLastDocNum();
-                docEntry = lastDocEntry + 1;
-                docNum = lastDocNum + 1;
+                ResetFields();
                 await Autofill();
                 AddTableRow();
             }
             catch (Exception ex)
             {
-                Snackbar.Add(ex.Message, Severity.Error);
+                Snackbar.Add("Oops! Something went wrong. Please try again.", Severity.Error);
                 throw;
             }
         }
 
-        private async Task<string> GetNextCode(string query)
+        /// <summary>
+        /// Assign a unique Code for the Document to be posted
+        /// </summary>
+        /// <param name="query">
+        /// A query string that fetches the last record in the table
+        /// </param>
+        /// <returns>The new Code for the Document</returns>
+        private async Task<string> GetNextCode(string lastRecordQuery)
         {
-            string lastCode = "PR0000000000";
-            var lastCodeResponse = await HttpClient.GetAsync(query);
-            LastCodeResponse = await lastCodeResponse.Content.ReadFromJsonAsync<CodeResponse>();
-            if (LastCodeResponse.value.Count != 0)
-                lastCode = LastCodeResponse.value[0].Code;
-            lastCode = IncrementCode(lastCode);
-            return lastCode;
-        }        
+            string code = "PR0000000000";
+            var result = await HttpClient.GetAsync(lastRecordQuery);
+            LastCodeResponse = await result.Content.ReadFromJsonAsync<CodeResponse>();
 
+            if (LastCodeResponse.value.Count != 0)
+                code = LastCodeResponse.value[0].Code;
+            code = IncrementComplexId(code);
+            return code;
+        }
+
+        /// <summary>
+        /// Get the last DocNum in either Purchase Request Header's UDT or standard SAP table OPRQ.
+        /// </summary>
+        /// <returns>The last record in either the UDT or standard SAP</returns>
         private async Task<int> GetLastDocNum()
         {
             int docNum = 0;
@@ -169,42 +228,46 @@ namespace TCPI_PR_Portal.Pages
             LastDocNumSapResponse = await lastDocNumSAPResponse.Content.ReadFromJsonAsync<DocNumResponse>();
             using var lastDocNumUdtResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocNum&$orderby=U_DocEntry desc&$top=1");
             LastDocNumUdtResponse = await lastDocNumUdtResponse.Content.ReadFromJsonAsync<DocNumUdtResponse>();
+
             if (LastDocNumSapResponse.value.Count != 0)
                 lastDocNumSAP = LastDocNumSapResponse.value[0].DocNum;
+
             if (LastDocNumUdtResponse.value.Count != 0)
                 lastDocNumUdt = LastDocNumUdtResponse.value[0].U_DocNum;
+
             if (lastDocNumUdt > lastDocNumSAP)
             {
                 docNum = lastDocNumUdt;
             }
             else
+            {
                 docNum = lastDocNumSAP;
-            Console.WriteLine($"SAP DocNum: {lastDocNumSAP}");
-            Console.WriteLine($"UDT DocNum: {lastDocNumUdt}");
+            }
+
             return docNum;
         }
 
+        /// <summary>
+        /// Get the last DocEntry from Purchase Requisition Header
+        /// </summary>
+        /// <returns></returns>
         private async Task<int> GetLastDocEntry()
         {
-            int lastDocEntry = 0;
-            using var lastDocEntryResponse = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
-            LastDocEntryResponse = await lastDocEntryResponse.Content.ReadFromJsonAsync<DocEntryResponse>();
+            int docEntry = 0;
+            using var result = await HttpClient.GetAsync("U_FT_OPRQ?$select=U_DocEntry&$orderby=U_DocEntry desc&$top=1");
+            LastDocEntryResponse = await result.Content.ReadFromJsonAsync<DocEntryResponse>();
             if (LastDocEntryResponse.value.Count != 0)
-                lastDocEntry = LastDocEntryResponse.value[0].U_DocEntry;
-            return lastDocEntry;
+                docEntry = LastDocEntryResponse.value[0].U_DocEntry;
+            return docEntry;
         }
 
-        private async Task FetchDropdownData()
+        //TODO: Refactor Queries
+        //TODO: We can attach the fetching of data on the onclick event to load the page much faster.
+        private async Task PopulateDropdownFields()
         {
             using var projectsResponse = await HttpClient.GetAsync("Projects?$select=Code,Name");
             ProjectResponse = await projectsResponse.Content.ReadFromJsonAsync<ProjectsResponse>();
             Projects = ProjectResponse.value;
-            if (!projectsResponse.IsSuccessStatusCode)
-            {
-                AuthService.Logout();
-                Navigation.NavigateTo("/");
-            }
-
             using var departmentsResponse = await HttpClient.GetAsync("Departments?$select=Code,Name");
             DepartmentResponse = await departmentsResponse.Content.ReadFromJsonAsync<DepartmentsResponse>();
             Departments = DepartmentResponse.value;
@@ -225,13 +288,19 @@ namespace TCPI_PR_Portal.Pages
             ScopeOfWork = ScopeOfWorkResponse.value;
         }
 
+        /// <summary>
+        /// Auto fill some of the header fields
+        /// </summary>
+        /// <returns></returns>
         private async Task Autofill()
         {
             string nextCode = await GetNextCode("U_FT_OPRQ?$select=Code&$orderby=Code desc&$top=1");
+            int lastDocEntry = await GetLastDocEntry();
+            int lastDocNum = await GetLastDocNum();
             PRHeader.Code = nextCode;
             PRHeader.Name = nextCode;
-            PRHeader.U_DocNum = docNum.ToString();
-            PRHeader.U_DocEntry = docEntry;
+            PRHeader.U_DocNum = Convert.ToString(++lastDocNum);
+            PRHeader.U_DocEntry = ++lastDocEntry;
             PRHeader.U_DocStatus = "Waiting For Approval";
             PRHeader.U_CardCode = LocalStorage.GetItem<string>("UserCode");
             PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");

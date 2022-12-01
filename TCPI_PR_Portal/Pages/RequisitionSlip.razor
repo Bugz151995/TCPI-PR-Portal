@@ -22,7 +22,7 @@
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
             <MudPaper Elevation="0" Class="d-flex flex-column mud-width-full py-8 px-1 gap-2">
-                <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" For="@(() => PRHeader.U_ProjectID)" ValueChanged="value => SelectProject(value)" Label="Project ID" Variant="Variant.Outlined">
+                <MudSelect Margin="Margin.Dense" T="string" Value="PRHeader.U_ProjectID" For="@(() => PRHeader.U_ProjectID)" ValueChanged="value => SelectProject(PRHeader, value)" Label="Project ID" Variant="Variant.Outlined">
                     @foreach (var d in Projects)
                     {
                         <MudSelectItem Value="@d.Code">@d.Code</MudSelectItem>
@@ -75,7 +75,7 @@
         </MudItem>
     </MudGrid>
 
-    <MudTable Items="@PRLines" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped">
+    <MudTable Items="@PRLines" Dense="false" Hover="true" Bordered="true" Striped="false">
         <HeaderContent>
             <MudTh>
                 <MudIconButton OnClick="AddTableRow" Icon="@Icons.Filled.AddBox" aria-label="add line" Color="Color.Primary" />
