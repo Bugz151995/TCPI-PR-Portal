@@ -16,7 +16,7 @@
 
 <Title PageName="Requisition Slip Approval" Breadcrumb="_items" />
 
-<EditForm Model="@PRHeader" OnSubmit="OnSubmit">
+<EditForm Model="@PRHeader" OnSubmit="Approve">
     <DataAnnotationsValidator />
 
     <MudGrid Spacing="2" Justify="Justify.Center">
@@ -145,7 +145,7 @@
             {
                 <MudPaper Elevation="0" Class="d-flex justify-end mud-width-full py-8 px-4 gap-2">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary">Approve</MudButton>
-                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Cancel</MudButton>
+                    <MudButton Variant="Variant.Filled" OnClick="Reject" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Reject</MudButton>
                 </MudPaper>
             }
         </MudItem>
@@ -174,7 +174,7 @@
 
     // form validation
     bool success = false;
-    private async Task OnSubmit(EditContext context)
+    private async Task Approve(EditContext context)
     {
         var approverDetails = FilterApprover();
 
@@ -191,8 +191,28 @@
 
         success = true;
         StateHasChanged();
+        Navigation.NavigateTo("document-status");
     }
 
+    private async Task Reject()
+    {
+        var rejectContent = new
+        {
+            U_DocStatus = "Rejected"    
+        };
+
+        HttpContent content = new StringContent(JsonConvert.SerializeObject(rejectContent), Encoding.UTF8, "application/json");
+        using var response = await HttpClient.PatchAsync($"U_FT_OPRQ('{PRHeader.Code}')", content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Sorry, rejection was not successful!", Severity.Error);
+            return;
+        }
+
+        Snackbar.Add("The Document was rejected!", Severity.Success);
+        Navigation.NavigateTo("document-status");
+    }
     // TODO: Populate the lines and header
     protected override async Task OnInitializedAsync()
     {
