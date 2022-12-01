@@ -270,7 +270,7 @@
 
             foreach (var line in PRLines)
             {
-                string nextCode = await GetNextCodeLines();
+                string nextCode = await GetNextCode("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
 
                 line.Code = nextCode;
                 line.Name = nextCode;
@@ -288,7 +288,7 @@
             int lastDocNum = await GetLastDocNum();
             docEntry = lastDocEntry + 1;
             docNum = lastDocNum + 1;
-            Autofill();
+            await Autofill();
             await AddLine();
         }
         catch (Exception ex)
@@ -340,10 +340,10 @@
         context.U_ScopeDesc = search.First();
     }
 
-    async Task<string> GetNextCodeLines()
+    async Task<string> GetNextCode(string query)
     {
         string lastCode = "PR0000000000"; // increment this using regex
-        var lastCodeResponse = await HttpClient.GetAsync("U_FT_PRQ1?$select=Code&$orderby=Code desc&$top=1");
+        var lastCodeResponse = await HttpClient.GetAsync(query);
         LastCodeResponse = await lastCodeResponse.Content.ReadFromJsonAsync<CodeResponse>();
 
         if (LastCodeResponse.value.Count != 0)
@@ -464,10 +464,11 @@
         return lastDocEntry;
     }
 
-    void Autofill()
+    async Task Autofill()
     {
-        PRHeader.Code = docEntry.ToString();
-        PRHeader.Name = docEntry.ToString();
+        string nextCode = await GetNextCode("U_FT_OPRQ?$select=Code&$orderby=Code desc&$top=1");
+        PRHeader.Code = nextCode;
+        PRHeader.Name = nextCode;
         PRHeader.U_DocNum = docNum.ToString();
         PRHeader.U_DocEntry = docEntry;
         PRHeader.U_DocStatus = "Waiting For Approval";
