@@ -16,7 +16,7 @@
 
 <Title PageName="Document Status" Breadcrumb="_items" />
 
-<MudTable Items="@PRRequests" T="PRHeaderDto" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<PRHeaderDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+<MudTable Items="@PRRequests" T="PRHeaderDto" Dense="false" Hover="true" Bordered="false" Striped="true" Filter="new Func<PRHeaderDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
     <ToolBarContent>
         <MudText Typo="Typo.h6">&nbsp;</MudText>
         <MudSpacer />

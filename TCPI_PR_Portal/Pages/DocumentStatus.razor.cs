@@ -26,33 +26,25 @@ namespace TCPI_PR_Portal.Pages
 {
     public partial class DocumentStatus
     {
-        // table settings
-        private bool dense = false;
-        private bool hover = true;
-        private bool striped = false;
-        private bool bordered = false;
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem>{new BreadcrumbItem("Document Status", href: "document-status", disabled: true)};
-        private string searchString = "";
-        private PRHeaderDto selectedItem1 = null;
-        private List<PRLinesDto> _lines = new List<PRLinesDto>();
-        //test data
+        private string searchString = string.Empty;
+        private PRHeaderDto selectedItem1 = new PRHeaderDto();
         private List<PRHeaderDto> PRRequests = new List<PRHeaderDto>();
         PRHeaderResponse? PRHeaderResponse = new PRHeaderResponse();
+
         protected override async Task OnInitializedAsync()
         {
             string role = LocalStorage.GetItem<string>("Role");
+
             if (role == "Approver")
-            {
                 await GetMyRequestors();
-            }
 
             if (role == "Requestor")
-            {
                 await GetMyRequests();
-            }
         }
 
         private bool FilterFunc1(PRHeaderDto element) => FilterFunc(element, searchString);
+
         private bool FilterFunc(PRHeaderDto element, string searchString)
         {
             if (string.IsNullOrWhiteSpace(searchString))
@@ -64,12 +56,12 @@ namespace TCPI_PR_Portal.Pages
             return false;
         }
 
-        void ViewDocument(int? docEntry)
+        private void ViewDocument(int? docEntry)
         {
             Navigation.NavigateTo($"document-status/{docEntry}");
         }
 
-        async Task GetMyRequests()
+        private async Task GetMyRequests()
         {
             var userCode = LocalStorage.GetItem<string>("UserCode");
             using var response = await HttpClient.GetAsync($"U_FT_OPRQ?$filter=U_CardCode eq '{userCode}'");
@@ -82,7 +74,7 @@ namespace TCPI_PR_Portal.Pages
             PRRequests = PRHeaderResponse.value;
         }
 
-        async Task GetMyRequestors()
+        private async Task GetMyRequestors()
         {
             List<UserCodeDto> userCodes = new List<UserCodeDto>();
             string approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
@@ -126,7 +118,7 @@ namespace TCPI_PR_Portal.Pages
             }
         }
 
-        async Task<JObject> GetData(string query)
+        private async Task<JObject> GetData(string query)
         {
             using var response = await HttpClient.GetAsync(query);
             if (!response.IsSuccessStatusCode)
@@ -138,7 +130,7 @@ namespace TCPI_PR_Portal.Pages
             return JObject.Parse(content);
         }
 
-        string FilterRequests()
+        private string FilterRequests()
         {
             string approvalLevel = LocalStorage.GetItem<string>("ApproverLevel");
             string status = string.Empty;

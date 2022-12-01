@@ -45,46 +45,12 @@ namespace TCPI_PR_Portal.Pages
         List<string> approver4Codes = new List<string>();
         List<string> approverSpecCodes = new List<string>();
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem>{new BreadcrumbItem("User Setup", href: "user-setup", disabled: true)};
-        private async Task OnValidSubmit(EditContext context)
-        {
-            try
-            {
-                //string password = User.U_Password;
-                //CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
-                //User.U_Password = encryptedPassword.Value;
-                string lastCode = "PR0000000000";
-                JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
-                CodeDto code = codeJson["value"][0].ToObject<CodeDto>();
-                string nextCode = IncrementCode(code.Code);
-                User.Code = nextCode;
-                User.Name = nextCode;
-                HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
-                using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    Snackbar.Add(response.ReasonPhrase, Severity.Error);
-                    Console.WriteLine(response.ReasonPhrase);
-                    return;
-                }
 
-                Snackbar.Add("A new User was successfully created!", Severity.Success);
-                User = new UserDto();
-                success = true;
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                Snackbar.Add(ex.Message, Severity.Error);
-                throw;
-            }
-        }
-
-        string IncrementCode(string code)
-        {
-            return Regex.Replace(code, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string ('0', m.Value.Length)));
-        }
-
-        protected override async void OnInitialized()
+        /// <summary>
+        /// Override function when the component initializes
+        /// </summary>
+        /// <returns></returns>
+        protected override async Task OnInitializedAsync()
         {
             //Uncomment this to get the list of departments
             //var response = await HttpClient.GetAsync("Departments?$select=Code,Name");
@@ -107,7 +73,17 @@ namespace TCPI_PR_Portal.Pages
             }
         }
 
-        void SelectRole(UserDto context, string selectedString)
+        /// <summary>
+        /// Increments the Code of the Document using Regex to match the digits and increment it by one.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns>The new Code of the Document</returns>
+        private string IncrementComplexId(string code)
+        {
+            return Regex.Replace(code, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string ('0', m.Value.Length)));
+        }        
+
+        private void SelectRole(UserDto context, string selectedString)
         {
             context.U_Role = selectedString;
             displayApprover = selectedString == "Requestor" ? "block" : "none";
@@ -202,21 +178,53 @@ namespace TCPI_PR_Portal.Pages
             return approverSpecCodes.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        async Task<JObject> GetData(string query)
+        private async Task<JObject> GetData(string query)
         {
             using var response = await HttpClient.GetAsync(query);
             if (!response.IsSuccessStatusCode)
             {
-                Snackbar.Add("Session has expired", Severity.Error);
-                AuthService.Logout();
-                Navigation.NavigateTo("/");
+                Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
             }
 
             string content = await response.Content.ReadAsStringAsync();
             return JObject.Parse(content);
         }
 
-        async Task GetUsers()
+        private async Task OnValidSubmit(EditContext context)
+        {
+            try
+            {
+                //string password = User.U_Password;
+                //CryptoResult encryptedPassword = await Crypto.EncryptAsync(password);
+                //User.U_Password = encryptedPassword.Value;
+                string lastCode = "PR0000000000";
+                JObject codeJson = await GetData("U_FT_WPUS?$select=Code&$orderby=Code desc&$top=1");
+                CodeDto code = codeJson["value"][0].ToObject<CodeDto>();
+                string nextCode = IncrementComplexId(code.Code);
+                User.Code = nextCode;
+                User.Name = nextCode;
+                HttpContent content = new StringContent(JsonConvert.SerializeObject(User), Encoding.UTF8, "application/json");
+                using var response = await HttpClient.PostAsync("U_FT_WPUS", content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Snackbar.Add(response.ReasonPhrase, Severity.Error);
+                    Console.WriteLine(response.ReasonPhrase);
+                    return;
+                }
+
+                Snackbar.Add("A new User was successfully created!", Severity.Success);
+                User = new UserDto();
+                success = true;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add(ex.Message, Severity.Error);
+                throw;
+            }
+        }
+
+        private async Task GetUsers()
         {
             string query = "Users?$select=UserCode,UserName,eMail,Branch,Department&$orderby=InternalKey desc";
             JObject json;
@@ -234,7 +242,7 @@ namespace TCPI_PR_Portal.Pages
             }
         }
 
-        async Task GetApprovers()
+        private async Task GetApprovers()
         {
             string query = "U_FT_WPUS?$select=U_UserCode,U_UserName,U_Role,U_ApproverLevel,U_Employee,U_EmailAddress&$orderby=Code desc";
             JObject json;

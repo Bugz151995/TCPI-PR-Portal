@@ -58,10 +58,10 @@ namespace TCPI_PR_Portal.Pages
                 LoginSession = await sapLogin.Content.ReadFromJsonAsync<LoginSessionDto>();
                 using var userUdtResponse = await HttpClient.GetAsync($"U_FT_WPUS?$select=Code,U_Employee,U_ApproverLevel,U_Role,U_ApproverCode1,U_ApproverCode2,U_ApproverCode3,U_ApproverCode4,U_ApproverSpecialCode,U_Approver1,U_Approver2,U_Approver3,U_Approver4,U_ApproverSpecial&$filter=U_UserCode eq '{User.U_UserName}'");
                 using var userResponse = await HttpClient.GetAsync($"Users?$select=UserCode,UserName,eMail,Branch,Department&$filter=UserCode eq '{User.U_UserName}'");
+
                 if (!userUdtResponse.IsSuccessStatusCode && !userResponse.IsSuccessStatusCode)
                 {
-                    Snackbar.Add(userUdtResponse.ReasonPhrase, Severity.Error);
-                    Snackbar.Add(userResponse.ReasonPhrase, Severity.Error);
+                    Snackbar.Add("Oops! It seems like we have hit a snag!", Severity.Error);
                     return;
                 }
 
@@ -70,7 +70,7 @@ namespace TCPI_PR_Portal.Pages
                 SapUserResponse = await userResponse.Content.ReadFromJsonAsync<UserResponse>();
                 SapUser = SapUserResponse.value[0];
                 Console.WriteLine(JsonConvert.SerializeObject(SapUser));
-                storeSessionToLocalStorage();
+                CreateLocalStorageSession();
                 AuthService.Login(UserSession.U_Employee, UserSession.U_Role);
                 Navigation.NavigateTo("user-setup");
                 success = true;
@@ -78,13 +78,12 @@ namespace TCPI_PR_Portal.Pages
             }
             catch (Exception ex)
             {
-                Snackbar.Add("Oops! There seems to be a problem with the App. Please contact the Administrator.", Severity.Error);
-                Snackbar.Add(ex.Message, Severity.Error);
+                Snackbar.Add("Oops! It seems like we have hit a snag!", Severity.Error);
                 throw;
             }
         }
 
-        void storeSessionToLocalStorage()
+        private void CreateLocalStorageSession()
         {
             LocalStorage.SetItem("SessionId", LoginSession.SessionId);
             LocalStorage.SetItem("Version", LoginSession.Version);

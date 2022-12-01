@@ -30,6 +30,8 @@ namespace TCPI_PR_Portal.Pages
         [Parameter]
         public string DocEntry { get; set; }
 
+
+        bool success = false;
         public int HeaderDocEntry;
         public int index = 0;
         public bool isApprover = false;
@@ -41,9 +43,9 @@ namespace TCPI_PR_Portal.Pages
         private bool bordered = false;
         private PRHeaderDto PRHeader = new PRHeaderDto();
         private List<PRLinesDto> PRLines = new List<PRLinesDto>();
-        private List<BreadcrumbItem> _items = new List<BreadcrumbItem>{new BreadcrumbItem("Document Status", href: "document-status", disabled: true), new BreadcrumbItem("Requisition Slip Approval", href: "approval")};
+        private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Document Status", href: "document-status", disabled: true), new BreadcrumbItem("Requisition Slip Approval", href: "approval") };
         // form validation
-        bool success = false;
+
         private async Task Approve(EditContext context)
         {
             var approverDetails = FilterApprover();
@@ -65,7 +67,7 @@ namespace TCPI_PR_Portal.Pages
         {
             var rejectContent = new
             {
-            U_DocStatus = "Rejected"
+                U_DocStatus = "Rejected"
             }
 
             ;
@@ -105,9 +107,7 @@ namespace TCPI_PR_Portal.Pages
             using var response = await HttpClient.GetAsync(query);
             if (!response.IsSuccessStatusCode)
             {
-                Snackbar.Add(response.ReasonPhrase, Severity.Error);
-                AuthService.Logout();
-                Navigation.NavigateTo("/");
+                Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
             }
 
             string content = await response.Content.ReadAsStringAsync();
@@ -120,65 +120,71 @@ namespace TCPI_PR_Portal.Pages
             DateTime approveDate = DateTime.Now;
             var remarks = PRHeader.U_ApproverRemarks;
             var approver = LocalStorage.GetItem<string>("UserCode");
-            var approverDetails = new object ();
+            var approverDetails = new object();
             if (PRHeader.U_PRType != "Regular" && approvalLevel == "Level 1")
             {
                 approverDetails = new
                 {
-                U_ApprovedBy1 = approver, U_ApprovedDate = approveDate, U_ApproverRemarks = remarks, U_DocStatus = "A1-NotCompleted"
-                }
-
-                ;
+                    U_ApprovedBy1 = approver,
+                    U_ApprovedDate = approveDate,
+                    U_ApproverRemarks = remarks,
+                    U_DocStatus = "A1-NotCompleted"
+                };
             }
 
             if (PRHeader.U_PRType != "Regular" && approvalLevel == "Special")
             {
                 approverDetails = new
                 {
-                U_ApprovedBy1 = approver, U_ApprovedDate = approveDate, U_ApproverRemarks = remarks, U_DocStatus = "A1"
-                }
-
-                ;
+                    U_ApprovedBy1 = approver,
+                    U_ApprovedDate = approveDate,
+                    U_ApproverRemarks = remarks,
+                    U_DocStatus = "A1"
+                };
             }
 
             if (PRHeader.U_PRType == "Regular" && approvalLevel == "Level 1")
             {
                 approverDetails = new
                 {
-                U_ApprovedBy1 = approver, U_ApprovedDate = approveDate, U_ApproverRemarks = remarks, U_DocStatus = "A1"
-                }
-
-                ;
+                    U_ApprovedBy1 = approver,
+                    U_ApprovedDate = approveDate,
+                    U_ApproverRemarks = remarks,
+                    U_DocStatus = "A1"
+                };
             }
 
             if (approvalLevel == "Level 2")
             {
                 approverDetails = new
                 {
-                U_ApprovedBy2 = approver, U_ApprovedDate = approveDate, U_ApproverRemarks = remarks, U_DocStatus = "A2"
-                }
-
-                ;
+                    U_ApprovedBy2 = approver,
+                    U_ApprovedDate = approveDate,
+                    U_ApproverRemarks = remarks,
+                    U_DocStatus = "A2"
+                };
             }
 
             if (approvalLevel == "Level 3")
             {
                 approverDetails = new
                 {
-                U_ApprovedBy3 = approver, U_ApprovedDate = approveDate, U_ApproverRemarks = remarks, U_DocStatus = "A3"
-                }
-
-                ;
+                    U_ApprovedBy3 = approver,
+                    U_ApprovedDate = approveDate,
+                    U_ApproverRemarks = remarks,
+                    U_DocStatus = "A3"
+                };
             }
 
             if (approvalLevel == "Level 4")
             {
                 approverDetails = new
                 {
-                U_ApprovedBy4 = approver, U_ApprovedDate = approveDate, U_ApproverRemarks = remarks, U_DocStatus = "A4"
-                }
-
-                ;
+                    U_ApprovedBy4 = approver,
+                    U_ApprovedDate = approveDate,
+                    U_ApproverRemarks = remarks,
+                    U_DocStatus = "A4"
+                };
             }
 
             return approverDetails;
