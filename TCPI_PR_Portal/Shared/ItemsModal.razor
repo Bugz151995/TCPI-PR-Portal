@@ -6,7 +6,6 @@
     <DialogContent>
         <MudTable Items="@ItemList" Dense="true" Hover="true" Bordered="false" Striped="true" Filter="new Func<PRLinesDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem">
             <ToolBarContent>
-                <MudText Typo="Typo.h6">Periodic Elements</MudText>
                 <MudSpacer />
                 <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
             </ToolBarContent>
@@ -40,11 +39,6 @@
     private string searchString = "";
     private PRLinesDto selectedItem = null;
 
-    protected override async Task OnInitializedAsync()
-    {
-        ItemList = await HttpClient.GetFromJsonAsync<List<PRLinesDto>>("");
-    }
-
     private bool FilterFunc1(PRLinesDto element) => FilterFunc(element, searchString);
 
     private bool FilterFunc(PRLinesDto element, string searchString)
@@ -56,17 +50,5 @@
         if (element.U_Dscription.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         return false;
-    }
-
-    private async Task<string> GetData(string query)
-    {
-        using var response = await HttpClient.GetAsync(query);
-        if (!response.IsSuccessStatusCode)
-        {
-            Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
-        }
-
-        string content = await response.Content.ReadAsStringAsync();
-        return content;
     }
 }
