@@ -9,8 +9,8 @@ namespace TCPI_PR_Portal.Models
 {
     public class ItemsDto
     {
-        public string U_ItemCode { get; set; }
-        public string U_ItemName { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
     }
 
     public class ItemsResponse

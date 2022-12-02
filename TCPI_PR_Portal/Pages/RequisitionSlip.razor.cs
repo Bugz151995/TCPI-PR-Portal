@@ -304,8 +304,8 @@ namespace TCPI_PR_Portal.Pages
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
 
-            ItemCodeList = ItemList.Select(x => x.U_ItemCode);
-            ItemNameList = ItemList.Select(e => e.U_ItemName);
+            ItemCodeList = ItemList.Select(x => x.ItemCode);
+            ItemNameList = ItemList.Select(e => e.ItemName);
         }
 
         /// <summary>
