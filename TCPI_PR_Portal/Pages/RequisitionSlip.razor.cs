@@ -299,13 +299,13 @@ namespace TCPI_PR_Portal.Pages
             {
                 var result = await GetData(query);
                 json = JObject.Parse(result);
-                ItemList.AddRange(json["value"].ToObject<List<PRLinesDto>>());
+                ItemList.AddRange(json["value"].ToObject<List<ItemsDto>>());
                 if (json.ContainsKey("odata.nextLink"))
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
 
-            ItemCodeList = ItemList.Select(x => x.U_ItemCode).ToList();
-            ItemNameList = ItemList.Select(e => e.U_Dscription).ToList();
+            ItemCodeList = ItemList.Select(x => x.U_ItemCode);
+            ItemNameList = ItemList.Select(e => e.U_ItemName);
         }
 
         /// <summary>
