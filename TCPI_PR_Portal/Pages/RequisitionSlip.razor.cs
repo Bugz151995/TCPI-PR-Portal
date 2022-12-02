@@ -53,8 +53,7 @@ namespace TCPI_PR_Portal.Pages
         private List<ScopeOfWorkDto>? ScopeOfWork = new List<ScopeOfWorkDto>();
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
-        private List<object> ItemCodeList = new List<object>();
-        private List<object> ItemNameList = new List<object>();
+        private List<PRLinesDto> ItemList = new List<PRLinesDto>();
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
@@ -290,7 +289,6 @@ namespace TCPI_PR_Portal.Pages
             ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
             ScopeOfWork = ScopeOfWorkResponse.value;
 
-            ItemCodeList = await CreateList("Items?$select=ItemCode,ItemName");
         }
 
         /// <summary>
@@ -313,7 +311,13 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
 
+        private void OpenDialog(List<PRLinesDto> context)
+        {
+            var parameters = new DialogParameters { ["ItemList"] = context };
 
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+            DialogService.Show<ItemsModal>("List of Items", parameters);
+        }
 
         private void OnValueChanged(PRLinesDto context, object value)
         {
@@ -340,24 +344,18 @@ namespace TCPI_PR_Portal.Pages
             return ItemNameList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private async Task<List<object>> CreateList(string query)
+        private async Task CreateItemList()
         {
-            List<object> items = new List<object>();
+            string query = "Items?$select=ItemCode,ItemName";
             JObject json;
             do
             {
                 var result = await GetData(query);
                 json = JObject.Parse(result);
-                foreach (var item in json["value"])
-                {
-                   
-                }
-                items.AddRange(json["value"].ToObject<List<string>>());
+                ItemList.AddRange(json["value"].ToObject<List<PRLinesDto>>());
                 if (json.ContainsKey("odata.nextLink"))
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
-
-            return items;
         }
 
         private async Task<string> GetData(string query)
@@ -370,12 +368,6 @@ namespace TCPI_PR_Portal.Pages
 
             string content = await response.Content.ReadAsStringAsync();
             return content;
-        }
-
-        private void OpenDialog()
-        {
-            var options = new DialogOptions { CloseOnEscapeKey = true };
-            DialogService.Show<ItemsModal>("Simple Dialog", options);
         }
     }
 }
