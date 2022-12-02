@@ -22,6 +22,7 @@ using TCPI_PR_Portal.Data;
 using TCPI_PR_Portal.Services;
 using TCPI_PR_Portal.Shared;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace TCPI_PR_Portal.Pages
 {
@@ -306,6 +307,43 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_PreparedBy = LocalStorage.GetItem<string>("UserName");
             PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
+        }
+
+        private void OnValueChanged(PRLinesDto context, string value)
+        {
+            context.U_ItemCode = value;
+        }
+
+        private async Task<IEnumerable<string>> SearchItemCode(string value)
+        {
+            string query = "Items?$select=ItemCode";
+            List<string> items = new List<string>();
+            JObject json;
+            do
+            {
+                var result = await GetData(query);
+                json = JObject.Parse(result);
+                items = json["value"].ToObject<List<string>>();
+                if (json.ContainsKey("odata.nextLink"))
+                    query = json["odata.nextLink"].ToString();
+            } while (json.ContainsKey("odata.nextLink"));
+
+            // if text is null or empty, show complete list
+            if (string.IsNullOrEmpty(value))
+                return items;
+            return items.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private async Task<string> GetData(string query)
+        {
+            using var response = await HttpClient.GetAsync(query);
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return content;
         }
     }
 }

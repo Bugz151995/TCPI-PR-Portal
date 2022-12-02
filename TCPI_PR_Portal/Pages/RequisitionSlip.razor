@@ -105,12 +105,7 @@
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Code">
-                <MudSelect Margin="Margin.Dense" T="string" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" ValueChanged="value => SelectItem(Items, value)" Variant="Variant.Outlined">
-                    @foreach (var i in ItemMaster)
-                    {
-                        <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudAutocomplete T="string" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" SearchFunc="@SearchItemCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" Variant="Variant.Outlined">
@@ -199,89 +194,6 @@
             </MudTd>
         </RowTemplate>
     </MudTable>
-
-    <MudTable Items="testItems" Height="350px" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true">
-    <HeaderContent>
-        <MudTh>Column1</MudTh>
-        <MudTh>Column2</MudTh>
-        <MudTh>Column3</MudTh>
-        <MudTh>Column4</MudTh>
-        <MudTh>Column5</MudTh>
-        <MudTh>Column6</MudTh>
-        <MudTh>Column7</MudTh>
-        <MudTh>Column8</MudTh>
-        <MudTh>Column9</MudTh>
-        <MudTh>Column10</MudTh>
-        <MudTh>Column11</MudTh>
-        <MudTh>Column12</MudTh>
-        <MudTh>Column13</MudTh>
-        <MudTh>Column14</MudTh>
-        <MudTh>Column15</MudTh>
-    </HeaderContent>
-    <RowTemplate Context="Test">
-            <MudTd DataLabel="Column1">@Test.Column1</MudTd>
-            <MudTd DataLabel="Column2">@Test.Column2</MudTd>
-        <MudTd DataLabel="Column3">@Test.Column3</MudTd>
-            <MudTd DataLabel="Column4">@Test.Column4</MudTd>
-        <MudTd DataLabel="Column5">@Test.Column5</MudTd>
-        <MudTd DataLabel="Column6">@Test.Column6</MudTd>
-        <MudTd DataLabel="Column7">@Test.Column7</MudTd>
-        <MudTd DataLabel="Column8">@Test.Column8</MudTd>
-        <MudTd DataLabel="Column9">@Test.Column9</MudTd>
-        <MudTd DataLabel="Column10">@Test.Column10</MudTd>
-        <MudTd DataLabel="Column11">@Test.Column11</MudTd>
-        <MudTd DataLabel="Column12">@Test.Column12</MudTd>
-        <MudTd DataLabel="Column13">@Test.Column13</MudTd>
-        <MudTd DataLabel="Column14">@Test.Column14</MudTd>
-        <MudTd DataLabel="Column15">@Test.Column15</MudTd>
-    </RowTemplate>
-</MudTable>
-@code {
-    public class TestItem{
-        public string Column1 {get;set;}
-        public string Column2 {get;set;}
-        public string Column3 {get;set;}
-        public string Column4 {get;set;}
-        public string Column5 {get;set;}
-        public string Column6 {get;set;}
-        public string Column7 {get;set;}
-        public string Column8 {get;set;}
-        public string Column9 {get;set;}
-        public string Column10 {get;set;}
-        public string Column11 {get;set;}
-        public string Column12 {get;set;}
-        public string Column13 {get;set;}
-        public string Column14 {get;set;}
-        public string Column15 {get;set;}
-    }
-    
-    
-    private List<TestItem> testItems;
-
-    protected override void OnInitialized() {
-        testItems = new List<TestItem>();
-        for (int i = 0; i < 20; i++) {
-            testItems.Add(new TestItem
-                {
-                Column1 = $"Value_{i}",
-                Column2 = $"Value_{i}",
-                Column3 = $"Value_{i}",
-                Column4 = $"Value_{i}",
-                Column5 = $"Value_{i}",
-                Column6 = $"Value_{i}",
-                Column7 = $"Value_{i}",
-                Column8 = $"Value_{i}",
-                Column9 = $"Value_{i}",
-                Column10 = $"Value_{i}",
-                Column11 = $"Value_{i}",
-                Column12 = $"Value_{i}",
-                Column13 = $"Value_{i}",
-                Column14 = $"Value_{i}",
-                Column15 = $"Value_{i}"
-            });
-        }
-    }
-}
 
     <MudGrid Spacing="2" Justify="Justify.Center">
         <MudItem xs="6">
