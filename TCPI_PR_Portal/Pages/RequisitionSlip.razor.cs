@@ -31,6 +31,7 @@ namespace TCPI_PR_Portal.Pages
     public partial class RequisitionSlip
     {
         private bool success = false;
+        private bool isBuffering = false;
         private int docEntry = 0;
         private int docNum = 0;
         private PRHeaderDto PRHeader = new PRHeaderDto();
@@ -66,6 +67,7 @@ namespace TCPI_PR_Portal.Pages
         {
             try
             {
+                isBuffering = true;
                 await PopulateDropdownFields();
                 int lastDocEntry = await GetLastDocEntry();
                 int lastDocNum = await GetLastDocNum();
@@ -73,6 +75,7 @@ namespace TCPI_PR_Portal.Pages
                 docNum = lastDocNum + 1;
                 await Autofill();
                 AddTableRow();
+                isBuffering = false;
             }
             catch (Exception ex)
             {
