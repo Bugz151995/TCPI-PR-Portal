@@ -317,13 +317,14 @@ namespace TCPI_PR_Portal.Pages
         private void OnValueChanged(PRLinesDto context, string value)
         {
             context.U_ItemCode = value;
-            context.U_ItemSpecification = value;
+            context.U_Dscription = value;
             context.U_MaterialCode = value;
             context.U_MaterialDesc = value;
         }
 
         private async Task<IEnumerable<string>> SearchItemCode(string value)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(ItemCodeList));
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
                 return ItemCodeList;
