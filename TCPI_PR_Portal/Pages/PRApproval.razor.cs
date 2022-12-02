@@ -129,7 +129,7 @@ namespace TCPI_PR_Portal.Pages
             {
                 approverDetails = new
                 {
-                    U_ApprovedBy1 = approver,
+                    U_ApprovedBySpecial = approver,
                     U_ApprovedDate = approveDate,
                     U_ApproverRemarks = remarks,
                     U_DocStatus = "A1"
