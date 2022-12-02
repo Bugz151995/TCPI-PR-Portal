@@ -9,6 +9,7 @@
 @inject IAuthService AuthService;
 @inject HttpClient HttpClient;
 @inject NavigationManager Navigation;
+@inject IDialogService DialogService
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
 @attribute [Authorize];
 
@@ -105,7 +106,10 @@
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Code">
-                <MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" SearchFunc="@SearchItemCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+                    Open Simple Dialog
+                </MudButton>
+                @*<MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" SearchFunc="@SearchItemCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />*@
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
                 <MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />

@@ -290,8 +290,7 @@ namespace TCPI_PR_Portal.Pages
             ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
             ScopeOfWork = ScopeOfWorkResponse.value;
 
-            ItemCodeList = await CreateList("Items?$select=ItemCode");
-            ItemNameList = await CreateList("Items?$select=ItemName");
+            ItemCodeList = await CreateList("Items?$select=ItemCode,ItemName");
         }
 
         /// <summary>
@@ -313,6 +312,8 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Department = LocalStorage.GetItem<string>("Department");
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
+
+
 
         private void OnValueChanged(PRLinesDto context, object value)
         {
@@ -347,7 +348,11 @@ namespace TCPI_PR_Portal.Pages
             {
                 var result = await GetData(query);
                 json = JObject.Parse(result);
-                items.AddRange(json["value"].ToObject<List<object>>());
+                foreach (var item in json["value"])
+                {
+                   
+                }
+                items.AddRange(json["value"].ToObject<List<string>>());
                 if (json.ContainsKey("odata.nextLink"))
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
@@ -365,6 +370,12 @@ namespace TCPI_PR_Portal.Pages
 
             string content = await response.Content.ReadAsStringAsync();
             return content;
+        }
+
+        private void OpenDialog()
+        {
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+            DialogService.Show<ItemsModal>("Simple Dialog", options);
         }
     }
 }
