@@ -56,8 +56,8 @@ namespace TCPI_PR_Portal.Pages
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
         private List<PRLinesDto> ItemList = new List<PRLinesDto>();
-        private IEnumerable<string> ItemCodeList = new IEnumerable<string>();
-        private IEnumerable<string> ItemNameList = new IEnumerable<string>();
+        private IEnumerable<string> ItemCodeList;
+        private IEnumerable<string> ItemNameList;
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
