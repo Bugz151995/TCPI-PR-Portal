@@ -328,7 +328,7 @@ namespace TCPI_PR_Portal.Pages
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
                 return ItemCodeList;
-            return ItemCodeList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return ItemCodeList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
         private async Task<IEnumerable<object>> SearchItemName(string value)
@@ -336,7 +336,7 @@ namespace TCPI_PR_Portal.Pages
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
                 return ItemNameList;
-            return ItemNameList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return ItemNameList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
         private async Task<List<object>> CreateList(string query)
