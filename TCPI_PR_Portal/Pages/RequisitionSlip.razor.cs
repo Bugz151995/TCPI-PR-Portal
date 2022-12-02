@@ -79,7 +79,8 @@ namespace TCPI_PR_Portal.Pages
             }
             catch (Exception ex)
             {
-                Snackbar.Add(ex.Message, Severity.Error);
+                Snackbar.Add("Oops! Seems like we have hit a snag!", Severity.Error);
+                isBuffering = false;
                 throw;
             }
         }
