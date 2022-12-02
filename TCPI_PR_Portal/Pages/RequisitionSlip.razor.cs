@@ -288,7 +288,7 @@ namespace TCPI_PR_Portal.Pages
             using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
             ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
             ScopeOfWork = ScopeOfWorkResponse.value;
-
+            await CreateItemList();
         }
 
         /// <summary>
