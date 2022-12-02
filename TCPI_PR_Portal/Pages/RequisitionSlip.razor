@@ -17,7 +17,7 @@
 
 <Title PageName="Requisition Slip" Breadcrumb="_items" />
 
-<EditForm Model="@PRHeader" OnSubmit="OnSubmit">
+<EditForm Model="PRHeader" OnSubmit="OnSubmit">
     <DataAnnotationsValidator />
 
     <MudGrid Spacing="2" Justify="Justify.Center">
@@ -76,7 +76,7 @@
         </MudItem>
     </MudGrid>
 
-    <MudTable Items="@PRLines" Dense="false" Hover="true" Bordered="false" Striped="true" HorizontalScrollbar="true" Breakpoint="Breakpoint.Sm">
+    <MudTable Items="PRLines" Dense="false" Hover="true" Bordered="false" Striped="true" HorizontalScrollbar="true" Breakpoint="Breakpoint.Sm">
         <HeaderContent>
             <MudTh>
                 <MudIconButton OnClick="AddTableRow" Icon="@Icons.Filled.AddBox" aria-label="add line" Color="Color.Primary" />
@@ -109,7 +109,7 @@
                 <MudAutocomplete T="string" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" SearchFunc="@SearchItemCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
-                <MudAutocomplete T="string" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                <MudAutocomplete T="string" Disabled="true" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Warehouse">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_WhsCode" For="@(() => Items.U_WhsCode)" Variant="Variant.Outlined">
@@ -134,20 +134,10 @@
                 <MudTextField @bind-Value="@Items.U_ScopeDesc" For="@(() => Items.U_ScopeDesc)" Variant="Variant.Outlined" Margin="Margin.Dense" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Material Code">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_MaterialCode" For="@(() => Items.U_MaterialCode)" Variant="Variant.Outlined">
-                    @foreach (var i in ItemMaster)
-                    {
-                        <MudSelectItem Value="@i.ItemCode">@i.ItemCode</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudAutocomplete T="string" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_MaterialCode" For="@(() => Items.U_MaterialCode)" SearchFunc="@SearchItemCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Material Description">
-                <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_MaterialDesc" For="@(() => Items.U_MaterialDesc)" Variant="Variant.Outlined">
-                    @foreach (var i in ItemMaster)
-                    {
-                        <MudSelectItem Value="@i.ItemName">@i.ItemName</MudSelectItem>
-                    }
-                </MudSelect>
+                <MudAutocomplete T="string" Disabled="true" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_MaterialDesc" For="@(() => Items.U_MaterialDesc)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
             </MudTd>
             <MudTd DataLabel="Quantity">
                 <MudTextField @bind-Value="@Items.U_Quantity" For="@(() => Items.U_Quantity)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
