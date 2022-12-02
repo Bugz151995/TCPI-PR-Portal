@@ -106,7 +106,7 @@
                 <MudText>@(PRLines.IndexOf(Items) + 1)</MudText>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Code">
-                <MudButton @onclick="((e) => OpenDialog(ItemList))" Variant="Variant.Filled" Color="Color.Primary"></MudButton>
+                <MudButton @onclick="((e) => OpenDialog(Items))" Variant="Variant.Filled" Color="Color.Primary"></MudButton>
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
                 @*<MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />*@

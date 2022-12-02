@@ -288,7 +288,6 @@ namespace TCPI_PR_Portal.Pages
             using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
             ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
             ScopeOfWork = ScopeOfWorkResponse.value;
-            await CreateItemList();
         }
 
         /// <summary>
@@ -311,38 +310,12 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
 
-        private void OpenDialog(List<PRLinesDto> context)
+        private void OpenDialog(PRLinesDto context)
         {
-            var parameters = new DialogParameters { ["ItemList"] = context };
+            var parameters = new DialogParameters { ["Item"] = context };
 
             var options = new DialogOptions { CloseOnEscapeKey = true };
             DialogService.Show<ItemsModal>("List of Items", parameters);
-        }
-
-        private async Task CreateItemList()
-        {
-            string query = "Items?$select=ItemCode,ItemName";
-            JObject json;
-            do
-            {
-                var result = await GetData(query);
-                json = JObject.Parse(result);
-                ItemList.AddRange(json["value"].ToObject<List<PRLinesDto>>());
-                if (json.ContainsKey("odata.nextLink"))
-                    query = json["odata.nextLink"].ToString();
-            } while (json.ContainsKey("odata.nextLink"));
-        }
-
-        private async Task<string> GetData(string query)
-        {
-            using var response = await HttpClient.GetAsync(query);
-            if (!response.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
-            }
-
-            string content = await response.Content.ReadAsStringAsync();
-            return content;
         }
     }
 }

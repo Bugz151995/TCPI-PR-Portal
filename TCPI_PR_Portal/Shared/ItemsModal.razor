@@ -1,4 +1,5 @@
 ﻿@using System.Net.Http.Json;
+@using Newtonsoft.Json.Linq;
 @inject HttpClient HttpClient;
 @inject ISnackbar Snackbar;
 
@@ -18,7 +19,7 @@
                 <MudTd DataLabel="Item Description">@context.U_Dscription</MudTd>
             </RowTemplate>
             <PagerContent>
-                <MudTablePager />
+                <MudTablePager PageSizeOptions="new int[] { 20, 50}" />
             </PagerContent>
         </MudTable>
     </DialogContent>
@@ -31,7 +32,9 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public List<PRLinesDto> ItemList { get; set; }
+    [Parameter] public PRLinesDto Item { get; set; }
+
+    private List<PRLinesDto> ItemList = new List<PRLinesDto>();
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
@@ -39,6 +42,20 @@
     private string searchString = "";
     private PRLinesDto selectedItem = null;
 
+    protected override async Task OnInitializedAsync()
+    {
+        string query = "Items?$select=ItemCode,ItemName";
+        JObject json;
+        var result = await GetData(query);
+        do
+        {
+            json = JObject.Parse(result);
+            ItemList.AddRange(json["value"].ToObject<List<PRLinesDto>>());
+            if (json.ContainsKey("odata.nextLink"))
+                query = json["odata.nextLink"].ToString();
+
+        } while (json.ContainsKey("odata.nextLink"));
+    }
     private bool FilterFunc1(PRLinesDto element) => FilterFunc(element, searchString);
 
     private bool FilterFunc(PRLinesDto element, string searchString)
@@ -51,4 +68,17 @@
             return true;
         return false;
     }
+
+    private async Task<string> GetData(string query)
+    {
+        using var response = await HttpClient.GetAsync(query);
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
+        }
+
+        string content = await response.Content.ReadAsStringAsync();
+        return content;
+    }
+
 }
