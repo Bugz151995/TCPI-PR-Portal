@@ -328,18 +328,16 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
 
-        private void OnValueChanged(PRLinesDto context, object value)
+        private void OnValueChanged(PRLinesDto context, string value)
         {
             context.U_ItemCode = value.ToString();
-            context.U_Dscription = value.ToString();
+            context.U_Dscription = ItemList.Where(e => e.ItemCode == value.ToString()).Select(e => e.ItemName).First();
             context.U_MaterialCode = value.ToString();
-            context.U_MaterialDesc = value.ToString();
+            context.U_MaterialDesc = ItemList.Where(e => e.ItemCode == value.ToString()).Select(e => e.ItemName).First();
         }
 
         private async Task<IEnumerable<string>> SearchItemCode(string value)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(ItemList));
-            Console.WriteLine(JsonConvert.SerializeObject(ItemCodeList));
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
                 return ItemCodeList;
