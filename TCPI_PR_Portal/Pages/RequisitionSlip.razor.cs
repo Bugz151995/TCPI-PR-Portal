@@ -53,8 +53,8 @@ namespace TCPI_PR_Portal.Pages
         private List<ScopeOfWorkDto>? ScopeOfWork = new List<ScopeOfWorkDto>();
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
-        private List<string> ItemCodeList = new List<string>();
-        private List<string> ItemNameList = new List<string>();
+        private List<object> ItemCodeList = new List<object>();
+        private List<object> ItemNameList = new List<object>();
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
@@ -314,15 +314,15 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
 
-        private void OnValueChanged(PRLinesDto context, string value)
+        private void OnValueChanged(PRLinesDto context, object value)
         {
-            context.U_ItemCode = value;
-            context.U_Dscription = value;
-            context.U_MaterialCode = value;
-            context.U_MaterialDesc = value;
+            context.U_ItemCode = value.ToString();
+            context.U_Dscription = value.ToString();
+            context.U_MaterialCode = value.ToString();
+            context.U_MaterialDesc = value.ToString();
         }
 
-        private async Task<IEnumerable<string>> SearchItemCode(string value)
+        private async Task<IEnumerable<object>> SearchItemCode(string value)
         {
             Console.WriteLine(JsonConvert.SerializeObject(ItemCodeList));
             // if text is null or empty, show complete list
@@ -331,7 +331,7 @@ namespace TCPI_PR_Portal.Pages
             return ItemCodeList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private async Task<IEnumerable<string>> SearchItemName(string value)
+        private async Task<IEnumerable<object>> SearchItemName(string value)
         {
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
@@ -339,15 +339,15 @@ namespace TCPI_PR_Portal.Pages
             return ItemNameList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private async Task<List<string>> CreateList(string query)
+        private async Task<List<object>> CreateList(string query)
         {
-            List<string> items = new List<string>();
+            List<object> items = new List<object>();
             JObject json;
             do
             {
                 var result = await GetData(query);
                 json = JObject.Parse(result);
-                items.AddRange(json["value"].ToObject<List<string>>());
+                items.AddRange(json["value"].ToObject<List<object>>());
                 if (json.ContainsKey("odata.nextLink"))
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
