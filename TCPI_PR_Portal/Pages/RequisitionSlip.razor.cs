@@ -23,6 +23,8 @@ using TCPI_PR_Portal.Services;
 using TCPI_PR_Portal.Shared;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using static MudBlazor.CategoryTypes;
+using System.Collections;
 
 namespace TCPI_PR_Portal.Pages
 {
@@ -54,6 +56,8 @@ namespace TCPI_PR_Portal.Pages
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
         private List<PRLinesDto> ItemList = new List<PRLinesDto>();
+        private List<string> ItemCodeList = new List<string>();
+        private List<string> ItemNameList = new List<string>();
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
@@ -288,6 +292,17 @@ namespace TCPI_PR_Portal.Pages
             using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
             ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
             ScopeOfWork = ScopeOfWorkResponse.value;
+
+            string query = "Items?$select=ItemCode,ItemName";
+            JObject json;
+            do
+            {
+                var result = await GetData(query);
+                json = JObject.Parse(result);
+                ItemList.AddRange(json["value"].ToObject<List<PRLinesDto>>());
+                if (json.ContainsKey("odata.nextLink"))
+                    query = json["odata.nextLink"].ToString();
+            } while (json.ContainsKey("odata.nextLink"));
         }
 
         /// <summary>
@@ -310,12 +325,64 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
 
-        private void OpenDialog(PRLinesDto context)
+        private void OpenDialog(List<PRLinesDto> context)
         {
-            var parameters = new DialogParameters { ["Item"] = context };
+            var parameters = new DialogParameters { ["ItemList"] = context };
 
             var options = new DialogOptions { CloseOnEscapeKey = true };
-            DialogService.Show<ItemsModal>("", parameters);
+            DialogService.Show<ItemsModal>("List of Items", parameters);
+        }
+
+        private void OnValueChanged(PRLinesDto context, object value)
+        {
+            context.U_ItemCode = value.ToString();
+            context.U_Dscription = value.ToString();
+            context.U_MaterialCode = value.ToString();
+            context.U_MaterialDesc = value.ToString();
+        }
+
+        private async Task<IEnumerable<object>> SearchItemCode(string value)
+        {
+            // if text is null or empty, show complete list
+            if (string.IsNullOrEmpty(value))
+                return ItemCodeList;
+            return ItemCodeList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private async Task<IEnumerable<object>> SearchItemName(string value)
+        {
+            // if text is null or empty, show complete list
+            if (string.IsNullOrEmpty(value))
+                return ItemNameList;
+            return ItemNameList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        //private async Task<List<PRLinesDto>> CreateList(string query)
+        //{
+        //    List<object> items = new List<object>();
+        //    JObject json;
+        //    do
+        //    {
+        //        var result = await GetData(query);
+        //        json = JObject.Parse(result);
+        //        items.AddRange(json["value"].ToObject<List<string>>());
+        //        if (json.ContainsKey("odata.nextLink"))
+        //            query = json["odata.nextLink"].ToString();
+        //    } while (json.ContainsKey("odata.nextLink"));
+
+        //    return items;
+        //}
+
+        private async Task<string> GetData(string query)
+        {
+            using var response = await HttpClient.GetAsync(query);
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Oops! Something went wrong. This might be a server fault. Try to log-out and log-in.", Severity.Error);
+            }
+
+            string content = await response.Content.ReadAsStringAsync();
+            return content;
         }
     }
 }
