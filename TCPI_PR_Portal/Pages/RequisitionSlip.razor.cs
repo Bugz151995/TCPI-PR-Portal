@@ -319,31 +319,6 @@ namespace TCPI_PR_Portal.Pages
             DialogService.Show<ItemsModal>("List of Items", parameters);
         }
 
-        private void OnValueChanged(PRLinesDto context, object value)
-        {
-            context.U_ItemCode = value.ToString();
-            context.U_Dscription = value.ToString();
-            context.U_MaterialCode = value.ToString();
-            context.U_MaterialDesc = value.ToString();
-        }
-
-        private async Task<IEnumerable<object>> SearchItemCode(string value)
-        {
-            Console.WriteLine(JsonConvert.SerializeObject(ItemCodeList));
-            // if text is null or empty, show complete list
-            if (string.IsNullOrEmpty(value))
-                return ItemCodeList;
-            return ItemCodeList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        private async Task<IEnumerable<object>> SearchItemName(string value)
-        {
-            // if text is null or empty, show complete list
-            if (string.IsNullOrEmpty(value))
-                return ItemNameList;
-            return ItemNameList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        }
-
         private async Task CreateItemList()
         {
             string query = "Items?$select=ItemCode,ItemName";

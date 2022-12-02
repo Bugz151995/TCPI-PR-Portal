@@ -107,10 +107,9 @@
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Code">
                 <MudButton @onclick="((e) => OpenDialog(ItemList))" Variant="Variant.Filled" Color="Color.Primary"></MudButton>
-                <MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_ItemCode" For="@(() => Items.U_ItemCode)" SearchFunc="@SearchItemCode" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Item Description">
-                <MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />
+                @*<MudAutocomplete T="object" ValueChanged="value => OnValueChanged(Items, value)" Value="Items.U_Dscription" For="@(() => Items.U_Dscription)" SearchFunc="@SearchItemName" Margin="Margin.Dense" Dense="true" Variant="Variant.Outlined" />*@
             </MudTd>
             <MudTd Style="min-width:200px" DataLabel="Warehouse">
                 <MudSelect Margin="Margin.Dense" @bind-Value="Items.U_WhsCode" For="@(() => Items.U_WhsCode)" Variant="Variant.Outlined">
