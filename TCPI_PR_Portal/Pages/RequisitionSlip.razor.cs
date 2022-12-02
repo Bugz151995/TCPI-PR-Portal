@@ -56,8 +56,8 @@ namespace TCPI_PR_Portal.Pages
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
         private List<PRLinesDto> ItemList = new List<PRLinesDto>();
-        private IEnumerable<string> ItemCodeList;
-        private IEnumerable<string> ItemNameList;
+        private IEnumerable<string?> ItemCodeList;
+        private IEnumerable<string?> ItemNameList;
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
@@ -304,8 +304,8 @@ namespace TCPI_PR_Portal.Pages
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
 
-            ItemCodeList = ItemList.Select(e => e.U_ItemCode);
-            ItemNameList = ItemList.Select(e => e.U_Dscription);
+            ItemCodeList = ItemList.Select(x => x.U_ItemCode).ToList();
+            ItemNameList = ItemList.Select(e => e.U_Dscription).ToList();
         }
 
         /// <summary>
@@ -338,6 +338,7 @@ namespace TCPI_PR_Portal.Pages
 
         private async Task<IEnumerable<string>> SearchItemCode(string value)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(ItemList));
             Console.WriteLine(JsonConvert.SerializeObject(ItemCodeList));
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
