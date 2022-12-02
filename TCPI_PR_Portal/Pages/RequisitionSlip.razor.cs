@@ -55,7 +55,7 @@ namespace TCPI_PR_Portal.Pages
         private List<ScopeOfWorkDto>? ScopeOfWork = new List<ScopeOfWorkDto>();
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
-        private List<PRLinesDto> ItemList = new List<PRLinesDto>();
+        private List<ItemsDto> ItemList = new List<ItemsDto>();
         private IEnumerable<string?> ItemCodeList;
         private IEnumerable<string?> ItemNameList;
         /// <summary>
