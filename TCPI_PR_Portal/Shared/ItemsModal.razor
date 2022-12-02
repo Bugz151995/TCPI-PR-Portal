@@ -5,23 +5,25 @@
 
 <MudDialog>
     <DialogContent>
-        <MudTable Items="@ItemList" Dense="true" Hover="true" Bordered="false" Striped="true" Filter="new Func<PRLinesDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem">
-            <ToolBarContent>
-                <MudSpacer />
-                <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh>Item Code</MudTh>
-                <MudTh>Item Description</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd DataLabel="Item Code">@context.U_ItemCode</MudTd>
-                <MudTd DataLabel="Item Description">@context.U_Dscription</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager PageSizeOptions="new int[] { 20, 50}" />
-            </PagerContent>
-        </MudTable>
+        <MudContainer Style="max-height: 300px; overflow-y: scroll">
+            <MudTable Items="@ItemList" Dense="true" Hover="true" Bordered="false" Striped="true" Filter="new Func<PRLinesDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem">
+                <ToolBarContent>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Item Code</MudTh>
+                    <MudTh>Item Description</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Item Code">@context.U_ItemCode</MudTd>
+                    <MudTd DataLabel="Item Description">@context.U_Dscription</MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 20, 50, 100}" />
+                </PagerContent>
+            </MudTable>
+        </MudContainer>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
