@@ -56,8 +56,8 @@ namespace TCPI_PR_Portal.Pages
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
         private List<PRLinesDto> ItemList = new List<PRLinesDto>();
-        private List<string> ItemCodeList = new List<string>();
-        private List<string> ItemNameList = new List<string>();
+        private IEnumerable<string> ItemCodeList = new IEnumerable<string>();
+        private IEnumerable<string> ItemNameList = new IEnumerable<string>();
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
@@ -303,6 +303,9 @@ namespace TCPI_PR_Portal.Pages
                 if (json.ContainsKey("odata.nextLink"))
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
+
+            ItemCodeList = ItemList.Select(e => e.U_ItemCode);
+            ItemNameList = ItemList.Select(e => e.U_Dscription);
         }
 
         /// <summary>
@@ -356,22 +359,6 @@ namespace TCPI_PR_Portal.Pages
                 return ItemNameList;
             return ItemNameList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
-
-        //private async Task<List<PRLinesDto>> CreateList(string query)
-        //{
-        //    List<object> items = new List<object>();
-        //    JObject json;
-        //    do
-        //    {
-        //        var result = await GetData(query);
-        //        json = JObject.Parse(result);
-        //        items.AddRange(json["value"].ToObject<List<string>>());
-        //        if (json.ContainsKey("odata.nextLink"))
-        //            query = json["odata.nextLink"].ToString();
-        //    } while (json.ContainsKey("odata.nextLink"));
-
-        //    return items;
-        //}
 
         private async Task<string> GetData(string query)
         {
