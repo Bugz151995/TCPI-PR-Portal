@@ -53,6 +53,8 @@ namespace TCPI_PR_Portal.Pages
         private List<ScopeOfWorkDto>? ScopeOfWork = new List<ScopeOfWorkDto>();
         private List<BreadcrumbItem> _items = new List<BreadcrumbItem> { new BreadcrumbItem("Requisition Slip", href: "requisition-slip", disabled: true) };
 
+        private List<string> ItemCodeList = new List<string>();
+        private List<string> ItemNameList = new List<string>();
         /// <summary>
         /// Override function when the component initializes
         /// </summary>
@@ -275,9 +277,9 @@ namespace TCPI_PR_Portal.Pages
             using var branchesResponse = await HttpClient.GetAsync("Branches?$select=Code,Name");
             BranchResponse = await branchesResponse.Content.ReadFromJsonAsync<BranchesResponse>();
             Branches = BranchResponse.value;
-            using var itemsResponse = await HttpClient.GetAsync("Items?$select=ItemCode,ItemName");
-            ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
-            ItemMaster = ItemResponse.value;
+            //using var itemsResponse = await HttpClient.GetAsync("Items?$select=ItemCode,ItemName");
+            //ItemResponse = await itemsResponse.Content.ReadFromJsonAsync<ItemsResponse>();
+            //ItemMaster = ItemResponse.value;
             using var whsResponse = await HttpClient.GetAsync("Warehouses?$select=WarehouseCode, WarehouseName&$orderby=WarehouseCode asc");
             WhsResponse = await whsResponse.Content.ReadFromJsonAsync<WarehouseResponse>();
             Warehouse = WhsResponse.value;
@@ -287,6 +289,9 @@ namespace TCPI_PR_Portal.Pages
             using var scopeOfWorkResponse = await HttpClient.GetAsync("DistributionRules?$select=FactorCode&$filter=InWhichDimension eq 2");
             ScopeOfWorkResponse = await scopeOfWorkResponse.Content.ReadFromJsonAsync<ScopeOfWorkResponse>();
             ScopeOfWork = ScopeOfWorkResponse.value;
+
+            ItemCodeList = await CreateList("Items?$select=ItemCode");
+            ItemNameList = await CreateList("Items?$select=ItemName");
         }
 
         /// <summary>
@@ -312,26 +317,41 @@ namespace TCPI_PR_Portal.Pages
         private void OnValueChanged(PRLinesDto context, string value)
         {
             context.U_ItemCode = value;
+            context.U_ItemSpecification = value;
+            context.U_MaterialCode = value;
+            context.U_MaterialDesc = value;
         }
 
         private async Task<IEnumerable<string>> SearchItemCode(string value)
         {
-            string query = "Items?$select=ItemCode";
+            // if text is null or empty, show complete list
+            if (string.IsNullOrEmpty(value))
+                return ItemCodeList;
+            return ItemCodeList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private async Task<IEnumerable<string>> SearchItemName(string value)
+        {
+            // if text is null or empty, show complete list
+            if (string.IsNullOrEmpty(value))
+                return ItemNameList;
+            return ItemNameList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private async Task<List<string>> CreateList(string query)
+        {
             List<string> items = new List<string>();
             JObject json;
             do
             {
                 var result = await GetData(query);
                 json = JObject.Parse(result);
-                items = json["value"].ToObject<List<string>>();
+                items.AddRange(json["value"].ToObject<List<string>>());
                 if (json.ContainsKey("odata.nextLink"))
                     query = json["odata.nextLink"].ToString();
             } while (json.ContainsKey("odata.nextLink"));
 
-            // if text is null or empty, show complete list
-            if (string.IsNullOrEmpty(value))
-                return items;
-            return items.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return items;
         }
 
         private async Task<string> GetData(string query)
