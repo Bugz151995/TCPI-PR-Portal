@@ -328,14 +328,6 @@ namespace TCPI_PR_Portal.Pages
             PRHeader.U_Branch = LocalStorage.GetItem<string>("Branch");
         }
 
-        private void OpenDialog(List<PRLinesDto> context)
-        {
-            var parameters = new DialogParameters { ["ItemList"] = context };
-
-            var options = new DialogOptions { CloseOnEscapeKey = true };
-            DialogService.Show<ItemsModal>("List of Items", parameters);
-        }
-
         private void OnValueChanged(PRLinesDto context, object value)
         {
             context.U_ItemCode = value.ToString();
@@ -344,20 +336,21 @@ namespace TCPI_PR_Portal.Pages
             context.U_MaterialDesc = value.ToString();
         }
 
-        private async Task<IEnumerable<object>> SearchItemCode(string value)
+        private async Task<IEnumerable<string>> SearchItemCode(string value)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(ItemCodeList));
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
                 return ItemCodeList;
-            return ItemCodeList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return ItemCodeList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private async Task<IEnumerable<object>> SearchItemName(string value)
+        private async Task<IEnumerable<string>> SearchItemName(string value)
         {
             // if text is null or empty, show complete list
             if (string.IsNullOrEmpty(value))
                 return ItemNameList;
-            return ItemNameList.Where(x => x.ToString().Contains(value, StringComparison.InvariantCultureIgnoreCase));
+            return ItemNameList.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         }
 
         private async Task<string> GetData(string query)
