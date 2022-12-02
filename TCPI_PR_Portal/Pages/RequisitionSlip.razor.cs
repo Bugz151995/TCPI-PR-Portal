@@ -315,7 +315,7 @@ namespace TCPI_PR_Portal.Pages
             var parameters = new DialogParameters { ["Item"] = context };
 
             var options = new DialogOptions { CloseOnEscapeKey = true };
-            DialogService.Show<ItemsModal>("List of Items", parameters);
+            DialogService.Show<ItemsModal>("", parameters);
         }
     }
 }
