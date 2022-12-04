@@ -27,7 +27,7 @@ builder.Services.AddTransient<CookieHandler>()
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISendEmailService, SendEmailService>();
 
-builder.Services.AddSendGrid(opt => opt.ApiKey = "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");
+builder.Services.AddSendGrid(opt => opt.ApiKey = "");
 
 builder.Services.AddMudServices(config =>
 {
