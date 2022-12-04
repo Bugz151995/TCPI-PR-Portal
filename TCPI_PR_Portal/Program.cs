@@ -10,6 +10,7 @@ using Blazor.SubtleCrypto;
 using MudBlazor;
 using Solutaris.InfoWARE.ProtectedBrowserStorage.Extensions;
 using TCPI_PR_Portal.Services;
+using SendGrid.Extensions.DependencyInjection;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -24,6 +25,9 @@ builder.Services.AddTransient<CookieHandler>()
     .AddHttpClient("ServiceLayer", client => client.BaseAddress = new Uri("http://172.31.24.203:50001/b1s/v1/")).AddHttpMessageHandler<CookieHandler>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ISendEmailService, SendEmailService>();
+
+builder.Services.AddSendGrid(opt => opt.ApiKey = "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");
 
 builder.Services.AddMudServices(config =>
 {

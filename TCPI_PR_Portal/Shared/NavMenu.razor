@@ -1,7 +1,8 @@
 ﻿@using TCPI_PR_Portal.Services;
 @inject Solutaris.InfoWARE.ProtectedBrowserStorage.Services.IIWLocalStorageService LocalStorage;
-@inject IAuthService AuthService
+@inject IAuthService AuthService;
 @inject NavigationManager Navigation;
+@inject HttpClient HttpClient;
 
 <MudNavMenu>
     <div class="d-flex px-3 ps-5 align-center justify-start">
@@ -46,9 +47,10 @@
         ApproverLevel = LocalStorage.GetItem<string>("ApproverLevel");
     }
 
-    void Logout()
+    private void Logout()
     {
         AuthService.Logout();
+        var response = HttpClient.PostAsync("Logout", null);
         Navigation.NavigateTo("/");
     }
 }

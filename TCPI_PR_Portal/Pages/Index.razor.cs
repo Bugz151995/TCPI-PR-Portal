@@ -38,6 +38,27 @@ namespace TCPI_PR_Portal.Pages
         SAPUserDto SapUser = new SAPUserDto();
         UserResponse? SapUserResponse = new UserResponse();
 
+        protected override async Task OnInitializedAsync()
+        {
+            ContactDto contact = new ContactDto
+            {
+                Name = "Ryan Czar Abugao",
+                Email = "ryan.abugao@gmail.com",
+                Message = "test sendgrid email integration"
+            };
+
+            bool response = await EmailService.SendEmail(contact);
+
+            if (response)
+            {
+                Snackbar.Add("Email was sent!", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("Error sending email!", Severity.Error);
+            }
+        }
+
         private async Task OnValidSubmit(EditContext context)
         {
             try
